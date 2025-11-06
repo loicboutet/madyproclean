@@ -133,6 +133,16 @@
           display: none !important;
         }
         
+        .admin-header-user {
+          gap: 0.5rem !important;
+        }
+        
+        .profile-dropdown {
+          min-width: 240px !important;
+          right: 0 !important;
+          left: auto !important;
+        }
+        
         main {
           padding: 1rem !important;
           width: 100% !important;
@@ -164,10 +174,6 @@
         .admin-footer-links {
           flex-direction: column;
           gap: 0.75rem !important;
-        }
-        
-        .profile-dropdown {
-          min-width: 240px !important;
         }
       }
       
@@ -215,13 +221,6 @@
       <header class="admin-header" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 212, 255, 0.2); position: sticky; top: 0; z-index: 50;">
         <div style="max-width: 1400px; width: 100%; margin: 0 auto; padding: 1rem 2rem;">
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 2rem;">
-          <!-- Burger Menu Button (Mobile Only) -->
-          <button class="burger-menu" id="burgerMenuBtn" aria-label="Toggle menu" style="display: none;">
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
-          
           <!-- Logo Section -->
           <div style="display: flex; align-items: center; gap: 1rem; flex-shrink: 0;">
             <%= image_tag "logo_square.png", alt: "Mady ProClean Logo", style: "width: 50px; height: 50px; border-radius: 0.5rem; box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);" %>
@@ -278,6 +277,13 @@
           
           <!-- Profile Dropdown -->
           <div class="admin-header-user" data-controller="dropdown" style="position: relative; display: flex; align-items: center; gap: 1rem; flex-shrink: 0;">
+            <!-- Burger Menu Button (Mobile Only) -->
+            <button class="burger-menu" id="burgerMenuBtn" aria-label="Toggle menu">
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+            
             <div class="admin-user-info" style="text-align: right;">
               <p class="admin-user-name" style="font-size: 0.875rem; font-weight: 600; color: #FFFFFF; margin: 0;">Manager Utilisateur</p>
               <p class="admin-user-role" style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.6); margin: 0;">Superviseur</p>
