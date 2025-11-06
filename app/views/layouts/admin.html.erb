@@ -26,7 +26,9 @@
     <!-- Sidebar -->
     <aside class="admin-sidebar" data-sidebar-target="sidebar">
       <div class="admin-sidebar-header">
-        <%= image_tag "logo_square.png", alt: "Mady ProClean Logo", class: "admin-sidebar-logo-img" %>
+        <%= link_to root_path do %>
+          <%= image_tag "logo_square.png", alt: "Mady ProClean Logo", class: "admin-sidebar-logo-img", style: "cursor: pointer;" %>
+        <% end %>
         <h1 class="admin-sidebar-logo">Mady ProClean</h1>
         <p class="admin-sidebar-subtitle">Portail Admin</p>
       </div>
