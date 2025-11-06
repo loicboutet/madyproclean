@@ -10,6 +10,9 @@ Rails.application.routes.draw do
   # Root
   root 'pages#home'
   
+  # Roles overview
+  get 'roles', to: 'pages#roles'
+  
   # Authentication
   get 'login', to: 'sessions#new'
   post 'login', to: 'sessions#create'
