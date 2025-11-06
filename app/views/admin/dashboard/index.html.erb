@@ -1,0 +1,240 @@
+<% content_for :page_title, "Tableau de Bord" %>
+
+<div class="card">
+  <h2>Bienvenue au Tableau de Bord Administrateur</h2>
+  <p>Interface de gestion complète pour le système de pointage et de gestion RH.</p>
+</div>
+
+<!-- Stats Grid -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-card-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+      </svg>
+    </div>
+    <div class="stat-card-content">
+      <div class="stat-value">142</div>
+      <div class="stat-label">Total Agents</div>
+    </div>
+  </div>
+  
+  <div class="stat-card">
+    <div class="stat-card-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+    </div>
+    <div class="stat-card-content">
+      <div class="stat-value">87</div>
+      <div class="stat-label">Actifs Aujourd'hui</div>
+    </div>
+  </div>
+  
+  <div class="stat-card">
+    <div class="stat-card-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+    </div>
+    <div class="stat-card-content">
+      <div class="stat-value">12</div>
+      <div class="stat-label">Sites</div>
+    </div>
+  </div>
+  
+  <div class="stat-card">
+    <div class="stat-card-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+      </svg>
+    </div>
+    <div class="stat-card-content">
+      <div class="stat-value">3</div>
+      <div class="stat-label">Anomalies</div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts Section -->
+<div class="charts-grid" id="chartsContainer">
+  <!-- Time Entries Chart -->
+  <div class="glass-card">
+    <h3>Pointages de la Semaine</h3>
+    <div class="chart-container">
+      <canvas id="timeEntriesChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Site Occupancy Chart -->
+  <div class="glass-card">
+    <h3>Occupation par Site</h3>
+    <div class="chart-container">
+      <canvas id="siteOccupancyChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Absence Rate Chart -->
+  <div class="glass-card">
+    <h3>Taux d'Absence (6 Mois)</h3>
+    <div class="chart-container">
+      <canvas id="absenceRateChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Anomalies Chart -->
+  <div class="glass-card">
+    <h3>Distribution des Anomalies</h3>
+    <div class="chart-container">
+      <canvas id="anomaliesChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="glass-card">
+  <h3>Pointages Récents</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Agent</th>
+        <th>Site</th>
+        <th>Arrivée</th>
+        <th>Départ</th>
+        <th>Statut</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Martin Dupont</td>
+        <td>Site Nucléaire A</td>
+        <td>06/11/2025 08:00</td>
+        <td>06/11/2025 17:00</td>
+        <td><span class="badge-success">Complet</span></td>
+      </tr>
+      <tr>
+        <td>Sophie Bernard</td>
+        <td>Site Nucléaire B</td>
+        <td>06/11/2025 08:15</td>
+        <td>06/11/2025 17:10</td>
+        <td><span class="badge-success">Complet</span></td>
+      </tr>
+      <tr>
+        <td>Jean Moreau</td>
+        <td>Site Nucléaire C</td>
+        <td>06/11/2025 08:30</td>
+        <td>--</td>
+        <td><span class="badge">En cours</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Quick Actions -->
+<div class="glass-card">
+  <h3>Actions Rapides</h3>
+  <div class="button-group">
+    <%= link_to admin_time_entries_path, class: "btn-primary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <span>Voir Tous les Pointages</span>
+    <% end %>
+    
+    <%= link_to admin_sites_path, class: "btn-secondary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      <span>Gérer les Sites</span>
+    <% end %>
+    
+    <%= link_to admin_users_path, class: "btn-secondary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+      </svg>
+      <span>Gérer les Utilisateurs</span>
+    <% end %>
+    
+    <%= link_to admin_reports_path, class: "btn-secondary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+      </svg>
+      <span>Voir les Rapports</span>
+    <% end %>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const chartData = <%= raw @chart_data.to_json %>;
+
+    // Common chart options
+    const commonOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            color: '#FFFFFF',
+            font: { size: 12 }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(0, 212, 255, 0.1)' },
+          ticks: { color: '#FFFFFF' }
+        },
+        x: {
+          grid: { color: 'rgba(0, 212, 255, 0.1)' },
+          ticks: { color: '#FFFFFF' }
+        }
+      }
+    };
+
+    // Time Entries Chart (Line)
+    new Chart(document.getElementById('timeEntriesChart'), {
+      type: 'line',
+      data: chartData.time_entries,
+      options: commonOptions
+    });
+
+    // Site Occupancy Chart (Bar)
+    new Chart(document.getElementById('siteOccupancyChart'), {
+      type: 'bar',
+      data: chartData.site_occupancy,
+      options: commonOptions
+    });
+
+    // Absence Rate Chart (Line with Area)
+    new Chart(document.getElementById('absenceRateChart'), {
+      type: 'line',
+      data: chartData.absence_rate,
+      options: commonOptions
+    });
+
+    // Anomalies Chart (Doughnut)
+    new Chart(document.getElementById('anomaliesChart'), {
+      type: 'doughnut',
+      data: chartData.anomalies,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              color: '#FFFFFF',
+              font: { size: 12 },
+              padding: 15
+            }
+          }
+        }
+      }
+    });
+  });
+</script>

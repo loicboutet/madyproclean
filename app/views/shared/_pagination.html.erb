@@ -1,0 +1,63 @@
+<%# Simple reusable pagination partial
+    Usage: <%= render 'shared/pagination' %>
+    This shows a static pagination example that can be customized
+-%>
+
+<div class="pagination-wrapper">
+  <!-- Pagination Info -->
+  <div class="pagination-info">
+    <p class="pagination-text">
+      Affichage de <strong>1</strong> à <strong>10</strong> sur <strong>45</strong> entrées
+    </p>
+  </div>
+
+  <!-- Pagination Controls -->
+  <nav class="pagination-nav" role="navigation" aria-label="Pagination">
+    <ul class="pagination-list">
+      <!-- Previous Page (disabled state example) -->
+      <li class="pagination-item pagination-prev disabled">
+        <span>
+          <svg class="pagination-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+          <span>Précédent</span>
+        </span>
+      </li>
+
+      <!-- Page 1 (active) -->
+      <li class="pagination-item pagination-page active">
+        <span>1</span>
+      </li>
+
+      <!-- Page 2 -->
+      <li class="pagination-item pagination-page">
+        <a href="#">2</a>
+      </li>
+
+      <!-- Page 3 -->
+      <li class="pagination-item pagination-page">
+        <a href="#">3</a>
+      </li>
+
+      <!-- Gap/Ellipsis -->
+      <li class="pagination-item pagination-gap">
+        <span>...</span>
+      </li>
+
+      <!-- Page 5 (last page) -->
+      <li class="pagination-item pagination-page">
+        <a href="#">5</a>
+      </li>
+
+      <!-- Next Page -->
+      <li class="pagination-item pagination-next">
+        <a href="#">
+          <span>Suivant</span>
+          <svg class="pagination-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>

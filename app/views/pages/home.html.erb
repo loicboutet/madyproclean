@@ -1,0 +1,292 @@
+<% content_for :title, "Mady ProClean - Système de Gestion du Temps" %>
+
+<div class="container home-container">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-login">
+            <a href="/login" class="btn-primary">
+                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                </svg>
+                Connexion
+            </a>
+        </div>
+        <h1>Mady ProClean</h1>
+        <p class="subtitle">Système de Gestion du Temps et des Ressources Humaines</p>
+        <p class="text-large">Solution digitale pour le secteur nucléaire industriel</p>
+    </header>
+
+    <!-- Alert Banner -->
+    <div class="alert alert-info">
+        <strong>Mode Démonstration:</strong> Cette page présente des données fictives pour démonstration. Aucune donnée réelle n'est enregistrée dans la base de données.
+    </div>
+
+    <!-- Quick Stats Dashboard -->
+    <section>
+        <h2>Tableau de Bord en Temps Réel</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">127</div>
+                <div class="stat-label">Agents Actifs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">8</div>
+                <div class="stat-label">Sites Opérationnels</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">42</div>
+                <div class="stat-label">Pointages Aujourd'hui</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">3</div>
+                <div class="stat-label">Anomalies Détectées</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Features Overview -->
+    <section>
+        <h2>Fonctionnalités Principales</h2>
+        <div class="feature-grid">
+            <!-- Block 1 -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h3>BLOCK 1 - Pointage Temps Réel</h3>
+                <p>Système de suivi du temps pour 100-140 agents de terrain</p>
+                <ul class="feature-list">
+                    <li>Pointage par QR Code</li>
+                    <li>Suivi en temps réel</li>
+                    <li>Détection d'anomalies</li>
+                    <li>Exports CSV/Excel</li>
+                    <li>Rapports mensuels</li>
+                    <li>Correction manuelle</li>
+                </ul>
+            </div>
+
+            <!-- Block 2 -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <h3>BLOCK 2 - Gestion RH & Planning</h3>
+                <p>Gestion des équipes et planification avancée</p>
+                <ul class="feature-list">
+                    <li>Planification d'équipe</li>
+                    <li>Gestion des absences</li>
+                    <li>Calendrier interactif</li>
+                    <li>Gestion des remplaçants</li>
+                    <li>Indicateurs RH</li>
+                    <li>Exports planning (PDF/Excel)</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- User Roles -->
+    <section>
+        <h2>Accès par Rôle</h2>
+        <div class="role-grid">
+            <div class="glass-card">
+                <h3>👤 Agent de Terrain</h3>
+                <p>100-140 utilisateurs</p>
+                <div class="button-group-no-margin">
+                    <span class="badge">Pointage QR Code</span>
+                </div>
+                <p style="margin-top: 1rem; font-size: 0.875rem; color: rgba(255,255,255,0.6);">
+                    Interface minimaliste - Aucune information visible
+                </p>
+                <div class="button-group">
+                    <a href="#" class="btn-secondary">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+                        </svg>
+                        Scanner QR Code
+                    </a>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h3>👔 Superviseur</h3>
+                <p>3 utilisateurs</p>
+                <div class="button-group-no-margin">
+                    <span class="badge-success">Accès Blocks 1 & 2</span>
+                </div>
+                <p style="margin-top: 1rem; font-size: 0.875rem; color: rgba(255,255,255,0.6);">
+                    Gestion des absences et planning d'équipe
+                </p>
+                <div class="button-group">
+                    <a href="/manager/dashboard" class="btn-primary">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                        Tableau de Bord
+                    </a>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <h3>⚙️ Administrateur</h3>
+                <p>8 utilisateurs</p>
+                <div class="button-group-no-margin">
+                    <span class="badge-success">Accès Complet</span>
+                </div>
+                <p style="margin-top: 1rem; font-size: 0.875rem; color: rgba(255,255,255,0.6);">
+                    Gestion complète système et rapports
+                </p>
+                <div class="button-group">
+                    <a href="/admin/dashboard" class="btn-primary glow">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        Admin Panel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Recent Activity Table -->
+    <section class="card">
+        <h2>Activité Récente - Pointages du Jour</h2>
+        <p>Derniers pointages enregistrés dans le système</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Agent</th>
+                    <th>Site</th>
+                    <th>Arrivée</th>
+                    <th>Départ</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Martin Dupont</td>
+                    <td>Site Nucléaire A</td>
+                    <td>06/11/2025 08:00</td>
+                    <td>06/11/2025 17:00</td>
+                    <td><span class="badge-success">Complet</span></td>
+                </tr>
+                <tr>
+                    <td>Sophie Bernard</td>
+                    <td>Site Nucléaire B</td>
+                    <td>06/11/2025 08:15</td>
+                    <td>06/11/2025 17:10</td>
+                    <td><span class="badge-success">Complet</span></td>
+                </tr>
+                <tr>
+                    <td>Jean Moreau</td>
+                    <td>Site Nucléaire C</td>
+                    <td>06/11/2025 08:30</td>
+                    <td>--</td>
+                    <td><span class="badge">En cours</span></td>
+                </tr>
+                <tr>
+                    <td>Pierre Lefebvre</td>
+                    <td>Site Nucléaire A</td>
+                    <td>05/11/2025 08:00</td>
+                    <td>--</td>
+                    <td><span class="badge-warning">Anomalie</span></td>
+                </tr>
+                <tr>
+                    <td>Marie Curie</td>
+                    <td>Site Nucléaire D</td>
+                    <td>06/11/2025 07:45</td>
+                    <td>06/11/2025 16:45</td>
+                    <td><span class="badge-success">Complet</span></td>
+                </tr>
+                <tr>
+                    <td>Luc Fontaine</td>
+                    <td>Site Nucléaire E</td>
+                    <td>06/11/2025 09:00</td>
+                    <td>--</td>
+                    <td><span class="badge">En cours</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Quick Login -->
+    <section class="glass-card" style="max-width: 600px; margin: 0 auto 2rem;">
+        <h2>Connexion Rapide</h2>
+        <p>Accédez à votre espace personnel</p>
+        
+        <form action="/login" method="get" style="margin-top: 1.5rem;">
+            <div class="button-group" style="justify-content: center;">
+                <button type="submit" class="btn-primary">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                    </svg>
+                    Se connecter
+                </button>
+                <a href="/mockups/index" class="btn-secondary">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                    Voir les Maquettes
+                </a>
+            </div>
+        </form>
+    </section>
+
+    <!-- System Info -->
+    <section class="card">
+        <h3>Informations Système</h3>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+            <div>
+                <h4>Capacité</h4>
+                <ul class="feature-list">
+                    <li>100-140 agents de terrain</li>
+                    <li>3 superviseurs</li>
+                    <li>8 administrateurs</li>
+                    <li>8 sites opérationnels</li>
+                </ul>
+            </div>
+            <div>
+                <h4>Sécurité</h4>
+                <ul class="feature-list">
+                    <li>Hébergement France</li>
+                    <li>Authentification sécurisée</li>
+                    <li>Système anti-fraude (IP + cookies)</li>
+                    <li>Interface agent minimaliste (sans informations)</li>
+                </ul>
+            </div>
+            <div>
+                <h4>Exports & Rapports</h4>
+                <ul class="feature-list">
+                    <li>CSV et Excel pour les pointages</li>
+                    <li>PDF pour les plannings</li>
+                    <li>Rapports mensuels automatiques</li>
+                    <li>Indicateurs RH en temps réel</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(0, 212, 255, 0.2);">
+        <p style="color: rgba(255, 255, 255, 0.5); font-size: 0.875rem;">
+            © 2025 Mady ProClean - Système de Gestion du Temps et RH
+        </p>
+        <p style="color: rgba(255, 255, 255, 0.4); font-size: 0.75rem; margin-top: 0.5rem;">
+            Hébergé en France - Livraison novembre 2025
+        </p>
+    </div>
+</div>

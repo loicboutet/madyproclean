@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mady ProClean - Sample Forms & Typography</title>
+    <style>
+        /* CSS Variables */
+        :root {
+            --cyan-electric: #00D4FF;
+            --turquoise: #00FFE0;
+            --dark-blue: #1a1a2e;
+            --deep-blue: #0f3460;
+            --light-cyan: #66e3ff;
+            --white: #FFFFFF;
+        }
+
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(180deg, #1a1a2e 0%, #0f3460 100%);
+            color: var(--white);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--cyan-electric), var(--turquoise));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--white);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--cyan-electric);
+        }
+
+        p {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: #e5e5e5;
+        }
+
+        .text-large {
+            font-size: 1.125rem;
+            color: #d1d1d1;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cyan-electric), var(--turquoise));
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-primary:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.5);
+        }
+
+        .btn-secondary {
+            border: 2px solid var(--cyan-electric);
+            background: transparent;
+            color: var(--cyan-electric);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 212, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.3);
+        }
+
+        /* Button Icons */
+        .btn-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--light-cyan);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="date"],
+        input[type="time"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            color: var(--white);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--cyan-electric);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Checkbox & Radio */
+        .checkbox-group,
+        .radio-group {
+            margin-bottom: 1rem;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: var(--cyan-electric);
+        }
+
+        .checkbox-label,
+        .radio-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            color: var(--white);
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.875rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--cyan-electric);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .badge-success {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.875rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            background: rgba(0, 255, 224, 0.1);
+            color: var(--turquoise);
+            border: 1px solid rgba(0, 255, 224, 0.3);
+        }
+
+        .badge-warning {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.875rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        /* Grid Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            h1 {
+                font-size: 3rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .form-grid-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Section Divider */
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(0, 212, 255, 0.5), transparent);
+            margin: 3rem 0;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: var(--cyan-electric);
+            color: var(--white);
+        }
+
+        .alert-success {
+            background: rgba(0, 255, 224, 0.1);
+            border-color: var(--turquoise);
+            color: var(--white);
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th {
+            background: rgba(0, 212, 255, 0.1);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 700;
+            color: var(--cyan-electric);
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        tr:hover {
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        /* Glow Effect */
+        .glow {
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: -0.5rem;
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        /* Table Action Buttons */
+        .table-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .btn-icon-only {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            padding: 0.375rem 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 0.25rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .btn-icon-only svg {
+            width: 1rem;
+            height: 1rem;
+            flex-shrink: 0;
+        }
+
+        .btn-icon-only.btn-view {
+            color: var(--cyan-electric);
+        }
+
+        .btn-icon-only.btn-view:hover {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--light-cyan);
+        }
+
+        .btn-icon-only.btn-edit {
+            color: var(--turquoise);
+        }
+
+        .btn-icon-only.btn-edit:hover {
+            background: rgba(0, 255, 224, 0.1);
+            color: var(--turquoise);
+        }
+
+        .btn-icon-only.btn-delete {
+            color: #ef4444;
+        }
+
+        .btn-icon-only.btn-delete:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+        }
+
+        .btn-icon-only.btn-download {
+            color: var(--turquoise);
+        }
+
+        .btn-icon-only.btn-download:hover {
+            background: rgba(0, 255, 224, 0.1);
+            color: var(--turquoise);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>Mady ProClean</h1>
+            <p class="subtitle">Système de Gestion du Temps et des Ressources Humaines</p>
+        </header>
+
+        <!-- Development Guidelines -->
+        <section class="card">
+            <h1>
+               Development Guidelines:
+            </h1>
+                <p>
+                    Consider doc/specification.md and doc/data_model.md for the fields to be added under particular view
+                </p>
+            <ul>
+                <li><strong>Mockup-Only Development:</strong> We are creating mockups exclusively. No real model data will be saved to the database during this phase.</li>
+                <li><strong>No Database Persistence:</strong> We will not create controller logic that saves, updates, or deletes real data from the database.</li>
+                <li><strong>Sample Data Only:</strong> Controller methods will render sample data to ERB files for visualization purposes only.</li>
+                <li><strong>Static Mockups:</strong> All forms, tables, and interactive elements are for demonstration and should display predefined sample data.</li>
+                <li><strong>No Backend Logic:</strong> Focus is on frontend presentation, not backend functionality or business logic implementation.</li>
+            </ul>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Typography Section -->
+        <section class="card">
+            <h2>Typography Samples</h2>
+            <h3>Heading Level 3 - 24px Bold</h3>
+            <h4>Heading Level 4 - 20px Semi-Bold</h4>
+            <p class="text-large">Body Large Text - 18px Regular. This is used for important descriptions and lead paragraphs.</p>
+            <p>Body Regular Text - 16px Regular. This is the standard text used throughout the application for general content.</p>
+            <div class="button-group">
+                <span class="badge">Badge Default</span>
+                <span class="badge-success">Badge Success</span>
+                <span class="badge-warning">Badge Warning</span>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- Login Form -->
+        <section class="glass-card">
+            <h2>Connexion Agent</h2>
+            <p>Formulaire de connexion pour les agents de terrain</p>
+            
+            <form>
+                <div class="form-group">
+                    <label for="agent-id">Identifiant Agent</label>
+                    <input type="text" id="agent-id" placeholder="Entrez votre identifiant" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="agent-password">Mot de passe</label>
+                    <input type="password" id="agent-password" placeholder="••••••••" required>
+                </div>
+
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="remember">
+                        Se souvenir de moi
+                    </label>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                        </svg>
+                        Se connecter
+                    </button>
+                    <button type="button" class="btn-secondary">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                        </svg>
+                        Mot de passe oublié
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Time Tracking Form -->
+        <section class="glass-card">
+            <h2>Pointage Manuel</h2>
+            <div class="alert alert-info">
+                <strong>Information:</strong> Cette option est réservée aux administrateurs pour corriger les anomalies.
+            </div>
+
+            <form>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="employee-select">Sélectionner un agent</label>
+                        <select id="employee-select" required>
+                            <option value="">-- Choisir un agent --</option>
+                            <option value="agent1">Martin Dupont</option>
+                            <option value="agent2">Sophie Bernard</option>
+                            <option value="agent3">Jean Moreau</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="site-select">Site</label>
+                        <select id="site-select" required>
+                            <option value="">-- Choisir un site --</option>
+                            <option value="site1">Site Nucléaire A</option>
+                            <option value="site2">Site Nucléaire B</option>
+                            <option value="site3">Site Nucléaire C</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="checkin-date">Date</label>
+                        <input type="date" id="checkin-date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="checkin-time">Heure d'arrivée</label>
+                        <input type="time" id="checkin-time" required>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="checkout-date">Date de sortie</label>
+                        <input type="date" id="checkout-date">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="checkout-time">Heure de départ</label>
+                        <input type="time" id="checkout-time">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Notes / Commentaires</label>
+                    <textarea id="notes" placeholder="Ajouter des notes concernant ce pointage..."></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Enregistrer le pointage
+                    </button>
+                    <button type="reset" class="btn-secondary">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        Annuler
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Absence Management Form -->
+        <section class="glass-card">
+            <h2>Déclaration d'Absence</h2>
+            <p>Formulaire réservé aux superviseurs pour déclarer les absences des agents</p>
+
+            <form>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="absence-employee">Agent concerné</label>
+                        <select id="absence-employee" required>
+                            <option value="">-- Sélectionner un agent --</option>
+                            <option value="emp1">Pierre Lefebvre</option>
+                            <option value="emp2">Marie Curie</option>
+                            <option value="emp3">Luc Fontaine</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="absence-type">Type d'absence</label>
+                        <select id="absence-type" required>
+                            <option value="">-- Type d'absence --</option>
+                            <option value="vacation">Congés</option>
+                            <option value="sick">Arrêt maladie</option>
+                            <option value="training">Formation</option>
+                            <option value="unpaid">Congé sans solde</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="start-date">Date de début</label>
+                        <input type="date" id="start-date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="end-date">Date de fin</label>
+                        <input type="date" id="end-date" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="absence-reason">Motif / Détails</label>
+                    <textarea id="absence-reason" placeholder="Préciser le motif de l'absence..." required></textarea>
+                </div>
+
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="notify-team">
+                        Notifier l'équipe
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="find-replacement">
+                        Chercher un remplaçant
+                    </label>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        Enregistrer l'absence
+                    </button>
+                    <button type="button" class="btn-secondary">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        Annuler
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Site Management Form -->
+        <section class="glass-card">
+            <h2>Gestion des Sites</h2>
+            <p>Ajouter ou modifier un site de travail</p>
+
+            <form>
+                <div class="form-group">
+                    <label for="site-name">Nom du site</label>
+                    <input type="text" id="site-name" placeholder="Ex: Site Nucléaire Centre" required>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="site-code">Code du site</label>
+                        <input type="text" id="site-code" placeholder="Ex: SNC-001" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="site-capacity">Capacité (agents)</label>
+                        <input type="number" id="site-capacity" placeholder="Ex: 20" min="1" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="site-address">Adresse complète</label>
+                    <textarea id="site-address" placeholder="Adresse du site de travail..." required></textarea>
+                </div>
+
+                <div class="radio-group">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--light-cyan);">Statut du site</label>
+                    <label class="radio-label">
+                        <input type="radio" name="site-status" value="active" checked>
+                        Actif
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="site-status" value="inactive">
+                        Inactif
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="site-status" value="maintenance">
+                        En maintenance
+                    </label>
+                </div>
+
+                <div class="alert alert-success">
+                    <strong>QR Code:</strong> Un code QR unique sera généré automatiquement pour ce site.
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Créer le site
+                    </button>
+                    <button type="button" class="btn-secondary">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        Prévisualiser
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Data Table Example -->
+        <section class="card">
+            <h2>Tableau de Pointages Récents</h2>
+            <p>Exemple de présentation des données de pointage</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Agent</th>
+                        <th>Site</th>
+                        <th>Arrivée</th>
+                        <th>Départ</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Martin Dupont</td>
+                        <td>Site Nucléaire A</td>
+                        <td>06/11/2025 08:00</td>
+                        <td>06/11/2025 17:00</td>
+                        <td><span class="badge-success">Complet</span></td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="btn-icon-only btn-view" title="Voir les détails">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                    <span>Voir</span>
+                                </button>
+                                <button class="btn-icon-only btn-edit" title="Modifier">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                    <span>Modifier</span>
+                                </button>
+                                <button class="btn-icon-only btn-delete" title="Supprimer">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                    <span>Supprimer</span>
+                                </button>
+                                <button class="btn-icon-only btn-download" title="Télécharger">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    <span>Télécharger</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Sophie Bernard</td>
+                        <td>Site Nucléaire B</td>
+                        <td>06/11/2025 08:15</td>
+                        <td>06/11/2025 17:10</td>
+                        <td><span class="badge-success">Complet</span></td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="btn-icon-only btn-view" title="Voir les détails">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                    <span>Voir</span>
+                                </button>
+                                <button class="btn-icon-only btn-edit" title="Modifier">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                    <span>Modifier</span>
+                                </button>
+                                <button class="btn-icon-only btn-delete" title="Supprimer">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                    <span>Supprimer</span>
+                                </button>
+                                <button class="btn-icon-only btn-download" title="Télécharger">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    <span>Télécharger</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Jean Moreau</td>
+                        <td>Site Nucléaire C</td>
+                        <td>06/11/2025 08:30</td>
+                        <td>--</td>
+                        <td><span class="badge">En cours</span></td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="btn-icon-only btn-view" title="Voir les détails">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                    <span>Voir</span>
+                                </button>
+                                <button class="btn-icon-only btn-edit" title="Modifier">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                    <span>Modifier</span>
+                                </button>
+                                <button class="btn-icon-only btn-delete" title="Supprimer">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                    <span>Supprimer</span>
+                                </button>
+                                <button class="btn-icon-only btn-download" title="Télécharger">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    <span>Télécharger</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Pierre Lefebvre</td>
+                        <td>Site Nucléaire A</td>
+                        <td>05/11/2025 08:00</td>
+                        <td>--</td>
+                        <td><span class="badge-warning">Anomalie</span></td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="btn-icon-only btn-view" title="Voir les détails">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                    <span>Voir</span>
+                                </button>
+                                <button class="btn-icon-only btn-edit" title="Modifier">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                    <span>Modifier</span>
+                                </button>
+                                <button class="btn-icon-only btn-delete" title="Supprimer">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                    <span>Supprimer</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Filter Form -->
+        <section class="glass-card">
+            <h2>Filtres de Recherche</h2>
+            <p>Rechercher et filtrer les pointages</p>
+
+            <form>
+                <div class="form-grid form-grid-3">
+                    <div class="form-group">
+                        <label for="filter-agent">Agent</label>
+                        <select id="filter-agent">
+                            <option value="">Tous les agents</option>
+                            <option value="agent1">Martin Dupont</option>
+                            <option value="agent2">Sophie Bernard</option>
+                            <option value="agent3">Jean Moreau</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="filter-site">Site</label>
+                        <select id="filter-site">
+                            <option value="">Tous les sites</option>
+                            <option value="site1">Site Nucléaire A</option>
+                            <option value="site2">Site Nucléaire B</option>
+                            <option value="site3">Site Nucléaire C</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="filter-status">Statut</label>
+                        <select id="filter-status">
+                            <option value="">Tous les statuts</option>
+                            <option value="complete">Complet</option>
+                            <option value="ongoing">En cours</option>
+                            <option value="anomaly">Anomalie</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="filter-start">Date de début</label>
+                        <input type="date" id="filter-start">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="filter-end">Date de fin</label>
+                        <input type="date" id="filter-end">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn-primary">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                        </svg>
+                        Appliquer les filtres
+                    </button>
+                    <button type="reset" class="btn-secondary">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                        Réinitialiser
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Action Buttons -->
+        <section class="card">
+            <h2>Exemples de Boutons</h2>
+            <div class="button-group">
+                <button class="btn-primary">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Bouton Primaire
+                </button>
+                <button class="btn-secondary">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Bouton Secondaire
+                </button>
+                <button class="btn-primary glow">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                    </svg>
+                    Bouton avec Glow
+                </button>
+            </div>
+        </section>
+
+    </div>
+</body>
+</html>
