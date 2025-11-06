@@ -17,7 +17,62 @@
     </div>
   </div>
 
-  <!-- Filters Section -->
+<!-- Statistics Cards -->
+  <div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-primary">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Total Pointages</p>
+      <p class="stat-value"><%= @time_entries.length %></p>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-success">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Complets</p>
+      <p class="stat-value"><%= @time_entries.count { |e| e[:status] == 'completed' } %></p>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-info">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">En Cours</p>
+      <p class="stat-value"><%= @time_entries.count { |e| e[:status] == 'active' } %></p>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-warning">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Anomalies</p>
+      <p class="stat-value"><%= @time_entries.count { |e| e[:status] == 'anomaly' } %></p>
+    </div>
+  </div>
+</div>
+
+  
+
+<div class="divider"></div>
+
+<!-- Filters Section -->
   <div class="alert alert-info mb-6">
     <strong>Filtres de Recherche:</strong> Utilisez les filtres ci-dessous pour affiner la liste des pointages
   </div>
@@ -86,63 +141,22 @@
 
 <div class="divider"></div>
 
-<!-- Statistics Cards -->
-  <div class="stats-grid">
-  <div class="stat-card">
-    <div class="stat-icon stat-icon-primary">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-      </svg>
-    </div>
-    <div class="stat-content">
-      <p class="stat-label">Total Pointages</p>
-      <p class="stat-value"><%= @time_entries.length %></p>
-    </div>
-  </div>
-
-  <div class="stat-card">
-    <div class="stat-icon stat-icon-success">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-      </svg>
-    </div>
-    <div class="stat-content">
-      <p class="stat-label">Complets</p>
-      <p class="stat-value"><%= @time_entries.count { |e| e[:status] == 'completed' } %></p>
-    </div>
-  </div>
-
-  <div class="stat-card">
-    <div class="stat-icon stat-icon-info">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-      </svg>
-    </div>
-    <div class="stat-content">
-      <p class="stat-label">En Cours</p>
-      <p class="stat-value"><%= @time_entries.count { |e| e[:status] == 'active' } %></p>
-    </div>
-  </div>
-
-  <div class="stat-card">
-    <div class="stat-icon stat-icon-warning">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-      </svg>
-    </div>
-    <div class="stat-content">
-      <p class="stat-label">Anomalies</p>
-      <p class="stat-value"><%= @time_entries.count { |e| e[:status] == 'anomaly' } %></p>
-    </div>
-  </div>
-</div>
-
-<div class="divider"></div>
-
 <!-- Time Entries Table -->
 <div class="card">
-  <h2 class="mb-4">Liste des Pointages</h2>
-  <p class="text-large mb-6">Visualisez tous les pointages avec détails et statuts</p>
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h2 class="mb-2" style="font-size: 1.875rem;">Liste des Pointages</h2>
+      <p class="text-large">Visualisez tous les pointages avec détails et statuts</p>
+    </div>
+    <div class="button-group">
+      <%= link_to new_admin_time_entry_path, class: "btn-primary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Créer un pointage
+      <% end %>
+    </div>
+  </div>
 
   <div class="table-responsive">
     <table>
@@ -259,7 +273,7 @@
 
 <!-- Add New Time Entry -->
 <div class="glass-card">
-  <h2 class="mb-4">Ajouter un Nouveau Pointage</h2>
+  <h2 class="mb-4" style="font-size: 1.875rem;">Ajouter un Nouveau Pointage</h2>
   <div class="alert alert-info mb-6">
     <strong>Information:</strong> Utilisez ce formulaire pour ajouter manuellement un pointage ou corriger une anomalie.
   </div>
