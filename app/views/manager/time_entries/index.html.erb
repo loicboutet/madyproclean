@@ -1,0 +1,285 @@
+<% content_for :page_title, "Pointages de l'Équipe" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Pointages de l'Équipe</h1>
+      <p class="text-large mt-2">Consultez les pointages des agents de votre équipe</p>
+    </div>
+  </div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-primary">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Total Pointages</p>
+      <p class="stat-value"><%= @all_time_entries.length %></p>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-success">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Complétés</p>
+      <p class="stat-value"><%= @all_time_entries.count { |t| t[:status] == 'completed' } %></p>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-info">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">En Cours</p>
+      <p class="stat-value"><%= @all_time_entries.count { |t| t[:status] == 'active' } %></p>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-warning">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Anomalies</p>
+      <p class="stat-value"><%= @all_time_entries.count { |t| t[:status] == 'anomaly' } %></p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+  <!-- Filters Section -->
+  <div class="alert alert-info mb-6">
+    <strong>Filtres de Recherche:</strong> Utilisez les filtres ci-dessous pour affiner la liste des pointages
+  </div>
+
+  <form>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="search">Rechercher</label>
+        <input 
+          type="text" 
+          name="search" 
+          id="search" 
+          placeholder="Agent, site..."
+          value="<%= params[:search] %>">
+      </div>
+
+      <div class="form-group">
+        <label for="status">Statut</label>
+        <select name="status" id="status">
+          <option value="">Tous les statuts</option>
+          <option value="active" <%= 'selected' if params[:status] == 'active' %>>En cours</option>
+          <option value="completed" <%= 'selected' if params[:status] == 'completed' %>>Complétés</option>
+          <option value="anomaly" <%= 'selected' if params[:status] == 'anomaly' %>>Anomalies</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="site_id">Site</label>
+        <select name="site_id" id="site_id">
+          <option value="">Tous les sites</option>
+          <% @demo_sites.each do |site| %>
+            <option value="<%= site[:id] %>" <%= 'selected' if params[:site_id] == site[:id].to_s %>><%= site[:name] %></option>
+          <% end %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="user_id">Agent</label>
+        <select name="user_id" id="user_id">
+          <option value="">Tous les agents</option>
+          <% @demo_users.each do |user| %>
+            <option value="<%= user[:id] %>" <%= 'selected' if params[:user_id] == user[:id].to_s %>><%= user[:name] %></option>
+          <% end %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="start_date">Date de début</label>
+        <input 
+          type="date" 
+          name="start_date" 
+          id="start_date" 
+          value="<%= params[:start_date] %>">
+      </div>
+
+      <div class="form-group">
+        <label for="end_date">Date de fin</label>
+        <input 
+          type="date" 
+          name="end_date" 
+          id="end_date" 
+          value="<%= params[:end_date] %>">
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button type="submit" class="btn-primary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+        </svg>
+        Appliquer les filtres
+      </button>
+      <a href="<%= manager_time_entries_path %>" class="btn-secondary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        Réinitialiser
+      </a>
+    </div>
+  </form>
+</div>
+
+
+<div class="divider"></div>
+
+<!-- Time Entries Table -->
+<div class="card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h2 class="mb-2" style="font-size: 1.875rem;">Liste des Pointages</h2>
+      <p class="text-large">Visualisez tous les pointages des agents avec leurs détails</p>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Date & Heure</th>
+          <th>Agent</th>
+          <th>Site</th>
+          <th>Entrée</th>
+          <th>Sortie</th>
+          <th>Durée</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @time_entries.empty? %>
+          <tr>
+            <td colspan="9" style="text-align: center; padding: 2rem;">
+              <div class="alert alert-warning" style="display: inline-block;">
+                <strong>Aucun pointage trouvé</strong> avec les filtres actuels
+              </div>
+            </td>
+          </tr>
+        <% else %>
+          <% @time_entries.each do |entry| %>
+            <tr>
+              <td><strong>#<%= entry[:id] %></strong></td>
+              <td>
+                <div>
+                  <p class="font-semibold"><%= entry[:clocked_in_at].strftime('%d/%m/%Y') %></p>
+                  <p class="text-sm opacity-70"><%= l(entry[:clocked_in_at].to_date, format: '%A') %></p>
+                </div>
+              </td>
+              <td>
+                <div>
+                  <p class="font-semibold"><%= entry[:user_name] %></p>
+                  <p class="text-sm opacity-70"><%= entry[:employee_number] %></p>
+                </div>
+              </td>
+              <td>
+                <div>
+                  <p class="font-semibold"><%= entry[:site_name] %></p>
+                  <span class="badge"><%= entry[:site_code] %></span>
+                </div>
+              </td>
+              <td>
+                <div>
+                  <p class="font-semibold"><%= entry[:clocked_in_at].strftime('%H:%M') %></p>
+                  <p class="text-sm opacity-70">Entrée</p>
+                </div>
+              </td>
+              <td>
+                <% if entry[:clocked_out_at] %>
+                  <div>
+                    <p class="font-semibold"><%= entry[:clocked_out_at].strftime('%H:%M') %></p>
+                    <p class="text-sm opacity-70">Sortie</p>
+                  </div>
+                <% else %>
+                  <span class="badge-info">En cours</span>
+                <% end %>
+              </td>
+              <td>
+                <% if entry[:duration_minutes] %>
+                  <div>
+                    <p class="font-semibold"><%= (entry[:duration_minutes] / 60.0).round(1) %>h</p>
+                    <p class="text-sm opacity-70"><%= entry[:duration_minutes] %> min</p>
+                  </div>
+                <% else %>
+                  <span class="text-sm opacity-50">—</span>
+                <% end %>
+              </td>
+              <td>
+                <% if entry[:status] == 'active' %>
+                  <span class="badge-info">⚡ En cours</span>
+                <% elsif entry[:status] == 'completed' %>
+                  <span class="badge-success">✓ Complété</span>
+                <% elsif entry[:status] == 'anomaly' %>
+                  <span class="badge-warning">⚠ Anomalie</span>
+                <% end %>
+                <% if entry[:manually_corrected] %>
+                  <p class="text-sm text-orange-600 mt-1">🔧 Corrigé</p>
+                <% end %>
+              </td>
+              <td>
+                <div class="dropdown-wrapper" data-controller="dropdown">
+                  <button class="dropdown-trigger" data-action="click->dropdown#toggle" title="Actions">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                    </svg>
+                  </button>
+                  
+                  <div class="dropdown-menu hidden" data-dropdown-target="menu">
+                    <%= link_to manager_time_entry_path(entry[:id]), class: "dropdown-item" do %>
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                      </svg>
+                      <span>Voir les détails</span>
+                    <% end %>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <%= render 'shared/pagination' %>
+</div>
+
+<div class="divider"></div>
+
+<!-- Information Card -->
+<div class="glass-card">
+  <h2 class="mb-4" style="font-size: 1.875rem;">Informations</h2>
+  <div class="alert alert-info mb-6">
+    <strong>À propos:</strong> Cette page vous permet de consulter les pointages de votre équipe. Les filtres sont affichés à titre indicatif.
+  </div>
+  
+  <div class="alert alert-warning">
+    <strong>⚠ Note:</strong> Les managers peuvent consulter les pointages mais ne peuvent pas les modifier. Pour toute correction, contactez un administrateur.
+  </div>
+</div>
