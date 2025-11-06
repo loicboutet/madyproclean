@@ -1,0 +1,170 @@
+<% content_for :title, "Connexion - Mady ProClean" %>
+
+<div class="container">
+    <!-- Header -->
+    <header class="header" style="position: relative;">
+        <div class="header-back">
+            <a href="/" class="btn-secondary">
+                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Retour
+            </a>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 2rem; min-height: 120px;">
+            <%= image_tag "logo_square.png", alt: "Mady ProClean Logo", style: "width: 80px; height: 80px; border-radius: 0.5rem; box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3); margin-bottom: 1rem; display: block;" %>
+            <h1 style="margin: 0; font-size: 2rem; font-weight: 700; color: var(--white); text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">Connexion</h1>
+        </div>
+    </header>
+
+    <!-- Login Form -->
+    <div class="glass-card" style="max-width: 480px; margin: 0 auto;">
+        <!-- Alert for errors (if any) -->
+        <% if flash[:alert] %>
+            <div class="alert alert-info">
+                <%= flash[:alert] %>
+            </div>
+        <% end %>
+
+        <%= form_with(url: login_path, scope: :session, local: true, class: "login-form") do |form| %>
+            <!-- Email Field -->
+            <div class="form-group">
+                <%= form.label :email, "Adresse Email" %>
+                <%= form.email_field :email, 
+                    required: true,
+                    autocomplete: "email",
+                    placeholder: "exemple@email.com",
+                    class: "form-input" %>
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+                <%= form.label :password, "Mot de passe" %>
+                <%= form.password_field :password, 
+                    required: true,
+                    autocomplete: "current-password",
+                    placeholder: "••••••••",
+                    class: "form-input" %>
+            </div>
+
+            <!-- Remember Me & Forgot Password -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <div class="checkbox-group" style="display: flex">
+                    <%= form.check_box :remember_me, class: "remember-checkbox" %>
+                    <%= form.label :remember_me, "Se souvenir de moi", class: "checkbox-label" %>
+                </div>
+                <%= link_to "Mot de passe oublié ?", edit_dashboard_password_path, style: "color: var(--cyan-electric); text-decoration: none; font-size: 0.875rem; transition: color 0.3s ease;", onmouseover: "this.style.color='var(--turquoise)'", onmouseout: "this.style.color='var(--cyan-electric)'" %>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group" style="margin-bottom: 0;">
+                <%= form.submit "Se connecter", class: "btn-primary", style: "width: 100%; justify-content: center; padding: 1rem;" %>
+            </div>
+        <% end %>
+
+        <div class="divider"></div>
+
+        <!-- Additional Options -->
+        <div style="text-align: center;">
+            <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.875rem; margin-bottom: 1rem;">
+                Pas encore de compte ?
+            </p>
+            <a href="#" class="btn-secondary" style="width: 100%; justify-content: center;">
+                Créer un compte
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer Info -->
+    <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(0, 212, 255, 0.2);">
+        <p style="color: rgba(255, 255, 255, 0.5); font-size: 0.875rem;">
+            © 2025 Mady ProClean - Système de Gestion du Temps et RH
+        </p>
+        <p style="color: rgba(255, 255, 255, 0.4); font-size: 0.75rem; margin-top: 0.5rem;">
+            Connexion sécurisée avec chiffrement SSL
+        </p>
+    </div>
+</div>
+
+<style>
+/* Additional styles specific to login form */
+.login-form {
+    margin-top: 1rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: var(--white);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.form-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--cyan-electric);
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.remember-checkbox {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.5rem;
+    cursor: pointer;
+    accent-color: var(--cyan-electric);
+    vertical-align: middle;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: var(--white);
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+    margin-bottom: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .glass-card {
+        margin: 0 1rem !important;
+        padding: 1.5rem;
+    }
+    
+    .header {
+        padding: 1rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .subtitle {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .glass-card {
+        margin: 0 0.5rem !important;
+        padding: 1rem;
+    }
+    
+    div[style*="justify-content: space-between"] {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+}
+</style>
