@@ -124,6 +124,14 @@
       <h2 class="mb-2" style="font-size: 1.875rem;">Liste des Sites</h2>
       <p class="text-large">Visualisez tous les sites avec leurs détails et codes QR</p>
     </div>
+    <div class="button-group">
+      <%= link_to new_admin_site_path, class: "btn-primary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Créer un site
+      <% end %>
+    </div>
   </div>
 
   <div class="table-responsive">
