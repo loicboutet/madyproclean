@@ -1,0 +1,368 @@
+<% content_for :page_title, "Gestion des Remplacements" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Gestion des Remplacements</h1>
+      <p class="text-large mt-2">Gérez les remplacements d'agents pour les plannings</p>
+    </div>
+  </div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-warning">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Remplacements Nécessaires</p>
+      <p class="stat-value"><%= @schedules.length %></p>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-success">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Agents Disponibles</p>
+      <p class="stat-value"><%= @demo_agents.count { |a| a[:available] } %></p>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-info">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Aujourd'hui</p>
+      <p class="stat-value"><%= @schedules.count { |s| s[:scheduled_date] == Date.today } %></p>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-primary">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Urgents</p>
+      <p class="stat-value"><%= @schedules.count { |s| s[:scheduled_date] <= Date.today + 1.day } %></p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+  <!-- Filters Section -->
+  <div class="alert alert-info mb-6">
+    <strong>Filtres de Recherche:</strong> Utilisez les filtres ci-dessous pour affiner la liste des remplacements
+  </div>
+
+  <form>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="search">Rechercher</label>
+        <input 
+          type="text" 
+          name="search" 
+          id="search" 
+          placeholder="Agent, site..."
+          value="<%= params[:search] %>">
+      </div>
+
+      <div class="form-group">
+        <label for="site_id">Site</label>
+        <select name="site_id" id="site_id">
+          <option value="">Tous les sites</option>
+          <% @demo_sites.each do |site| %>
+            <option value="<%= site[:id] %>" <%= 'selected' if params[:site_id] == site[:id].to_s %>><%= site[:name] %></option>
+          <% end %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="start_date">Date de début</label>
+        <input 
+          type="date" 
+          name="start_date" 
+          id="start_date" 
+          value="<%= params[:start_date] %>">
+      </div>
+
+      <div class="form-group">
+        <label for="end_date">Date de fin</label>
+        <input 
+          type="date" 
+          name="end_date" 
+          id="end_date" 
+          value="<%= params[:end_date] %>">
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button type="submit" class="btn-primary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+        </svg>
+        Appliquer les filtres
+      </button>
+      <a href="<%= manager_replacements_path %>" class="btn-secondary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        Réinitialiser
+      </a>
+    </div>
+  </form>
+</div>
+
+<div class="divider"></div>
+
+<!-- Replacements Table -->
+<div class="card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h2 class="mb-2" style="font-size: 1.875rem;">Plannings Nécessitant un Remplacement</h2>
+      <p class="text-large">Assignez des agents de remplacement pour les plannings</p>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Date</th>
+          <th>Agent Absent</th>
+          <th>Site</th>
+          <th>Horaires</th>
+          <th>Raison</th>
+          <th>Priorité</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @schedules.empty? %>
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 2rem;">
+              <div class="alert alert-success" style="display: inline-block;">
+                <strong>✓ Aucun remplacement nécessaire</strong> - Tous les plannings sont couverts
+              </div>
+            </td>
+          </tr>
+        <% else %>
+          <% @schedules.each do |schedule| %>
+            <tr>
+              <td><strong>#<%= schedule[:id] %></strong></td>
+              <td>
+                <div>
+                  <p class="font-semibold"><%= schedule[:scheduled_date].strftime('%d/%m/%Y') %></p>
+                  <p class="text-sm opacity-70"><%= l(schedule[:scheduled_date], format: '%A') %></p>
+                </div>
+              </td>
+              <td>
+                <div>
+                  <p class="font-semibold"><%= schedule[:user_name] %></p>
+                  <p class="text-sm opacity-70"><%= schedule[:employee_number] %></p>
+                </div>
+              </td>
+              <td>
+                <div>
+                  <p class="font-semibold"><%= schedule[:site_name] %></p>
+                  <span class="badge"><%= schedule[:site_code] %></span>
+                </div>
+              </td>
+              <td>
+                <div>
+                  <p class="font-semibold"><%= schedule[:start_time].strftime('%H:%M') %> - <%= schedule[:end_time].strftime('%H:%M') %></p>
+                  <p class="text-sm opacity-70">
+                    <% duration_hours = ((schedule[:end_time] - schedule[:start_time]) / 3600).round(1) %>
+                    <%= duration_hours %>h
+                  </p>
+                </div>
+              </td>
+              <td>
+                <div>
+                  <p class="text-sm"><%= schedule[:replacement_reason_current] %></p>
+                </div>
+              </td>
+              <td>
+                <% if schedule[:scheduled_date] == Date.today %>
+                  <span class="badge" style="background-color: #dc2626; color: white;">🔥 URGENT</span>
+                <% elsif schedule[:scheduled_date] == Date.today + 1.day %>
+                  <span class="badge-warning">⚡ Demain</span>
+                <% else %>
+                  <span class="badge-info">📅 Planifié</span>
+                <% end %>
+              </td>
+              <td>
+                <button 
+                  onclick="openAssignModal(<%= schedule[:id] %>, '<%= schedule[:user_name] %>', '<%= schedule[:site_name] %>', '<%= schedule[:scheduled_date].strftime('%d/%m/%Y') %>', '<%= schedule[:start_time].strftime('%H:%M') %>', '<%= schedule[:end_time].strftime('%H:%M') %>')"
+                  class="btn-primary" 
+                  style="font-size: 0.875rem; padding: 0.5rem 1rem;">
+                  <svg class="btn-icon" style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                  </svg>
+                  Assigner
+                </button>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <%= render 'shared/pagination' %>
+</div>
+
+<div class="divider"></div>
+
+<!-- Information Card -->
+<div class="glass-card">
+  <h2 class="mb-4" style="font-size: 1.875rem;">Informations</h2>
+  <div class="alert alert-info mb-6">
+    <strong>À propos:</strong> Cette page vous permet de gérer les remplacements d'agents. Cliquez sur "Assigner" pour attribuer un agent de remplacement.
+  </div>
+  
+  <div class="alert alert-warning">
+    <strong>⚠ Important:</strong> Vérifiez la disponibilité des agents avant de les assigner. Les remplacements urgents (aujourd'hui ou demain) doivent être traités en priorité.
+  </div>
+</div>
+
+<!-- Assignment Modal -->
+<div id="assignModal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);">
+  <div style="background-color: #fefefe; margin: 5% auto; padding: 0; border-radius: 12px; width: 90%; max-width: 600px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
+    <!-- Modal Header -->
+    <div style="padding: 1.5rem; border-bottom: 1px solid #e5e7eb; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px 12px 0 0;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="font-size: 1.5rem; font-weight: bold; color: white; margin: 0;">Assigner un Remplacement</h2>
+        <button onclick="closeAssignModal()" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center;">
+          ×
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal Body -->
+    <div style="padding: 1.5rem; background-color: #ffffff;">
+      <div class="alert alert-info mb-6" style="color: #101726">
+        <strong>Planning:</strong> <span id="modalScheduleInfo"></span>
+      </div>
+
+      <%= form_with url: manager_replacements_assign_path, method: :post, local: true do |f| %>
+        <input type="hidden" id="schedule_id" name="schedule_id" value="">
+        
+        <div class="form-grid">
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label for="replacement_agent_id" style="color: #1f2937; font-weight: 600;">Agent de Remplacement *</label>
+            <select name="replacement_agent_id" id="replacement_agent_id" required style="color: #1f2937;">
+              <option value="">Sélectionner un agent</option>
+              <% @demo_agents.select { |a| a[:available] }.each do |agent| %>
+                <option value="<%= agent[:id] %>"><%= agent[:name] %> (<%= agent[:employee_number] %>)</option>
+              <% end %>
+            </select>
+            <p class="text-sm mt-1" style="color: #6b7280;">Choisissez parmi les agents disponibles</p>
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label for="replacement_reason" style="color: #1f2937; font-weight: 600;">Raison du Remplacement *</label>
+            <textarea 
+              name="replacement_reason" 
+              id="replacement_reason" 
+              rows="3" 
+              required
+              placeholder="Ex: Congé maladie, Formation, Congé annuel..."
+              style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-family: inherit; resize: vertical; color: #1f2937;"></textarea>
+            <p class="text-sm mt-1" style="color: #6b7280;">Indiquez la raison de l'absence de l'agent d'origine</p>
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label for="replacement_notes" style="color: #1f2937; font-weight: 600;">Notes Complémentaires</label>
+            <textarea 
+              name="replacement_notes" 
+              id="replacement_notes" 
+              rows="2" 
+              placeholder="Informations additionnelles (optionnel)..."
+              style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-family: inherit; resize: vertical; color: #1f2937;"></textarea>
+          </div>
+
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label style="display: flex; align-items: center; cursor: pointer; color: #1f2937;">
+              <input 
+                type="checkbox" 
+                name="notify_agent" 
+                id="notify_agent" 
+                value="1"
+                checked
+                style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem; cursor: pointer;">
+              <span>Notifier l'agent de remplacement par email</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" onclick="closeAssignModal()" class="btn-secondary">
+            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+            Annuler
+          </button>
+          <button type="submit" class="btn-primary">
+            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            Confirmer l'assignation
+          </button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script>
+function openAssignModal(scheduleId, userName, siteName, date, startTime, endTime) {
+  document.getElementById('schedule_id').value = scheduleId;
+  document.getElementById('modalScheduleInfo').textContent = 
+    userName + ' - ' + siteName + ' le ' + date + ' (' + startTime + ' - ' + endTime + ')';
+  document.getElementById('assignModal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAssignModal() {
+  document.getElementById('assignModal').style.display = 'none';
+  document.body.style.overflow = 'auto';
+  // Reset form
+  document.getElementById('replacement_agent_id').value = '';
+  document.getElementById('replacement_reason').value = '';
+  document.getElementById('replacement_notes').value = '';
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+  const modal = document.getElementById('assignModal');
+  if (event.target === modal) {
+    closeAssignModal();
+  }
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    const modal = document.getElementById('assignModal');
+    if (modal.style.display === 'block') {
+      closeAssignModal();
+    }
+  }
+});
+</script>

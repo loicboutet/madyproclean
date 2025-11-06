@@ -1,0 +1,288 @@
+<% content_for :page_title, "Gestion des Absences" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Gestion des Absences</h1>
+      <p class="text-large mt-2">Déclarez et gérez les absences de votre équipe</p>
+    </div>
+    <div class="button-group">
+      <%= link_to new_manager_absence_path, class: "btn-primary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Déclarer une Absence
+      <% end %>
+    </div>
+  </div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-primary">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Total Absences</p>
+      <p class="stat-value"><%= @all_absences.length %></p>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-success">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Congés Payés</p>
+      <p class="stat-value"><%= @all_absences.count { |a| a[:absence_type] == 'vacation' } %></p>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-warning">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Congés Maladie</p>
+      <p class="stat-value"><%= @all_absences.count { |a| a[:absence_type] == 'sick_leave' } %></p>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-info">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Formations</p>
+      <p class="stat-value"><%= @all_absences.count { |a| a[:absence_type] == 'training' } %></p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+  <!-- Filters Section -->
+  <div class="alert alert-info mb-6">
+    <strong>Filtres de Recherche:</strong> Utilisez les filtres ci-dessous pour affiner la liste des absences
+  </div>
+
+  <form>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="search">Rechercher</label>
+        <input 
+          type="text" 
+          name="search" 
+          id="search" 
+          placeholder="Agent, raison..."
+          value="<%= params[:search] %>">
+      </div>
+
+      <div class="form-group">
+        <label for="absence_type">Type d'Absence</label>
+        <select name="absence_type" id="absence_type">
+          <option value="">Tous les types</option>
+          <option value="vacation" <%= 'selected' if params[:absence_type] == 'vacation' %>>Congés payés</option>
+          <option value="sick_leave" <%= 'selected' if params[:absence_type] == 'sick_leave' %>>Congé maladie</option>
+          <option value="training" <%= 'selected' if params[:absence_type] == 'training' %>>Formation</option>
+          <option value="unpaid_leave" <%= 'selected' if params[:absence_type] == 'unpaid_leave' %>>Congé sans solde</option>
+          <option value="other" <%= 'selected' if params[:absence_type] == 'other' %>>Autre</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="user_id">Agent</label>
+        <select name="user_id" id="user_id">
+          <option value="">Tous les agents</option>
+          <% @demo_users.each do |user| %>
+            <option value="<%= user[:id] %>" <%= 'selected' if params[:user_id] == user[:id].to_s %>><%= user[:name] %></option>
+          <% end %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="start_date">Date de début</label>
+        <input 
+          type="date" 
+          name="start_date" 
+          id="start_date" 
+          value="<%= params[:start_date] %>">
+      </div>
+
+      <div class="form-group">
+        <label for="end_date">Date de fin</label>
+        <input 
+          type="date" 
+          name="end_date" 
+          id="end_date" 
+          value="<%= params[:end_date] %>">
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button type="submit" class="btn-primary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+        </svg>
+        Appliquer les filtres
+      </button>
+      <a href="<%= manager_absences_path %>" class="btn-secondary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        Réinitialiser
+      </a>
+    </div>
+  </form>
+</div>
+
+<div class="divider"></div>
+
+<!-- Absences Table -->
+<div class="card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h2 class="mb-2" style="font-size: 1.875rem;">Liste des Absences</h2>
+      <p class="text-large">Consultez et gérez toutes les absences déclarées</p>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Agent</th>
+          <th>Type d'Absence</th>
+          <th>Date Début</th>
+          <th>Date Fin</th>
+          <th>Durée</th>
+          <th>Raison</th>
+          <th>Déclaré par</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @absences.empty? %>
+          <tr>
+            <td colspan="9" style="text-align: center; padding: 2rem;">
+              <div class="alert alert-warning" style="display: inline-block;">
+                <strong>Aucune absence trouvée</strong> avec les filtres actuels
+              </div>
+            </td>
+          </tr>
+        <% else %>
+          <% @absences.each do |absence| %>
+            <tr>
+              <td><strong>#<%= absence[:id] %></strong></td>
+              <td>
+                <div>
+                  <p class="font-semibold"><%= absence[:user_name] %></p>
+                  <p class="text-sm opacity-70"><%= absence[:employee_number] %></p>
+                </div>
+              </td>
+              <td>
+                <% if absence[:absence_type] == 'vacation' %>
+                  <span class="badge-success">🏖️ Congés payés</span>
+                <% elsif absence[:absence_type] == 'sick_leave' %>
+                  <span class="badge-warning">🏥 Congé maladie</span>
+                <% elsif absence[:absence_type] == 'training' %>
+                  <span class="badge-info">📚 Formation</span>
+                <% elsif absence[:absence_type] == 'unpaid_leave' %>
+                  <span class="badge">💼 Congé sans solde</span>
+                <% elsif absence[:absence_type] == 'other' %>
+                  <span class="badge">📋 Autre</span>
+                <% end %>
+              </td>
+              <td>
+                <div>
+                  <p class="font-semibold"><%= absence[:start_date].strftime('%d/%m/%Y') %></p>
+                  <p class="text-sm opacity-70"><%= l(absence[:start_date], format: '%A') %></p>
+                </div>
+              </td>
+              <td>
+                <div>
+                  <p class="font-semibold"><%= absence[:end_date].strftime('%d/%m/%Y') %></p>
+                  <p class="text-sm opacity-70"><%= l(absence[:end_date], format: '%A') %></p>
+                </div>
+              </td>
+              <td>
+                <% days = (absence[:end_date] - absence[:start_date]).to_i + 1 %>
+                <div>
+                  <p class="font-semibold"><%= days %> jour<%= 's' if days > 1 %></p>
+                  <p class="text-sm opacity-70"><%= days == 1 ? 'Journée' : 'Période' %></p>
+                </div>
+              </td>
+              <td>
+                <p class="text-sm"><%= absence[:reason]&.truncate(40) || '—' %></p>
+              </td>
+              <td>
+                <div>
+                  <p class="font-semibold text-sm"><%= absence[:declared_by_name] %></p>
+                  <p class="text-sm opacity-70"><%= absence[:created_at].strftime('%d/%m/%Y') %></p>
+                </div>
+              </td>
+              <td>
+                <div class="dropdown-wrapper" data-controller="dropdown">
+                  <button class="dropdown-trigger" data-action="click->dropdown#toggle" title="Actions">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                    </svg>
+                  </button>
+                  
+                  <div class="dropdown-menu hidden" data-dropdown-target="menu">
+                    <%= link_to manager_absence_path(absence[:id]), class: "dropdown-item" do %>
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                      </svg>
+                      <span>Voir les détails</span>
+                    <% end %>
+                    <%= link_to edit_manager_absence_path(absence[:id]), class: "dropdown-item" do %>
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                      </svg>
+                      <span>Modifier</span>
+                    <% end %>
+                    <%= link_to manager_absence_path(absence[:id]), method: :delete, data: { confirm: 'Êtes-vous sûr de vouloir supprimer cette absence ?' }, class: "dropdown-item text-red-600" do %>
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                      </svg>
+                      <span>Supprimer</span>
+                    <% end %>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <%= render 'shared/pagination' %>
+</div>
+
+<div class="divider"></div>
+
+<!-- Information Card -->
+<div class="glass-card">
+  <h2 class="mb-4" style="font-size: 1.875rem;">Informations</h2>
+  <div class="alert alert-info mb-6">
+    <strong>À propos:</strong> Cette page vous permet de déclarer et gérer les absences de votre équipe. Les filtres sont affichés à titre indicatif.
+  </div>
+  
+  <div class="alert alert-success">
+    <strong>💡 Conseil:</strong> En tant que manager, vous pouvez déclarer les absences pour vos agents sans processus de validation requis.
+  </div>
+</div>
