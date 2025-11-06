@@ -1,0 +1,153 @@
+<% content_for :page_title, "Déclarer une Absence" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Déclarer une Absence</h1>
+      <p class="text-large mt-2">Enregistrez une nouvelle absence pour un agent</p>
+    </div>
+    <div class="button-group">
+      <%= link_to admin_absences_path, class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Retour à la liste
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Form Card -->
+<div class="card">
+  <h2 class="mb-6" style="font-size: 1.875rem;">
+    <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+    </svg>
+    Informations de l'Absence
+  </h2>
+
+  <div class="alert alert-info mb-6">
+    <strong>Note:</strong> Tous les champs marqués d'un astérisque (*) sont obligatoires.
+  </div>
+
+  <%= form_with url: admin_absences_path, method: :post, local: true do |form| %>
+    <div class="form-grid">
+      <!-- Agent Selection -->
+      <div class="form-group">
+        <label for="absence_user_id">Agent concerné *</label>
+        <select name="absence[user_id]" id="absence_user_id" required>
+          <option value="">-- Sélectionner un agent --</option>
+          <% @demo_users.each do |user| %>
+            <option value="<%= user[:id] %>" <%= 'selected' if @absence[:user_id] == user[:id] %>>
+              <%= user[:name] %> (<%= user[:employee_number] %>)
+            </option>
+          <% end %>
+        </select>
+      </div>
+
+      <!-- Absence Type -->
+      <div class="form-group">
+        <label for="absence_absence_type">Type d'absence *</label>
+        <select name="absence[absence_type]" id="absence_absence_type" required>
+          <option value="vacation" <%= 'selected' if @absence[:absence_type] == 'vacation' %>>🏖️ Congés payés</option>
+          <option value="sick_leave" <%= 'selected' if @absence[:absence_type] == 'sick_leave' %>>🏥 Congé maladie</option>
+          <option value="training" <%= 'selected' if @absence[:absence_type] == 'training' %>>📚 Formation</option>
+          <option value="unpaid_leave" <%= 'selected' if @absence[:absence_type] == 'unpaid_leave' %>>⏸️ Congé sans solde</option>
+          <option value="other" <%= 'selected' if @absence[:absence_type] == 'other' %>>📋 Autre</option>
+        </select>
+      </div>
+
+      <!-- Start Date -->
+      <div class="form-group">
+        <label for="absence_start_date">Date de début *</label>
+        <input 
+          type="date" 
+          name="absence[start_date]" 
+          id="absence_start_date" 
+          value="<%= @absence[:start_date] %>"
+          required>
+      </div>
+
+      <!-- End Date -->
+      <div class="form-group">
+        <label for="absence_end_date">Date de fin *</label>
+        <input 
+          type="date" 
+          name="absence[end_date]" 
+          id="absence_end_date" 
+          value="<%= @absence[:end_date] %>"
+          required>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Reason -->
+    <div class="form-group">
+      <label for="absence_reason">Raison de l'absence</label>
+      <textarea 
+        name="absence[reason]" 
+        id="absence_reason" 
+        rows="3"
+        placeholder="Ex: Congés annuels, arrêt maladie, formation habilitation, etc."><%= @absence[:reason] %></textarea>
+      <p class="text-sm opacity-70 mt-1">Décrivez brièvement la raison de l'absence</p>
+    </div>
+
+    <!-- Notes -->
+    <div class="form-group">
+      <label for="absence_notes">Notes / Observations</label>
+      <textarea 
+        name="absence[notes]" 
+        id="absence_notes" 
+        rows="3"
+        placeholder="Informations complémentaires (certificat médical, planning ajusté, etc.)"><%= @absence[:notes] %></textarea>
+      <p class="text-sm opacity-70 mt-1">Ajoutez des informations complémentaires si nécessaire</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Action Buttons -->
+    <div class="button-group">
+      <button type="submit" class="btn-primary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        Déclarer l'absence
+      </button>
+
+      <%= link_to admin_absences_path, class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+        Annuler
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<div class="divider"></div>
+
+<!-- Help Card -->
+<div class="glass-card">
+  <h2 class="mb-4" style="font-size: 1.875rem;">Aide</h2>
+  
+  <div class="space-y-4">
+    <div class="alert alert-info">
+      <strong>Types d'absence disponibles:</strong>
+      <ul class="mt-2 ml-4 list-disc">
+        <li><strong>Congés payés:</strong> Vacances annuelles planifiées</li>
+        <li><strong>Congé maladie:</strong> Arrêt maladie avec certificat médical</li>
+        <li><strong>Formation:</strong> Formation professionnelle ou habilitation</li>
+        <li><strong>Congé sans solde:</strong> Absence non rémunérée</li>
+        <li><strong>Autre:</strong> Autres types d'absence (préciser dans la raison)</li>
+      </ul>
+    </div>
+
+    <div class="alert alert-warning">
+      <strong>⚠ Important:</strong> Assurez-vous que les dates sont correctes. La date de fin doit être égale ou postérieure à la date de début.
+    </div>
+  </div>
+</div>

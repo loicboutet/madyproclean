@@ -51,7 +51,7 @@ Rails.application.routes.draw do
       get 'export', on: :collection
     end
     
-    resources :absences, only: [:index, :show, :destroy]
+    resources :absences
     
     resources :anomalies, only: [:index, :show] do
       member do
