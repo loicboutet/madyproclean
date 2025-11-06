@@ -1,0 +1,470 @@
+<% content_for :title, "Tableau de Bord Manager" %>
+
+<!-- Welcome Card -->
+<div class="card">
+  <h2>Bienvenue au Tableau de Bord Manager</h2>
+  <p>Interface de gestion pour les superviseurs - Gérez votre équipe, déclarez les absences et consultez les plannings.</p>
+</div>
+
+<!-- Stats Grid -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-card-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+      </svg>
+    </div>
+    <div class="stat-card-content">
+      <div class="stat-value">12</div>
+      <div class="stat-label">Membres Équipe</div>
+    </div>
+  </div>
+  
+  <div class="stat-card">
+    <div class="stat-card-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+    </div>
+    <div class="stat-card-content">
+      <div class="stat-value">10</div>
+      <div class="stat-label">Actifs Aujourd'hui</div>
+    </div>
+  </div>
+  
+  <div class="stat-card">
+    <div class="stat-card-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+      </svg>
+    </div>
+    <div class="stat-card-content">
+      <div class="stat-value">2</div>
+      <div class="stat-label">Absences En Cours</div>
+    </div>
+  </div>
+  
+  <div class="stat-card">
+    <div class="stat-card-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+    </div>
+    <div class="stat-card-content">
+      <div class="stat-value">5</div>
+      <div class="stat-label">Sites Couverts</div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="glass-card">
+  <h3>Actions Rapides</h3>
+  <div class="button-group">
+    <%= link_to manager_team_index_path, class: "btn-primary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+      </svg>
+      <span>Voir Mon Équipe</span>
+    <% end %>
+    
+    <%= link_to new_manager_absence_path, class: "btn-secondary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+      </svg>
+      <span>Déclarer une Absence</span>
+    <% end %>
+    
+    <%= link_to manager_schedules_path, class: "btn-secondary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+      <span>Voir les Plannings</span>
+    <% end %>
+    
+    <%= link_to manager_replacements_path, class: "btn-secondary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+      </svg>
+      <span>Gérer Remplacements</span>
+    <% end %>
+  </div>
+</div>
+
+<!-- Charts Section -->
+<div class="charts-grid" style="margin-top: 2rem;">
+  <!-- Team Activity Chart -->
+  <div class="glass-card">
+    <h3>Activité de l'Équipe (7 Derniers Jours)</h3>
+    <div class="chart-container">
+      <canvas id="teamActivityChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Absences Trend Chart -->
+  <div class="glass-card">
+    <h3>Tendance des Absences</h3>
+    <div class="chart-container">
+      <canvas id="absencesTrendChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Team Activity Grid -->
+<div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-top: 2rem;">
+  
+  <!-- Recent Team Time Entries - Condensed -->
+  <div class="glass-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+      <h3 style="margin-bottom: 0;">Pointages Récents</h3>
+      <%= link_to manager_time_entries_path, class: "btn-icon-only btn-view" do %>
+        <span>Voir Tout</span>
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      <% end %>
+    </div>
+    
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Agent</th>
+            <th>Site</th>
+            <th>Arrivée</th>
+            <th>Départ</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Pierre Dubois</td>
+            <td>Site Nucléaire A</td>
+            <td>07:45</td>
+            <td>16:30</td>
+            <td><span class="badge-success">Complet</span></td>
+          </tr>
+          <tr>
+            <td>Marie Lefebvre</td>
+            <td>Site Nucléaire B</td>
+            <td>08:00</td>
+            <td>17:00</td>
+            <td><span class="badge-success">Complet</span></td>
+          </tr>
+          <tr>
+            <td>François Martin</td>
+            <td>Site Nucléaire A</td>
+            <td>08:15</td>
+            <td>--</td>
+            <td><span class="badge">En cours</span></td>
+          </tr>
+          <tr>
+            <td>Sophie Rousseau</td>
+            <td>Site Nucléaire C</td>
+            <td>07:30</td>
+            <td>--</td>
+            <td><span class="badge">En cours</span></td>
+          </tr>
+          <tr>
+            <td>Thomas Bernard</td>
+            <td>Site Nucléaire B</td>
+            <td>08:00</td>
+            <td>16:45</td>
+            <td><span class="badge-success">Complet</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Upcoming Absences - Condensed -->
+  <div class="glass-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+      <h3 style="margin-bottom: 0;">Absences à Venir</h3>
+      <%= link_to manager_absences_path, class: "btn-icon-only btn-view" do %>
+        <span>Voir Tout</span>
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      <% end %>
+    </div>
+    
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Agent</th>
+            <th>Type</th>
+            <th>Date Début</th>
+            <th>Date Fin</th>
+            <th>Durée</th>
+            <th>Raison</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Antoine Durand</td>
+            <td><span class="badge-success">Congés</span></td>
+            <td>08/11/2025</td>
+            <td>15/11/2025</td>
+            <td>8 jours</td>
+            <td>Vacances familiales</td>
+          </tr>
+          <tr>
+            <td>Émilie Laurent</td>
+            <td><span class="badge-warning">Maladie</span></td>
+            <td>07/11/2025</td>
+            <td>09/11/2025</td>
+            <td>3 jours</td>
+            <td>Arrêt maladie</td>
+          </tr>
+          <tr>
+            <td>Nicolas Simon</td>
+            <td><span class="badge">Formation</span></td>
+            <td>10/11/2025</td>
+            <td>12/11/2025</td>
+            <td>3 jours</td>
+            <td>Formation sécurité nucléaire</td>
+          </tr>
+          <tr>
+            <td>Valérie Michel</td>
+            <td><span class="badge-success">Congés</span></td>
+            <td>18/11/2025</td>
+            <td>22/11/2025</td>
+            <td>5 jours</td>
+            <td>Congés annuels</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Team Schedule Summary -->
+  <div class="glass-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+      <h3 style="margin-bottom: 0;">Planning de la Semaine</h3>
+      <%= link_to manager_schedules_path, class: "btn-icon-only btn-view" do %>
+        <span>Voir Planning Complet</span>
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      <% end %>
+    </div>
+    
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Agent</th>
+            <th>Site</th>
+            <th>Horaires</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>07/11/2025</td>
+            <td>Pierre Dubois</td>
+            <td>Site Nucléaire A</td>
+            <td>08:00 - 17:00</td>
+            <td><span class="badge-success">Complété</span></td>
+          </tr>
+          <tr>
+            <td>07/11/2025</td>
+            <td>Marie Lefebvre</td>
+            <td>Site Nucléaire B</td>
+            <td>08:00 - 17:00</td>
+            <td><span class="badge-success">Complété</span></td>
+          </tr>
+          <tr>
+            <td>07/11/2025</td>
+            <td>François Martin</td>
+            <td>Site Nucléaire A</td>
+            <td>08:00 - 17:00</td>
+            <td><span class="badge">En cours</span></td>
+          </tr>
+          <tr>
+            <td>08/11/2025</td>
+            <td>Sophie Rousseau</td>
+            <td>Site Nucléaire C</td>
+            <td>07:30 - 16:30</td>
+            <td><span class="badge">Planifié</span></td>
+          </tr>
+          <tr>
+            <td>08/11/2025</td>
+            <td>Thomas Bernard</td>
+            <td>Site Nucléaire B</td>
+            <td>08:00 - 17:00</td>
+            <td><span class="badge">Planifié</span></td>
+          </tr>
+          <tr>
+            <td>08/11/2025</td>
+            <td>Claire Petit</td>
+            <td>Site Nucléaire A</td>
+            <td>08:30 - 17:30</td>
+            <td><span class="badge">Planifié</span></td>
+          </tr>
+          <tr>
+            <td>09/11/2025</td>
+            <td>Julien Moreau</td>
+            <td>Site Nucléaire D</td>
+            <td>07:00 - 16:00</td>
+            <td><span class="badge">Planifié</span></td>
+          </tr>
+          <tr>
+            <td>09/11/2025</td>
+            <td>Isabelle Dupont</td>
+            <td>Site Nucléaire C</td>
+            <td>08:00 - 17:00</td>
+            <td><span class="badge">Planifié</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Site Coverage -->
+  <div class="glass-card">
+    <h3>Couverture des Sites</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+      <div class="card" style="background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); padding: 1.5rem;">
+        <h4 style="margin-bottom: 0.75rem; color: #00D4FF;">Site Nucléaire A</h4>
+        <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <span style="font-size: 2rem; font-weight: 700; color: #00FFE0;">3</span>
+          <span style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.7);">agents actifs</span>
+        </div>
+        <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6); margin: 0;">Planning complet</p>
+      </div>
+      
+      <div class="card" style="background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); padding: 1.5rem;">
+        <h4 style="margin-bottom: 0.75rem; color: #00D4FF;">Site Nucléaire B</h4>
+        <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <span style="font-size: 2rem; font-weight: 700; color: #00FFE0;">2</span>
+          <span style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.7);">agents actifs</span>
+        </div>
+        <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6); margin: 0;">Couverture normale</p>
+      </div>
+      
+      <div class="card" style="background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); padding: 1.5rem;">
+        <h4 style="margin-bottom: 0.75rem; color: #00D4FF;">Site Nucléaire C</h4>
+        <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <span style="font-size: 2rem; font-weight: 700; color: #00FFE0;">2</span>
+          <span style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.7);">agents actifs</span>
+        </div>
+        <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6); margin: 0;">Couverture normale</p>
+      </div>
+      
+      <div class="card" style="background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); padding: 1.5rem;">
+        <h4 style="margin-bottom: 0.75rem; color: #00D4FF;">Site Nucléaire D</h4>
+        <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <span style="font-size: 2rem; font-weight: 700; color: #00FFE0;">1</span>
+          <span style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.7);">agent actif</span>
+        </div>
+        <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6); margin: 0;">Couverture minimale</p>
+      </div>
+      
+      <div class="card" style="background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); padding: 1.5rem;">
+        <h4 style="margin-bottom: 0.75rem; color: #ffc107;">Site Nucléaire E</h4>
+        <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <span style="font-size: 2rem; font-weight: 700; color: #ffc107;">0</span>
+          <span style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.7);">agent actif</span>
+        </div>
+        <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6); margin: 0;">Besoin remplacement</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Chart.js Library and Initialization -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Common chart options
+    const commonOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            color: '#FFFFFF',
+            font: { size: 12 }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(0, 212, 255, 0.1)' },
+          ticks: { color: '#FFFFFF' }
+        },
+        x: {
+          grid: { color: 'rgba(0, 212, 255, 0.1)' },
+          ticks: { color: '#FFFFFF' }
+        }
+      }
+    };
+
+    // Team Activity Chart (Bar Chart)
+    new Chart(document.getElementById('teamActivityChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'],
+        datasets: [
+          {
+            label: 'Agents Actifs',
+            data: [10, 12, 11, 10, 9, 5, 0],
+            backgroundColor: 'rgba(0, 212, 255, 0.6)',
+            borderColor: 'rgba(0, 212, 255, 1)',
+            borderWidth: 2
+          },
+          {
+            label: 'Heures Travaillées',
+            data: [85, 102, 95, 87, 78, 42, 0],
+            backgroundColor: 'rgba(0, 255, 224, 0.6)',
+            borderColor: 'rgba(0, 255, 224, 1)',
+            borderWidth: 2
+          }
+        ]
+      },
+      options: commonOptions
+    });
+
+    // Absences Trend Chart (Line Chart)
+    new Chart(document.getElementById('absencesTrendChart'), {
+      type: 'line',
+      data: {
+        labels: ['Oct', 'Sem 1 Nov', 'Sem 2 Nov', 'Sem 3 Nov', 'Sem 4 Nov', 'Sem 5 Nov'],
+        datasets: [
+          {
+            label: 'Congés',
+            data: [1, 2, 3, 2, 1, 2],
+            borderColor: 'rgba(0, 255, 224, 1)',
+            backgroundColor: 'rgba(0, 255, 224, 0.1)',
+            tension: 0.4,
+            fill: true
+          },
+          {
+            label: 'Maladie',
+            data: [0, 1, 1, 0, 2, 1],
+            borderColor: 'rgba(255, 193, 7, 1)',
+            backgroundColor: 'rgba(255, 193, 7, 0.1)',
+            tension: 0.4,
+            fill: true
+          },
+          {
+            label: 'Formation',
+            data: [2, 0, 1, 1, 0, 1],
+            borderColor: 'rgba(0, 212, 255, 1)',
+            backgroundColor: 'rgba(0, 212, 255, 0.1)',
+            tension: 0.4,
+            fill: true
+          }
+        ]
+      },
+      options: commonOptions
+    });
+  });
+</script>
