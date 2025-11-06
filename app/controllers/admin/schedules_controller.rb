@@ -1,4 +1,6 @@
 class Admin::SchedulesController < ApplicationController
+  layout 'admin'
+  
   def index
   end
 

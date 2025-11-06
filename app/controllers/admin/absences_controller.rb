@@ -1,4 +1,6 @@
 class Admin::AbsencesController < ApplicationController
+  layout 'admin'
+  
   def index
   end
 

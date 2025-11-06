@@ -1,4 +1,6 @@
 class Admin::AnomaliesController < ApplicationController
+  layout 'admin'
+  
   def index
   end
 

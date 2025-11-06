@@ -1,4 +1,6 @@
 class Admin::TimeEntriesController < ApplicationController
+  layout 'admin'
+  
   def index
   end
 

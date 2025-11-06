@@ -1,0 +1,103 @@
+<% content_for :page_title, "Tableau de Bord" %>
+
+<div class="card">
+  <h2>Bienvenue au Tableau de Bord Administrateur</h2>
+  <p>Interface de gestion complète pour le système de pointage et de gestion RH.</p>
+</div>
+
+<!-- Stats Grid -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-value">142</div>
+    <div class="stat-label">Total Agents</div>
+  </div>
+  
+  <div class="stat-card">
+    <div class="stat-value">87</div>
+    <div class="stat-label">Actifs Aujourd'hui</div>
+  </div>
+  
+  <div class="stat-card">
+    <div class="stat-value">12</div>
+    <div class="stat-label">Sites</div>
+  </div>
+  
+  <div class="stat-card">
+    <div class="stat-value">3</div>
+    <div class="stat-label">Anomalies</div>
+  </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="glass-card">
+  <h3>Pointages Récents</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Agent</th>
+        <th>Site</th>
+        <th>Arrivée</th>
+        <th>Départ</th>
+        <th>Statut</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Martin Dupont</td>
+        <td>Site Nucléaire A</td>
+        <td>06/11/2025 08:00</td>
+        <td>06/11/2025 17:00</td>
+        <td><span class="badge-success">Complet</span></td>
+      </tr>
+      <tr>
+        <td>Sophie Bernard</td>
+        <td>Site Nucléaire B</td>
+        <td>06/11/2025 08:15</td>
+        <td>06/11/2025 17:10</td>
+        <td><span class="badge-success">Complet</span></td>
+      </tr>
+      <tr>
+        <td>Jean Moreau</td>
+        <td>Site Nucléaire C</td>
+        <td>06/11/2025 08:30</td>
+        <td>--</td>
+        <td><span class="badge">En cours</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Quick Actions -->
+<div class="glass-card">
+  <h3>Actions Rapides</h3>
+  <div class="button-group">
+    <%= link_to admin_time_entries_path, class: "btn-primary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <span>Voir Tous les Pointages</span>
+    <% end %>
+    
+    <%= link_to admin_sites_path, class: "btn-secondary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      <span>Gérer les Sites</span>
+    <% end %>
+    
+    <%= link_to admin_users_path, class: "btn-secondary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+      </svg>
+      <span>Gérer les Utilisateurs</span>
+    <% end %>
+    
+    <%= link_to admin_reports_path, class: "btn-secondary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+      </svg>
+      <span>Voir les Rapports</span>
+    <% end %>
+  </div>
+</div>
