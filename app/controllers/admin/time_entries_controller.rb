@@ -109,6 +109,84 @@ class Admin::TimeEntriesController < ApplicationController
         status: 'anomaly',
         ip_address_in: '192.168.1.11',
         manually_corrected: false
+      },
+      # Additional entries for pagination demonstration
+      {
+        id: 9,
+        user: @sample_users[2],
+        site: @sample_sites[1],
+        clocked_in_at: Time.zone.parse('2025-11-04 08:00'),
+        clocked_out_at: Time.zone.parse('2025-11-04 17:00'),
+        duration_minutes: 540,
+        status: 'completed',
+        ip_address_in: '192.168.1.12',
+        manually_corrected: false
+      },
+      {
+        id: 10,
+        user: @sample_users[3],
+        site: @sample_sites[2],
+        clocked_in_at: Time.zone.parse('2025-11-03 08:15'),
+        clocked_out_at: Time.zone.parse('2025-11-03 17:15'),
+        duration_minutes: 540,
+        status: 'completed',
+        ip_address_in: '192.168.1.13',
+        manually_corrected: false
+      },
+      {
+        id: 11,
+        user: @sample_users[4],
+        site: @sample_sites[0],
+        clocked_in_at: Time.zone.parse('2025-11-03 08:00'),
+        clocked_out_at: Time.zone.parse('2025-11-03 16:45'),
+        duration_minutes: 525,
+        status: 'completed',
+        ip_address_in: '192.168.1.14',
+        manually_corrected: false
+      },
+      {
+        id: 12,
+        user: @sample_users[5],
+        site: @sample_sites[3],
+        clocked_in_at: Time.zone.parse('2025-11-02 09:00'),
+        clocked_out_at: Time.zone.parse('2025-11-02 18:00'),
+        duration_minutes: 540,
+        status: 'completed',
+        ip_address_in: '192.168.1.15',
+        manually_corrected: false
+      },
+      {
+        id: 13,
+        user: @sample_users[0],
+        site: @sample_sites[1],
+        clocked_in_at: Time.zone.parse('2025-11-02 08:00'),
+        clocked_out_at: Time.zone.parse('2025-11-02 17:00'),
+        duration_minutes: 540,
+        status: 'completed',
+        ip_address_in: '192.168.1.10',
+        manually_corrected: false
+      },
+      {
+        id: 14,
+        user: @sample_users[1],
+        site: @sample_sites[2],
+        clocked_in_at: Time.zone.parse('2025-11-01 08:30'),
+        clocked_out_at: Time.zone.parse('2025-11-01 17:30'),
+        duration_minutes: 540,
+        status: 'completed',
+        ip_address_in: '192.168.1.11',
+        manually_corrected: true
+      },
+      {
+        id: 15,
+        user: @sample_users[2],
+        site: @sample_sites[0],
+        clocked_in_at: Time.zone.parse('2025-11-01 08:00'),
+        clocked_out_at: Time.zone.parse('2025-11-01 17:00'),
+        duration_minutes: 540,
+        status: 'completed',
+        ip_address_in: '192.168.1.12',
+        manually_corrected: false
       }
     ]
   end
