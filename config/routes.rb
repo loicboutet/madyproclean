@@ -14,6 +14,11 @@ Rails.application.routes.draw do
   # Roles overview
   get 'roles', to: 'pages#roles'
   
+  # Devise for password recovery
+  devise_for :users, only: [:passwords], path: '', path_names: {
+    password: 'password_reset'
+  }
+  
   # Authentication
   get 'login', to: 'sessions#new'
   post 'login', to: 'sessions#create'
