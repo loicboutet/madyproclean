@@ -1,0 +1,225 @@
+<% content_for :page_title, "Modifier l'Absence ##{@absence[:id]}" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Modifier l'Absence #<%= @absence[:id] %></h1>
+      <p class="text-large mt-2">Modifiez les informations de cette absence</p>
+    </div>
+    <div class="button-group">
+      <%= link_to manager_absence_path(@absence[:id]), class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Retour aux détails
+      <% end %>
+      <%= link_to manager_absences_path, class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        Retour à la liste
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Current Status Card -->
+<div class="card" style="border-left: 4px solid #3b82f6;">
+  <div class="flex items-center justify-between mb-4">
+    <h2 style="font-size: 1.5rem;">Statut Actuel</h2>
+    <% if @absence[:absence_type] == 'vacation' %>
+      <span class="badge-success" style="font-size: 1rem; padding: 0.5rem 1rem;">🏖️ Congés payés</span>
+    <% elsif @absence[:absence_type] == 'sick_leave' %>
+      <span class="badge-warning" style="font-size: 1rem; padding: 0.5rem 1rem;">🏥 Congé maladie</span>
+    <% elsif @absence[:absence_type] == 'training' %>
+      <span class="badge-info" style="font-size: 1rem; padding: 0.5rem 1rem;">📚 Formation</span>
+    <% elsif @absence[:absence_type] == 'unpaid_leave' %>
+      <span class="badge" style="font-size: 1rem; padding: 0.5rem 1rem;">💼 Congé sans solde</span>
+    <% elsif @absence[:absence_type] == 'other' %>
+      <span class="badge" style="font-size: 1rem; padding: 0.5rem 1rem;">📋 Autre</span>
+    <% end %>
+  </div>
+  
+  <div class="form-grid">
+    <div>
+      <p class="text-sm opacity-70">Agent</p>
+      <p class="font-semibold"><%= @absence[:user_name] %></p>
+    </div>
+    <div>
+      <p class="text-sm opacity-70">Période</p>
+      <p class="font-semibold">
+        <%= @absence[:start_date].strftime('%d/%m/%Y') %> - <%= @absence[:end_date].strftime('%d/%m/%Y') %>
+      </p>
+    </div>
+    <div>
+      <p class="text-sm opacity-70">Durée</p>
+      <% days = (@absence[:end_date] - @absence[:start_date]).to_i + 1 %>
+      <p class="font-semibold"><%= days %> jour<%= 's' if days > 1 %></p>
+    </div>
+    <div>
+      <p class="text-sm opacity-70">Déclaré par</p>
+      <p class="font-semibold"><%= @absence[:declared_by_name] %></p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Form Card -->
+<div class="card">
+  <h2 class="mb-6" style="font-size: 1.875rem;">
+    <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+    </svg>
+    Modifier les Informations
+  </h2>
+
+  <%= form_with url: manager_absence_path(@absence[:id]), method: :patch, local: true do |f| %>
+    <div class="form-grid">
+      <!-- Agent Selection -->
+      <div class="form-group">
+        <label for="absence_user_id">Agent <span class="text-red-600">*</span></label>
+        <select name="absence[user_id]" id="absence_user_id" required>
+          <option value="">-- Sélectionnez un agent --</option>
+          <% @demo_users.each do |user| %>
+            <option value="<%= user[:id] %>" <%= 'selected' if user[:id] == @absence[:user_id] %>>
+              <%= user[:name] %> (<%= user[:employee_number] %>)
+            </option>
+          <% end %>
+        </select>
+        <p class="help-text">Sélectionnez l'agent concerné par cette absence</p>
+      </div>
+
+      <!-- Absence Type -->
+      <div class="form-group">
+        <label for="absence_absence_type">Type d'Absence <span class="text-red-600">*</span></label>
+        <select name="absence[absence_type]" id="absence_absence_type" required>
+          <option value="vacation" <%= 'selected' if @absence[:absence_type] == 'vacation' %>>🏖️ Congés payés</option>
+          <option value="sick_leave" <%= 'selected' if @absence[:absence_type] == 'sick_leave' %>>🏥 Congé maladie</option>
+          <option value="training" <%= 'selected' if @absence[:absence_type] == 'training' %>>📚 Formation</option>
+          <option value="unpaid_leave" <%= 'selected' if @absence[:absence_type] == 'unpaid_leave' %>>💼 Congé sans solde</option>
+          <option value="other" <%= 'selected' if @absence[:absence_type] == 'other' %>>📋 Autre</option>
+        </select>
+        <p class="help-text">Choisissez le type d'absence approprié</p>
+      </div>
+
+      <!-- Start Date -->
+      <div class="form-group">
+        <label for="absence_start_date">Date de Début <span class="text-red-600">*</span></label>
+        <input 
+          type="date" 
+          name="absence[start_date]" 
+          id="absence_start_date" 
+          value="<%= @absence[:start_date].strftime('%Y-%m-%d') %>"
+          required>
+        <p class="help-text">Premier jour d'absence</p>
+      </div>
+
+      <!-- End Date -->
+      <div class="form-group">
+        <label for="absence_end_date">Date de Fin <span class="text-red-600">*</span></label>
+        <input 
+          type="date" 
+          name="absence[end_date]" 
+          id="absence_end_date" 
+          value="<%= @absence[:end_date].strftime('%Y-%m-%d') %>"
+          required>
+        <p class="help-text">Dernier jour d'absence (inclus)</p>
+      </div>
+    </div>
+
+    <!-- Reason (Full Width) -->
+    <div class="form-group">
+      <label for="absence_reason">Raison de l'Absence</label>
+      <textarea 
+        name="absence[reason]" 
+        id="absence_reason" 
+        rows="4"
+        placeholder="Exemple: Vacances annuelles planifiées, Arrêt maladie avec certificat médical, Formation obligatoire, etc."><%= @absence[:reason] %></textarea>
+      <p class="help-text">Décrivez brièvement la raison de cette absence (optionnel mais recommandé)</p>
+    </div>
+
+    <!-- Notes (Full Width) -->
+    <div class="form-group">
+      <label for="absence_notes">Notes / Observations</label>
+      <textarea 
+        name="absence[notes]" 
+        id="absence_notes" 
+        rows="4"
+        placeholder="Notes supplémentaires, informations de remplacement, etc."><%= @absence[:notes] %></textarea>
+      <p class="help-text">Ajoutez des notes complémentaires si nécessaire (optionnel)</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Form Actions -->
+    <div class="flex items-center justify-between">
+      <div class="alert alert-warning" style="flex: 1; margin-right: 1rem;">
+        <strong>⚠️ Attention:</strong> Les modifications seront appliquées immédiatement
+      </div>
+      
+      <div class="button-group" style="flex-shrink: 0;">
+        <%= link_to manager_absence_path(@absence[:id]), class: "btn-secondary" do %>
+          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+          Annuler
+        <% end %>
+        
+        <button type="submit" class="btn-primary">
+          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+          Enregistrer les Modifications
+        </button>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<div class="divider"></div>
+
+<!-- Danger Zone -->
+<div class="card" style="border-left: 4px solid #ef4444;">
+  <h2 class="mb-4" style="font-size: 1.875rem; color: #dc2626;">
+    <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+    </svg>
+    Zone Dangereuse
+  </h2>
+  
+  <div class="alert alert-danger mb-4">
+    <strong>⚠️ Suppression Définitive:</strong> Cette action est irréversible. L'absence sera définitivement supprimée de la base de données.
+  </div>
+  
+  <%= link_to manager_absence_path(@absence[:id]), method: :delete, data: { confirm: "Êtes-vous absolument sûr de vouloir supprimer cette absence ?\n\nAgent: #{@absence[:user_name]}\nType: #{@absence[:absence_type_label]}\nPériode: #{@absence[:start_date].strftime('%d/%m/%Y')} - #{@absence[:end_date].strftime('%d/%m/%Y')}\n\nCette action est IRRÉVERSIBLE !" }, class: "btn-danger" do %>
+    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+    </svg>
+    Supprimer Définitivement cette Absence
+  <% end %>
+</div>
+
+<div class="divider"></div>
+
+<!-- Help Card -->
+<div class="glass-card">
+  <h2 class="mb-4" style="font-size: 1.875rem;">Aide & Conseils</h2>
+  
+  <div class="alert alert-info mb-4">
+    <strong>📝 Modification d'absence:</strong>
+    <ul style="margin-top: 0.5rem; margin-left: 1.5rem; list-style: disc;">
+      <li>Vous pouvez modifier tous les champs de l'absence</li>
+      <li>Les modifications sont appliquées immédiatement sans validation</li>
+      <li>Vérifiez que les dates sont cohérentes (date de fin ≥ date de début)</li>
+      <li>Pensez à mettre à jour les notes si nécessaire</li>
+    </ul>
+  </div>
+  
+  <div class="alert alert-success">
+    <strong>✅ Bonne pratique:</strong> Si vous modifiez les dates ou le type d'absence, pensez à ajouter une note expliquant la raison de la modification pour garder une trace de l'historique.
+  </div>
+</div>

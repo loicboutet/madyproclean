@@ -1,0 +1,163 @@
+<% content_for :page_title, "Déclarer une Absence" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Déclarer une Absence</h1>
+      <p class="text-large mt-2">Enregistrez une nouvelle absence pour un agent de votre équipe</p>
+    </div>
+    <div class="button-group">
+      <%= link_to manager_absences_path, class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Retour à la liste
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Form Card -->
+<div class="card">
+  <h2 class="mb-6" style="font-size: 1.875rem;">
+    <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+    </svg>
+    Informations de l'Absence
+  </h2>
+
+  <%= form_with url: manager_absences_path, method: :post, local: true do |f| %>
+    <div class="form-grid">
+      <!-- Agent Selection -->
+      <div class="form-group">
+        <label for="absence_user_id">Agent <span class="text-red-600">*</span></label>
+        <select name="absence[user_id]" id="absence_user_id" required>
+          <option value="">-- Sélectionnez un agent --</option>
+          <% @demo_users.each do |user| %>
+            <option value="<%= user[:id] %>"><%= user[:name] %> (<%= user[:employee_number] %>)</option>
+          <% end %>
+        </select>
+        <p class="help-text">Sélectionnez l'agent concerné par cette absence</p>
+      </div>
+
+      <!-- Absence Type -->
+      <div class="form-group">
+        <label for="absence_absence_type">Type d'Absence <span class="text-red-600">*</span></label>
+        <select name="absence[absence_type]" id="absence_absence_type" required>
+          <option value="vacation">🏖️ Congés payés</option>
+          <option value="sick_leave">🏥 Congé maladie</option>
+          <option value="training">📚 Formation</option>
+          <option value="unpaid_leave">💼 Congé sans solde</option>
+          <option value="other">📋 Autre</option>
+        </select>
+        <p class="help-text">Choisissez le type d'absence approprié</p>
+      </div>
+
+      <!-- Start Date -->
+      <div class="form-group">
+        <label for="absence_start_date">Date de Début <span class="text-red-600">*</span></label>
+        <input 
+          type="date" 
+          name="absence[start_date]" 
+          id="absence_start_date" 
+          value="<%= Date.today.strftime('%Y-%m-%d') %>"
+          required>
+        <p class="help-text">Premier jour d'absence</p>
+      </div>
+
+      <!-- End Date -->
+      <div class="form-group">
+        <label for="absence_end_date">Date de Fin <span class="text-red-600">*</span></label>
+        <input 
+          type="date" 
+          name="absence[end_date]" 
+          id="absence_end_date" 
+          value="<%= Date.today.strftime('%Y-%m-%d') %>"
+          required>
+        <p class="help-text">Dernier jour d'absence (inclus)</p>
+      </div>
+    </div>
+
+    <!-- Reason (Full Width) -->
+    <div class="form-group">
+      <label for="absence_reason">Raison de l'Absence</label>
+      <textarea 
+        name="absence[reason]" 
+        id="absence_reason" 
+        rows="4"
+        placeholder="Exemple: Vacances annuelles planifiées, Arrêt maladie avec certificat médical, Formation obligatoire, etc."></textarea>
+      <p class="help-text">Décrivez brièvement la raison de cette absence (optionnel mais recommandé)</p>
+    </div>
+
+    <!-- Notes (Full Width) -->
+    <div class="form-group">
+      <label for="absence_notes">Notes / Observations</label>
+      <textarea 
+        name="absence[notes]" 
+        id="absence_notes" 
+        rows="4"
+        placeholder="Notes supplémentaires, informations de remplacement, etc."></textarea>
+      <p class="help-text">Ajoutez des notes complémentaires si nécessaire (optionnel)</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Form Actions -->
+    <div class="flex items-center justify-between">
+      <div class="alert alert-info" style="flex: 1; margin-right: 1rem;">
+        <strong>Note:</strong> L'absence sera active immédiatement après la déclaration (pas de processus de validation requis)
+      </div>
+      
+      <div class="button-group" style="flex-shrink: 0;">
+        <%= link_to manager_absences_path, class: "btn-secondary" do %>
+          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+          Annuler
+        <% end %>
+        
+        <button type="submit" class="btn-primary">
+          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+          Déclarer l'Absence
+        </button>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<div class="divider"></div>
+
+<!-- Help Card -->
+<div class="glass-card">
+  <h2 class="mb-4" style="font-size: 1.875rem;">Aide & Conseils</h2>
+  
+  <div class="alert alert-info mb-4">
+    <strong>📋 Types d'absence disponibles:</strong>
+    <ul style="margin-top: 0.5rem; margin-left: 1.5rem; list-style: disc;">
+      <li><strong>Congés payés:</strong> Vacances annuelles, congés légaux</li>
+      <li><strong>Congé maladie:</strong> Arrêt maladie avec certificat médical</li>
+      <li><strong>Formation:</strong> Formation professionnelle, mise à jour d'habilitations</li>
+      <li><strong>Congé sans solde:</strong> Absence non rémunérée pour raisons personnelles</li>
+      <li><strong>Autre:</strong> Rendez-vous médical, visite médicale du travail, etc.</li>
+    </ul>
+  </div>
+  
+  <div class="alert alert-success mb-4">
+    <strong>✅ Bonnes pratiques:</strong>
+    <ul style="margin-top: 0.5rem; margin-left: 1.5rem; list-style: disc;">
+      <li>Renseignez toujours la raison de l'absence pour faciliter le suivi</li>
+      <li>Ajoutez des notes si un remplacement est prévu ou nécessaire</li>
+      <li>Vérifiez les dates avant de valider la déclaration</li>
+      <li>Pour les congés maladie, mentionnez la réception du certificat médical dans les notes</li>
+    </ul>
+  </div>
+  
+  <div class="alert alert-warning">
+    <strong>⚠️ Important:</strong> L'absence déclarée sera immédiatement active. Assurez-vous que toutes les informations sont correctes avant de soumettre le formulaire.
+  </div>
+</div>
