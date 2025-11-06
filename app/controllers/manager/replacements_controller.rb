@@ -1,4 +1,6 @@
 class Manager::ReplacementsController < ApplicationController
+  layout 'manager'
+  
   def index
     # Demo data for available agents for replacement
     @demo_agents = [

@@ -1,4 +1,6 @@
 class Manager::TeamController < ApplicationController
+  layout 'manager'
+  
   def index
     # Demo data for sites
     @demo_sites = [
