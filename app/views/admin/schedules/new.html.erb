@@ -1,0 +1,269 @@
+<% content_for :page_title, "Nouvel Horaire" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Créer un Nouvel Horaire</h1>
+      <p class="text-large mt-2">Planifiez une nouvelle affectation d'agent</p>
+    </div>
+    <div class="button-group">
+      <%= link_to admin_schedules_path, class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Retour à la liste
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Form -->
+<div class="card">
+  <div class="alert alert-info mb-6">
+    <strong>Information:</strong> Créez un horaire pour affecter un agent à un site avec une plage horaire spécifique.
+  </div>
+
+  <%= form_with url: admin_schedules_path, method: :post, local: true do |form| %>
+    
+    <!-- Assignment Information -->
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+      </svg>
+      Affectation
+    </h2>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="schedule_user_id">Agent <span class="text-danger">*</span></label>
+        <select 
+          name="schedule[user_id]" 
+          id="schedule_user_id" 
+          required>
+          <option value="">-- Sélectionner un agent --</option>
+          <% @demo_users.each do |user| %>
+            <option value="<%= user[:id] %>"><%= user[:name] %> (<%= user[:employee_number] %>)</option>
+          <% end %>
+        </select>
+        <small class="text-sm opacity-70">Choisissez l'agent à affecter à ce site</small>
+      </div>
+
+      <div class="form-group">
+        <label for="schedule_site_id">Site <span class="text-danger">*</span></label>
+        <select 
+          name="schedule[site_id]" 
+          id="schedule_site_id" 
+          required>
+          <option value="">-- Sélectionner un site --</option>
+          <% @demo_sites.each do |site| %>
+            <option value="<%= site[:id] %>"><%= site[:name] %> (<%= site[:code] %>)</option>
+          <% end %>
+        </select>
+        <small class="text-sm opacity-70">Choisissez le site de travail</small>
+      </div>
+    </div>
+
+    <!-- Date and Time Information -->
+    <div class="divider"></div>
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+      Date et Horaires
+    </h2>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="schedule_scheduled_date">Date planifiée <span class="text-danger">*</span></label>
+        <input 
+          type="date" 
+          name="schedule[scheduled_date]" 
+          id="schedule_scheduled_date" 
+          value="<%= Date.today %>"
+          required>
+        <small class="text-sm opacity-70">Date de l'affectation</small>
+      </div>
+
+      <div class="form-group">
+        <label for="schedule_start_time">Heure de début <span class="text-danger">*</span></label>
+        <input 
+          type="time" 
+          name="schedule[start_time]" 
+          id="schedule_start_time" 
+          value="09:00"
+          required>
+        <small class="text-sm opacity-70">Heure de début du travail</small>
+      </div>
+
+      <div class="form-group">
+        <label for="schedule_end_time">Heure de fin <span class="text-danger">*</span></label>
+        <input 
+          type="time" 
+          name="schedule[end_time]" 
+          id="schedule_end_time" 
+          value="17:00"
+          required>
+        <small class="text-sm opacity-70">Heure de fin du travail</small>
+      </div>
+
+      <div class="form-group">
+        <label for="schedule_status">Statut</label>
+        <select 
+          name="schedule[status]" 
+          id="schedule_status">
+          <option value="scheduled" selected>Planifié</option>
+          <option value="completed">Complété</option>
+          <option value="missed">Manqué</option>
+          <option value="cancelled">Annulé</option>
+        </select>
+        <small class="text-sm opacity-70">Statut de l'horaire (généralement "Planifié" pour un nouvel horaire)</small>
+      </div>
+    </div>
+
+    <!-- Replacement Information (Optional) -->
+    <div class="divider"></div>
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+      </svg>
+      Remplacement (Optionnel)
+    </h2>
+
+    <div class="alert alert-warning mb-6">
+      <strong>Note:</strong> Si cet horaire est une affectation de remplacement, indiquez l'agent de remplacement et la raison ci-dessous. Sinon, laissez ces champs vides.
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="schedule_replaced_by_id">Agent de remplacement</label>
+        <select 
+          name="schedule[replaced_by_id]" 
+          id="schedule_replaced_by_id">
+          <option value="">-- Aucun remplacement --</option>
+          <% @demo_users.each do |user| %>
+            <option value="<%= user[:id] %>"><%= user[:name] %> (<%= user[:employee_number] %>)</option>
+          <% end %>
+        </select>
+        <small class="text-sm opacity-70">Si applicable, sélectionnez l'agent qui remplace l'agent initialement prévu</small>
+      </div>
+
+      <div class="form-group">
+        <label for="schedule_replacement_reason">Raison du remplacement</label>
+        <textarea 
+          name="schedule[replacement_reason]" 
+          id="schedule_replacement_reason" 
+          rows="3"
+          placeholder="Ex: Absence maladie agent titulaire"></textarea>
+        <small class="text-sm opacity-70">Expliquez pourquoi un remplacement est nécessaire</small>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="divider"></div>
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      Notes et Observations
+    </h2>
+
+    <div class="form-group">
+      <label for="schedule_notes">Notes</label>
+      <textarea 
+        name="schedule[notes]" 
+        id="schedule_notes" 
+        rows="4"
+        placeholder="Informations supplémentaires, tâches spécifiques, instructions particulières..."></textarea>
+      <small class="text-sm opacity-70">Ajoutez des notes ou instructions spécifiques pour cet horaire (optionnel)</small>
+    </div>
+
+    <!-- Actions -->
+    <div class="divider"></div>
+    <div class="button-group">
+      <button type="submit" class="btn-primary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        Créer l'horaire
+      </button>
+      
+      <%= link_to admin_schedules_path, class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+        Annuler
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<!-- Help Section -->
+<div class="divider"></div>
+
+<div class="glass-card">
+  <h2 class="mb-4" style="font-size: 1.875rem;">
+    <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    Conseils
+  </h2>
+  
+  <div class="alert alert-info">
+    <ul style="list-style: disc; margin-left: 1.5rem; margin-top: 0.5rem;">
+      <li><strong>Agent et Site :</strong> Sélectionnez l'agent et le site de travail pour cette affectation.</li>
+      <li><strong>Date et horaires :</strong> Indiquez la date et les heures de début et de fin du travail.</li>
+      <li><strong>Statut :</strong> Pour un nouvel horaire, utilisez généralement "Planifié".</li>
+      <li><strong>Remplacement :</strong> Utilisez cette section uniquement si un agent en remplace un autre.</li>
+      <li><strong>Notes :</strong> Ajoutez des informations utiles comme les tâches spécifiques ou instructions.</li>
+      <li><strong>Durée :</strong> Vérifiez que l'heure de fin est postérieure à l'heure de début.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Validation: end time must be after start time
+    const startTimeInput = document.getElementById('schedule_start_time');
+    const endTimeInput = document.getElementById('schedule_end_time');
+    
+    function validateTimes() {
+      if (startTimeInput.value && endTimeInput.value) {
+        const start = startTimeInput.value;
+        const end = endTimeInput.value;
+        
+        if (end <= start) {
+          endTimeInput.setCustomValidity('L\'heure de fin doit être après l\'heure de début');
+        } else {
+          endTimeInput.setCustomValidity('');
+        }
+      }
+    }
+    
+    if (startTimeInput && endTimeInput) {
+      startTimeInput.addEventListener('change', validateTimes);
+      endTimeInput.addEventListener('change', validateTimes);
+    }
+    
+    // Show/hide replacement reason based on replacement selection
+    const replacedBySelect = document.getElementById('schedule_replaced_by_id');
+    const replacementReasonGroup = document.getElementById('schedule_replacement_reason').closest('.form-group');
+    
+    if (replacedBySelect && replacementReasonGroup) {
+      replacedBySelect.addEventListener('change', function() {
+        if (this.value) {
+          replacementReasonGroup.style.display = 'block';
+        } else {
+          replacementReasonGroup.style.display = 'none';
+        }
+      });
+      
+      // Initial state
+      if (!replacedBySelect.value) {
+        replacementReasonGroup.style.display = 'none';
+      }
+    }
+  });
+</script>

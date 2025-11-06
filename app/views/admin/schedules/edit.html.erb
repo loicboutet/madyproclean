@@ -1,0 +1,284 @@
+<% content_for :page_title, "Modifier l'Horaire ##{@schedule[:id]}" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Modifier l'Horaire #<%= @schedule[:id] %></h1>
+      <p class="text-large mt-2">Mettez à jour les informations de cet horaire</p>
+    </div>
+    <div class="button-group">
+      <%= link_to admin_schedule_path(@schedule[:id]), class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Retour aux détails
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Form -->
+<div class="card">
+  <div class="alert alert-info mb-6">
+    <strong>Information:</strong> Modifiez les informations de cet horaire. Les champs marqués d'un astérisque (*) sont obligatoires.
+  </div>
+
+  <%= form_with url: admin_schedule_path(@schedule[:id]), method: :patch, local: true do |form| %>
+    
+    <!-- Assignment Information -->
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+      </svg>
+      Affectation
+    </h2>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="schedule_user_id">Agent <span class="text-danger">*</span></label>
+        <select 
+          name="schedule[user_id]" 
+          id="schedule_user_id" 
+          required>
+          <option value="">-- Sélectionner un agent --</option>
+          <% @demo_users.each do |user| %>
+            <option value="<%= user[:id] %>" <%= 'selected' if user[:id] == @schedule[:user_id] %>><%= user[:name] %> (<%= user[:employee_number] %>)</option>
+          <% end %>
+        </select>
+        <small class="text-sm opacity-70">Choisissez l'agent à affecter à ce site</small>
+      </div>
+
+      <div class="form-group">
+        <label for="schedule_site_id">Site <span class="text-danger">*</span></label>
+        <select 
+          name="schedule[site_id]" 
+          id="schedule_site_id" 
+          required>
+          <option value="">-- Sélectionner un site --</option>
+          <% @demo_sites.each do |site| %>
+            <option value="<%= site[:id] %>" <%= 'selected' if site[:id] == @schedule[:site_id] %>><%= site[:name] %> (<%= site[:code] %>)</option>
+          <% end %>
+        </select>
+        <small class="text-sm opacity-70">Choisissez le site de travail</small>
+      </div>
+    </div>
+
+    <!-- Date and Time Information -->
+    <div class="divider"></div>
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+      Date et Horaires
+    </h2>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="schedule_scheduled_date">Date planifiée <span class="text-danger">*</span></label>
+        <input 
+          type="date" 
+          name="schedule[scheduled_date]" 
+          id="schedule_scheduled_date" 
+          value="<%= @schedule[:scheduled_date] %>"
+          required>
+        <small class="text-sm opacity-70">Date de l'affectation</small>
+      </div>
+
+      <div class="form-group">
+        <label for="schedule_start_time">Heure de début <span class="text-danger">*</span></label>
+        <input 
+          type="time" 
+          name="schedule[start_time]" 
+          id="schedule_start_time" 
+          value="<%= @schedule[:start_time] %>"
+          required>
+        <small class="text-sm opacity-70">Heure de début du travail</small>
+      </div>
+
+      <div class="form-group">
+        <label for="schedule_end_time">Heure de fin <span class="text-danger">*</span></label>
+        <input 
+          type="time" 
+          name="schedule[end_time]" 
+          id="schedule_end_time" 
+          value="<%= @schedule[:end_time] %>"
+          required>
+        <small class="text-sm opacity-70">Heure de fin du travail</small>
+      </div>
+
+      <div class="form-group">
+        <label for="schedule_status">Statut <span class="text-danger">*</span></label>
+        <select 
+          name="schedule[status]" 
+          id="schedule_status"
+          required>
+          <option value="scheduled" <%= 'selected' if @schedule[:status] == 'scheduled' %>>Planifié</option>
+          <option value="completed" <%= 'selected' if @schedule[:status] == 'completed' %>>Complété</option>
+          <option value="missed" <%= 'selected' if @schedule[:status] == 'missed' %>>Manqué</option>
+          <option value="cancelled" <%= 'selected' if @schedule[:status] == 'cancelled' %>>Annulé</option>
+        </select>
+        <small class="text-sm opacity-70">Mettez à jour le statut de l'horaire si nécessaire</small>
+      </div>
+    </div>
+
+    <!-- Replacement Information (Optional) -->
+    <div class="divider"></div>
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+      </svg>
+      Remplacement (Optionnel)
+    </h2>
+
+    <div class="alert alert-warning mb-6">
+      <strong>Note:</strong> Si cet horaire nécessite un remplacement, indiquez l'agent de remplacement et la raison ci-dessous.
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="schedule_replaced_by_id">Agent de remplacement</label>
+        <select 
+          name="schedule[replaced_by_id]" 
+          id="schedule_replaced_by_id">
+          <option value="">-- Aucun remplacement --</option>
+          <% @demo_users.each do |user| %>
+            <option value="<%= user[:id] %>" <%= 'selected' if user[:id] == @schedule[:replaced_by_id] %>><%= user[:name] %> (<%= user[:employee_number] %>)</option>
+          <% end %>
+        </select>
+        <small class="text-sm opacity-70">Si applicable, sélectionnez l'agent qui remplace l'agent initialement prévu</small>
+      </div>
+
+      <div class="form-group">
+        <label for="schedule_replacement_reason">Raison du remplacement</label>
+        <textarea 
+          name="schedule[replacement_reason]" 
+          id="schedule_replacement_reason" 
+          rows="3"
+          placeholder="Ex: Absence maladie agent titulaire"><%= @schedule[:replacement_reason] %></textarea>
+        <small class="text-sm opacity-70">Expliquez pourquoi un remplacement est nécessaire</small>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="divider"></div>
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      Notes et Observations
+    </h2>
+
+    <div class="form-group">
+      <label for="schedule_notes">Notes</label>
+      <textarea 
+        name="schedule[notes]" 
+        id="schedule_notes" 
+        rows="4"
+        placeholder="Informations supplémentaires, tâches spécifiques, instructions particulières..."><%= @schedule[:notes] %></textarea>
+      <small class="text-sm opacity-70">Ajoutez des notes ou instructions spécifiques pour cet horaire (optionnel)</small>
+    </div>
+
+    <!-- Metadata -->
+    <div class="divider"></div>
+    <div class="alert alert-info">
+      <p><strong>Créé par :</strong> <%= @schedule[:created_by_name] %> le <%= @schedule[:created_at].strftime('%d/%m/%Y à %H:%M') %></p>
+      <p class="mt-2"><strong>Dernière modification :</strong> <%= @schedule[:updated_at].strftime('%d/%m/%Y à %H:%M') %></p>
+    </div>
+
+    <!-- Actions -->
+    <div class="divider"></div>
+    <div class="button-group">
+      <button type="submit" class="btn-primary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        Enregistrer les modifications
+      </button>
+      
+      <%= link_to admin_schedule_path(@schedule[:id]), class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+        Annuler
+      <% end %>
+
+      <%= link_to admin_schedules_path, class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        Retour à la liste
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<!-- Help Section -->
+<div class="divider"></div>
+
+<div class="glass-card">
+  <h2 class="mb-4" style="font-size: 1.875rem;">
+    <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    Conseils de Modification
+  </h2>
+  
+  <div class="alert alert-info">
+    <ul style="list-style: disc; margin-left: 1.5rem; margin-top: 0.5rem;">
+      <li><strong>Changement d'agent :</strong> Vous pouvez modifier l'agent si nécessaire. Pensez à documenter les changements dans les notes.</li>
+      <li><strong>Modification du site :</strong> Si vous changez le site, vérifiez que l'agent peut accéder à ce nouveau site.</li>
+      <li><strong>Ajustement des horaires :</strong> Assurez-vous que l'heure de fin est toujours après l'heure de début.</li>
+      <li><strong>Mise à jour du statut :</strong> Modifiez le statut pour refléter l'état actuel (complété, manqué, annulé).</li>
+      <li><strong>Remplacement :</strong> Utilisez cette section si un agent doit remplacer l'agent initialement prévu.</li>
+      <li><strong>Traçabilité :</strong> Les informations de création et modification sont conservées automatiquement.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Validation: end time must be after start time
+    const startTimeInput = document.getElementById('schedule_start_time');
+    const endTimeInput = document.getElementById('schedule_end_time');
+    
+    function validateTimes() {
+      if (startTimeInput.value && endTimeInput.value) {
+        const start = startTimeInput.value;
+        const end = endTimeInput.value;
+        
+        if (end <= start) {
+          endTimeInput.setCustomValidity('L\'heure de fin doit être après l\'heure de début');
+        } else {
+          endTimeInput.setCustomValidity('');
+        }
+      }
+    }
+    
+    if (startTimeInput && endTimeInput) {
+      startTimeInput.addEventListener('change', validateTimes);
+      endTimeInput.addEventListener('change', validateTimes);
+    }
+    
+    // Show/hide replacement reason based on replacement selection
+    const replacedBySelect = document.getElementById('schedule_replaced_by_id');
+    const replacementReasonGroup = document.getElementById('schedule_replacement_reason').closest('.form-group');
+    
+    if (replacedBySelect && replacementReasonGroup) {
+      function toggleReplacementReason() {
+        if (replacedBySelect.value) {
+          replacementReasonGroup.style.display = 'block';
+        } else {
+          replacementReasonGroup.style.display = 'none';
+        }
+      }
+      
+      replacedBySelect.addEventListener('change', toggleReplacementReason);
+      
+      // Initial state
+      toggleReplacementReason();
+    }
+  });
+</script>
