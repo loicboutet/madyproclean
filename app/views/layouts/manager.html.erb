@@ -188,8 +188,9 @@
     <!-- Main Wrapper -->
     <div style="display: flex; flex-direction: column; min-height: 100vh;">
       <!-- Header -->
-      <header class="admin-header" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 212, 255, 0.2); padding: 1rem 2rem; position: sticky; top: 0; z-index: 50;">
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 2rem;">
+      <header class="admin-header" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 212, 255, 0.2); position: sticky; top: 0; z-index: 50;">
+        <div style="max-width: 1400px; width: 100%; margin: 0 auto; padding: 1rem 2rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 2rem;">
           <!-- Logo Section -->
           <div style="display: flex; align-items: center; gap: 1rem; flex-shrink: 0;">
             <%= image_tag "logo_square.png", alt: "Mady ProClean Logo", style: "width: 50px; height: 50px; border-radius: 0.5rem; box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);" %>
@@ -290,6 +291,7 @@
                 <span>Déconnexion</span>
               <% end %>
             </div>
+          </div>
           </div>
         </div>
       </header>
