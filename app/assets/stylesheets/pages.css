@@ -1092,6 +1092,11 @@ textarea {
     font-family: inherit;
 }
 
+select {
+    padding: 1rem 1rem;
+    min-height: 3rem;
+}
+
 input::placeholder,
 textarea::placeholder {
     color: rgba(255, 255, 255, 0.4);
@@ -1110,9 +1115,25 @@ select {
     cursor: pointer;
 }
 
+/* Select dropdown options styling */
+select option {
+    background-color: var(--deep-blue);
+    color: var(--white);
+    padding: 0.75rem 1rem;
+}
+
+select option:hover,
+select option:focus,
+select option:checked {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 224, 0.2));
+    color: var(--white);
+}
+
 textarea {
     resize: vertical;
     min-height: 100px;
+    padding: 1rem !important;
+    line-height: 1.5;
 }
 
 .form-group {
