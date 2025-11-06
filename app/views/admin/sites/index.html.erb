@@ -1,0 +1,253 @@
+<% content_for :page_title, "Gestion des Sites" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Gestion des Sites</h1>
+      <p class="text-large mt-2">Gérez tous les sites de travail et leurs codes QR</p>
+    </div>
+    <div class="button-group">
+      <%= link_to new_admin_site_path, class: "btn-primary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Créer un site
+      <% end %>
+    </div>
+  </div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-primary">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Total Sites</p>
+      <p class="stat-value"><%= @all_sites.length %></p>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-success">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Sites Actifs</p>
+      <p class="stat-value"><%= @all_sites.count { |s| s[:active] == true } %></p>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-warning">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Sites Inactifs</p>
+      <p class="stat-value"><%= @all_sites.count { |s| s[:active] == false } %></p>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon stat-icon-info">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2m5-7v2M7 4h10"/>
+      </svg>
+    </div>
+    <div class="stat-content">
+      <p class="stat-label">Résultats</p>
+      <p class="stat-value"><%= @sites.length %></p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+  <!-- Filters Section -->
+  <div class="alert alert-info mb-6">
+    <strong>Filtres de Recherche:</strong> Utilisez les filtres ci-dessous pour affiner la liste des sites
+  </div>
+
+  <form>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="search">Rechercher</label>
+        <input 
+          type="text" 
+          name="search" 
+          id="search" 
+          placeholder="Nom du site ou code..."
+          value="<%= params[:search] %>">
+      </div>
+
+      <div class="form-group">
+        <label for="status">Statut</label>
+        <select name="status" id="status">
+          <option value="">Tous les sites</option>
+          <option value="active" <%= 'selected' if params[:status] == 'active' %>>Actifs</option>
+          <option value="inactive" <%= 'selected' if params[:status] == 'inactive' %>>Inactifs</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button type="submit" class="btn-primary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+        </svg>
+        Appliquer les filtres
+      </button>
+      <a href="<%= admin_sites_path %>" class="btn-secondary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        Réinitialiser
+      </a>
+    </div>
+  </form>
+</div>
+
+
+<div class="divider"></div>
+
+<!-- Sites Table -->
+<div class="card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h2 class="mb-2" style="font-size: 1.875rem;">Liste des Sites</h2>
+      <p class="text-large">Visualisez tous les sites avec leurs détails et codes QR</p>
+    </div>
+    <div class="button-group">
+      <%= link_to new_admin_site_path, class: "btn-primary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Créer un site
+      <% end %>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nom du Site</th>
+          <th>Code</th>
+          <th>Adresse</th>
+          <th>Statut</th>
+          <th>QR Code Token</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @sites.empty? %>
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 2rem;">
+              <div class="alert alert-warning" style="display: inline-block;">
+                <strong>Aucun site trouvé</strong> avec les filtres actuels
+              </div>
+            </td>
+          </tr>
+        <% else %>
+          <% @sites.each do |site| %>
+            <tr>
+              <td><strong>#<%= site[:id] %></strong></td>
+              <td>
+                <div>
+                  <p class="font-semibold"><%= site[:name] %></p>
+                  <% if site[:description].present? %>
+                    <p class="text-sm opacity-70"><%= truncate(site[:description], length: 50) %></p>
+                  <% end %>
+                </div>
+              </td>
+              <td>
+                <span class="badge"><%= site[:code] %></span>
+              </td>
+              <td>
+                <p class="text-sm"><%= site[:address] %></p>
+              </td>
+              <td>
+                <% if site[:active] %>
+                  <span class="badge-success">✓ Actif</span>
+                <% else %>
+                  <span class="badge-warning">✗ Inactif</span>
+                <% end %>
+              </td>
+              <td>
+                <span class="text-sm opacity-70 font-mono"><%= truncate(site[:qr_code_token], length: 20) %></span>
+              </td>
+              <td>
+                <div class="dropdown-wrapper" data-controller="dropdown">
+                  <button class="dropdown-trigger" data-action="click->dropdown#toggle" title="Actions">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                    </svg>
+                  </button>
+                  
+                  <div class="dropdown-menu hidden" data-dropdown-target="menu">
+                    <%= link_to admin_site_path(site[:id]), class: "dropdown-item" do %>
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                      </svg>
+                      <span>Voir</span>
+                    <% end %>
+                    <%= link_to edit_admin_site_path(site[:id]), class: "dropdown-item" do %>
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                      </svg>
+                      <span>Modifier</span>
+                    <% end %>
+                    <%= link_to qr_code_admin_site_path(site[:id]), class: "dropdown-item" do %>
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2m5-7v2M7 4h10"/>
+                      </svg>
+                      <span>Voir QR Code</span>
+                    <% end %>
+                    <div class="dropdown-divider"></div>
+                    <%= button_to admin_site_path(site[:id]), method: :delete, data: { confirm: 'Êtes-vous sûr de vouloir désactiver ce site ?' }, class: "dropdown-item dropdown-item-danger", form: { style: 'display: inline;' } do %>
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                      </svg>
+                      <span>Désactiver</span>
+                    <% end %>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <%= render 'shared/pagination' %>
+</div>
+
+<div class="divider"></div>
+
+<!-- Add New Site -->
+<div class="glass-card">
+  <h2 class="mb-4" style="font-size: 1.875rem;">Ajouter un Nouveau Site</h2>
+  <div class="alert alert-info mb-6">
+    <strong>Information:</strong> Les codes QR seront automatiquement générés lors de la création d'un site.
+  </div>
+  
+  <div class="button-group">
+    <%= link_to new_admin_site_path, class: "btn-primary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+      </svg>
+      Créer un nouveau site
+    <% end %>
+  </div>
+</div>

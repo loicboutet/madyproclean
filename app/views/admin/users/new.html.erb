@@ -1,0 +1,257 @@
+<% content_for :page_title, "Nouvel Utilisateur" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Créer un Nouvel Utilisateur</h1>
+      <p class="text-large mt-2">Ajoutez un nouvel utilisateur au système</p>
+    </div>
+    <div class="button-group">
+      <%= link_to admin_users_path, class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Retour à la liste
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Form -->
+<div class="card">
+  <div class="alert alert-info mb-6">
+    <strong>Information:</strong> Tous les champs marqués d'un astérisque (*) sont obligatoires.
+  </div>
+
+  <%= form_with url: admin_users_path, method: :post, local: true do |form| %>
+    
+    <!-- Personal Information -->
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+      </svg>
+      Informations Personnelles
+    </h2>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="user_first_name">Prénom <span class="text-danger">*</span></label>
+        <input 
+          type="text" 
+          name="user[first_name]" 
+          id="user_first_name" 
+          placeholder="Ex: Marie"
+          required>
+        <small class="text-sm opacity-70">Prénom de l'utilisateur</small>
+      </div>
+
+      <div class="form-group">
+        <label for="user_last_name">Nom <span class="text-danger">*</span></label>
+        <input 
+          type="text" 
+          name="user[last_name]" 
+          id="user_last_name" 
+          placeholder="Ex: Dubois"
+          required>
+        <small class="text-sm opacity-70">Nom de famille de l'utilisateur</small>
+      </div>
+    </div>
+
+    <!-- Contact Information -->
+    <div class="divider"></div>
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+      </svg>
+      Coordonnées
+    </h2>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="user_email">Email <span class="text-danger">*</span></label>
+        <input 
+          type="email" 
+          name="user[email]" 
+          id="user_email" 
+          placeholder="utilisateur@madyproclean.fr"
+          required>
+        <small class="text-sm opacity-70">Adresse email professionnelle</small>
+      </div>
+
+      <div class="form-group">
+        <label for="user_phone_number">Téléphone</label>
+        <input 
+          type="tel" 
+          name="user[phone_number]" 
+          id="user_phone_number" 
+          placeholder="+33 6 12 34 56 78">
+        <small class="text-sm opacity-70">Numéro de téléphone (optionnel)</small>
+      </div>
+    </div>
+
+    <!-- Employment Details -->
+    <div class="divider"></div>
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+      </svg>
+      Informations Professionnelles
+    </h2>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="user_employee_number">Matricule</label>
+        <input 
+          type="text" 
+          name="user[employee_number]" 
+          id="user_employee_number" 
+          placeholder="Ex: AGT-001"
+          style="text-transform: uppercase;">
+        <small class="text-sm opacity-70">Numéro d'identification unique (optionnel)</small>
+      </div>
+
+      <div class="form-group">
+        <label for="user_role">Rôle <span class="text-danger">*</span></label>
+        <select name="user[role]" id="user_role" required>
+          <option value="">Sélectionnez un rôle...</option>
+          <option value="admin">Administrateur</option>
+          <option value="manager">Manager / Superviseur</option>
+          <option value="agent" selected>Agent Terrain</option>
+        </select>
+        <small class="text-sm opacity-70">Niveau d'accès de l'utilisateur</small>
+      </div>
+    </div>
+
+    <!-- Manager Assignment (for agents) -->
+    <div id="manager-assignment" style="display: none;">
+      <div class="form-group">
+        <label for="user_manager_id">Manager assigné</label>
+        <select name="user[manager_id]" id="user_manager_id">
+          <option value="">Aucun manager</option>
+          <% @managers.each do |manager| %>
+            <option value="<%= manager[:id] %>"><%= manager[:first_name] %> <%= manager[:last_name] %> (<%= manager[:employee_number] %>)</option>
+          <% end %>
+        </select>
+        <small class="text-sm opacity-70">Superviseur responsable de cet agent</small>
+      </div>
+    </div>
+
+    <!-- Role Information Alert -->
+    <div id="role-info-admin" class="alert alert-info mt-4" style="display: none;">
+      <strong>Rôle Administrateur:</strong> Accès complet au système, gestion de tous les utilisateurs, sites et données.
+    </div>
+    <div id="role-info-manager" class="alert alert-warning mt-4" style="display: none;">
+      <strong>Rôle Manager:</strong> Gestion d'équipe, planification des horaires, déclaration des absences.
+    </div>
+    <div id="role-info-agent" class="alert alert-success mt-4" style="display: block;">
+      <strong>Rôle Agent:</strong> Accès limité au pointage via QR code sur les sites assignés.
+    </div>
+
+    <!-- Status -->
+    <div class="divider"></div>
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      Statut
+    </h2>
+
+    <div class="form-group">
+      <label class="flex items-center">
+        <input 
+          type="checkbox" 
+          name="user[active]" 
+          id="user_active" 
+          value="1"
+          checked
+          style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem;">
+        <span class="font-semibold">Utilisateur actif</span>
+      </label>
+      <small class="text-sm opacity-70">Les utilisateurs inactifs ne peuvent pas se connecter au système</small>
+    </div>
+
+    <!-- Actions -->
+    <div class="divider"></div>
+    <div class="button-group">
+      <button type="submit" class="btn-primary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        Créer l'utilisateur
+      </button>
+      
+      <%= link_to admin_users_path, class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+        Annuler
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<!-- Help Section -->
+<div class="divider"></div>
+
+<div class="glass-card">
+  <h2 class="mb-4" style="font-size: 1.875rem;">
+    <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    Conseils
+  </h2>
+  
+  <div class="alert alert-info">
+    <ul style="list-style: disc; margin-left: 1.5rem; margin-top: 0.5rem;">
+      <li><strong>Administrateurs :</strong> Accès complet au système (Direction - environ 8 personnes)</li>
+      <li><strong>Managers :</strong> Gestion d'équipe et planification (Superviseurs - environ 3 personnes)</li>
+      <li><strong>Agents :</strong> Personnel terrain avec accès limité au pointage (100-140 personnes)</li>
+      <li><strong>Email unique :</strong> Chaque utilisateur doit avoir une adresse email unique</li>
+      <li><strong>Matricule :</strong> Utile pour identifier rapidement les agents terrain</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const roleSelect = document.getElementById('user_role');
+    const managerAssignment = document.getElementById('manager-assignment');
+    const employeeNumberInput = document.getElementById('user_employee_number');
+    
+    const roleInfoAdmin = document.getElementById('role-info-admin');
+    const roleInfoManager = document.getElementById('role-info-manager');
+    const roleInfoAgent = document.getElementById('role-info-agent');
+
+    function updateRoleVisibility() {
+      const role = roleSelect.value;
+      
+      // Show/hide manager assignment for agents
+      if (role === 'agent') {
+        managerAssignment.style.display = 'block';
+      } else {
+        managerAssignment.style.display = 'none';
+      }
+
+      // Show appropriate role info
+      roleInfoAdmin.style.display = role === 'admin' ? 'block' : 'none';
+      roleInfoManager.style.display = role === 'manager' ? 'block' : 'none';
+      roleInfoAgent.style.display = role === 'agent' ? 'block' : 'none';
+    }
+
+    // Initialize on page load
+    updateRoleVisibility();
+
+    // Update when role changes
+    roleSelect.addEventListener('change', updateRoleVisibility);
+
+    // Force uppercase for employee number
+    if (employeeNumberInput) {
+      employeeNumberInput.addEventListener('input', function() {
+        this.value = this.value.toUpperCase();
+      });
+    }
+  });
+</script>

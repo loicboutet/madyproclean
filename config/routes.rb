@@ -51,7 +51,7 @@ Rails.application.routes.draw do
       get 'export', on: :collection
     end
     
-    resources :absences, only: [:index, :show, :destroy]
+    resources :absences
     
     resources :anomalies, only: [:index, :show] do
       member do
@@ -59,9 +59,9 @@ Rails.application.routes.draw do
       end
     end
     
-    get 'reports', to: 'reports#index'
-    get 'reports/monthly', to: 'reports#monthly'
-    get 'reports/hr', to: 'reports#hr'
+    resources :reports, only: [:index, :show]
+    get 'reports/monthly', to: 'reports#monthly', as: 'reports_monthly'
+    get 'reports/hr', to: 'reports#hr', as: 'reports_hr'
   end
   
   # Manager namespace

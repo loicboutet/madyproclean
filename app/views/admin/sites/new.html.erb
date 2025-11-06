@@ -1,0 +1,180 @@
+<% content_for :page_title, "Nouveau Site" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Créer un Nouveau Site</h1>
+      <p class="text-large mt-2">Ajoutez un nouveau site de travail avec code QR</p>
+    </div>
+    <div class="button-group">
+      <%= link_to admin_sites_path, class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Retour à la liste
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Form -->
+<div class="card">
+  <div class="alert alert-info mb-6">
+    <strong>Information:</strong> Le code QR sera automatiquement généré lors de la création du site.
+  </div>
+
+  <%= form_with url: admin_sites_path, method: :post, local: true do |form| %>
+    
+    <!-- Basic Information -->
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      Informations Générales
+    </h2>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="site_name">Nom du site <span class="text-danger">*</span></label>
+        <input 
+          type="text" 
+          name="site[name]" 
+          id="site_name" 
+          placeholder="Ex: Site Nucléaire Paris Nord"
+          required>
+        <small class="text-sm opacity-70">Nom complet et descriptif du site</small>
+      </div>
+
+      <div class="form-group">
+        <label for="site_code">Code du site <span class="text-danger">*</span></label>
+        <input 
+          type="text" 
+          name="site[code]" 
+          id="site_code" 
+          placeholder="Ex: SPN-001"
+          required
+          pattern="[A-Z0-9\-]+"
+          style="text-transform: uppercase;">
+        <small class="text-sm opacity-70">Code unique (majuscules, chiffres et tirets uniquement)</small>
+      </div>
+    </div>
+
+    <!-- Location Information -->
+    <div class="divider"></div>
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      Localisation
+    </h2>
+
+    <div class="form-group">
+      <label for="site_address">Adresse complète</label>
+      <textarea 
+        name="site[address]" 
+        id="site_address" 
+        rows="3"
+        placeholder="Numéro, rue, code postal, ville..."></textarea>
+      <small class="text-sm opacity-70">Adresse physique du site (optionnel)</small>
+    </div>
+
+    <div class="form-group">
+      <label for="site_description">Description / Notes</label>
+      <textarea 
+        name="site[description]" 
+        id="site_description" 
+        rows="4"
+        placeholder="Informations supplémentaires sur le site (accès, spécificités, etc.)"></textarea>
+      <small class="text-sm opacity-70">Description pour faciliter l'identification du site (optionnel)</small>
+    </div>
+
+    <!-- Status -->
+    <div class="divider"></div>
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      Statut
+    </h2>
+
+    <div class="form-group">
+      <label class="flex items-center">
+        <input 
+          type="checkbox" 
+          name="site[active]" 
+          id="site_active" 
+          value="1"
+          checked
+          style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem;">
+        <span class="font-semibold">Site actif</span>
+      </label>
+      <small class="text-sm opacity-70">Les sites inactifs ne peuvent pas être utilisés pour les pointages</small>
+    </div>
+
+    <!-- QR Code Information -->
+    <div class="divider"></div>
+    <div class="alert alert-success mb-6">
+      <h3 class="font-bold mb-2">
+        <svg class="inline-block w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2m5-7v2M7 4h10"/>
+        </svg>
+        Code QR
+      </h3>
+      <p class="mt-2">Un code QR unique sera automatiquement généré pour ce site. Vous pourrez l'afficher et l'imprimer après la création du site.</p>
+    </div>
+
+    <!-- Actions -->
+    <div class="button-group">
+      <button type="submit" class="btn-primary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        Créer le site
+      </button>
+      
+      <%= link_to admin_sites_path, class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+        Annuler
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<!-- Help Section -->
+<div class="divider"></div>
+
+<div class="glass-card">
+  <h2 class="mb-4" style="font-size: 1.875rem;">
+    <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    Conseils
+  </h2>
+  
+  <div class="alert alert-info">
+    <ul style="list-style: disc; margin-left: 1.5rem; margin-top: 0.5rem;">
+      <li><strong>Code du site :</strong> Choisissez un code court et unique. Il sera utilisé dans les exports et rapports.</li>
+      <li><strong>Nom descriptif :</strong> Utilisez un nom clair pour faciliter l'identification par les agents.</li>
+      <li><strong>Adresse complète :</strong> Ajoutez l'adresse pour faciliter la localisation du site.</li>
+      <li><strong>Code QR :</strong> Après création, imprimez le code QR et affichez-le sur le site pour les pointages.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  // Force uppercase for site code
+  document.addEventListener('DOMContentLoaded', function() {
+    const codeInput = document.getElementById('site_code');
+    if (codeInput) {
+      codeInput.addEventListener('input', function() {
+        this.value = this.value.toUpperCase();
+      });
+    }
+  });
+</script>

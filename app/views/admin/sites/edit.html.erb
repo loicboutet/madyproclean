@@ -1,0 +1,233 @@
+<% content_for :page_title, "Modifier le Site ##{@site[:id]}" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Modifier le Site #<%= @site[:id] %></h1>
+      <p class="text-large mt-2">Mettez à jour les informations du site</p>
+    </div>
+    <div class="button-group">
+      <%= link_to admin_site_path(@site[:id]), class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Retour aux détails
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Form -->
+<div class="card">
+  <div class="alert alert-warning mb-6">
+    <strong>Attention:</strong> La modification du code du site affectera les codes QR existants. Assurez-vous de régénérer et réimprimer les codes QR si nécessaire.
+  </div>
+
+  <%= form_with url: admin_site_path(@site[:id]), method: :patch, local: true do |form| %>
+    
+    <!-- Basic Information -->
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      Informations Générales
+    </h2>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="site_name">Nom du site <span class="text-danger">*</span></label>
+        <input 
+          type="text" 
+          name="site[name]" 
+          id="site_name" 
+          value="<%= @site[:name] %>"
+          placeholder="Ex: Site Nucléaire Paris Nord"
+          required>
+        <small class="text-sm opacity-70">Nom complet et descriptif du site</small>
+      </div>
+
+      <div class="form-group">
+        <label for="site_code">Code du site <span class="text-danger">*</span></label>
+        <input 
+          type="text" 
+          name="site[code]" 
+          id="site_code" 
+          value="<%= @site[:code] %>"
+          placeholder="Ex: SPN-001"
+          required
+          pattern="[A-Z0-9\-]+"
+          style="text-transform: uppercase;">
+        <small class="text-sm opacity-70">Code unique (majuscules, chiffres et tirets uniquement)</small>
+      </div>
+    </div>
+
+    <!-- Location Information -->
+    <div class="divider"></div>
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      Localisation
+    </h2>
+
+    <div class="form-group">
+      <label for="site_address">Adresse complète</label>
+      <textarea 
+        name="site[address]" 
+        id="site_address" 
+        rows="3"
+        placeholder="Numéro, rue, code postal, ville..."><%= @site[:address] %></textarea>
+      <small class="text-sm opacity-70">Adresse physique du site (optionnel)</small>
+    </div>
+
+    <div class="form-group">
+      <label for="site_description">Description / Notes</label>
+      <textarea 
+        name="site[description]" 
+        id="site_description" 
+        rows="4"
+        placeholder="Informations supplémentaires sur le site (accès, spécificités, etc.)"><%= @site[:description] %></textarea>
+      <small class="text-sm opacity-70">Description pour faciliter l'identification du site (optionnel)</small>
+    </div>
+
+    <!-- Status -->
+    <div class="divider"></div>
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      Statut
+    </h2>
+
+    <div class="form-group">
+      <label class="flex items-center">
+        <input 
+          type="checkbox" 
+          name="site[active]" 
+          id="site_active" 
+          value="1"
+          <%= 'checked' if @site[:active] %>
+          style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem;">
+        <span class="font-semibold">Site actif</span>
+      </label>
+      <small class="text-sm opacity-70">Les sites inactifs ne peuvent pas être utilisés pour les pointages</small>
+    </div>
+
+    <% unless @site[:active] %>
+      <div class="alert alert-warning mt-4">
+        <strong>⚠️ Site actuellement inactif</strong><br>
+        Ce site ne peut pas être utilisé pour les pointages. Cochez la case ci-dessus pour le réactiver.
+      </div>
+    <% end %>
+
+    <!-- QR Code Information (Read-only) -->
+    <div class="divider"></div>
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2m5-7v2M7 4h10"/>
+      </svg>
+      Code QR (Lecture seule)
+    </h2>
+
+    <div class="alert alert-info mb-4">
+      <strong>Information:</strong> Le token QR ne peut pas être modifié manuellement. Si vous devez le changer, contactez un administrateur système.
+    </div>
+
+    <div class="form-group">
+      <label>Token de sécurité actuel</label>
+      <div class="font-mono text-sm bg-gray-100 p-3 rounded break-all">
+        <%= @site[:qr_code_token] %>
+      </div>
+    </div>
+
+    <!-- Timestamp Information -->
+    <div class="divider"></div>
+    <div class="form-grid">
+      <div>
+        <p class="text-sm opacity-70">Créé le</p>
+        <% if @site[:created_at] %>
+          <p class="font-semibold"><%= @site[:created_at].strftime('%d/%m/%Y à %H:%M') %></p>
+        <% else %>
+          <p class="font-semibold">N/A</p>
+        <% end %>
+      </div>
+      
+      <div>
+        <p class="text-sm opacity-70">Dernière modification</p>
+        <% if @site[:updated_at] %>
+          <p class="font-semibold"><%= @site[:updated_at].strftime('%d/%m/%Y à %H:%M') %></p>
+        <% else %>
+          <p class="font-semibold">N/A</p>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="divider"></div>
+    <div class="button-group">
+      <button type="submit" class="btn-primary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        Enregistrer les modifications
+      </button>
+      
+      <%= link_to admin_site_path(@site[:id]), class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+        Annuler
+      <% end %>
+
+      <%= link_to admin_sites_path, class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+        </svg>
+        Retour à la liste
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<!-- Danger Zone -->
+<div class="divider"></div>
+
+<div class="card" style="border: 2px solid #ef4444;">
+  <h2 class="mb-4" style="color: #ef4444;">
+    <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+    </svg>
+    Zone de Danger
+  </h2>
+  
+  <div class="alert alert-warning mb-4">
+    <strong>Attention:</strong> Ces actions sont irréversibles ou peuvent avoir un impact important sur le système.
+  </div>
+
+  <div class="button-group">
+    <% if @site[:active] %>
+      <%= button_to admin_site_path(@site[:id]), method: :delete, data: { confirm: 'Êtes-vous sûr de vouloir désactiver ce site ? Les agents ne pourront plus y pointer.' }, class: "btn-danger" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+        </svg>
+        Désactiver ce site
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  // Force uppercase for site code
+  document.addEventListener('DOMContentLoaded', function() {
+    const codeInput = document.getElementById('site_code');
+    if (codeInput) {
+      codeInput.addEventListener('input', function() {
+        this.value = this.value.toUpperCase();
+      });
+    }
+  });
+</script>
