@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Admin Mockup - Base Rails App" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <div class="flex h-screen bg-gray-100">
+      <!-- Sidebar -->
+      <div class="w-64 bg-gray-800 text-white">
+        <div class="p-4">
+          <h1 class="text-2xl font-bold">Admin Portal</h1>
+        </div>
+        <nav class="mt-4">
+          <ul>
+            <li class="px-4 py-2 hover:bg-gray-700">
+              <%= link_to "Dashboard", { controller: "mockups", action: "admin_dashboard" }, class: "block" %>
+            </li>
+            <li class="px-4 py-2 hover:bg-gray-700">
+              <%= link_to "Users", { controller: "mockups", action: "admin_users" }, class: "block" %>
+            </li>
+            <li class="px-4 py-2 hover:bg-gray-700">
+              <%= link_to "Analytics", { controller: "mockups", action: "admin_analytics" }, class: "block" %>
+            </li>
+            <li class="px-4 py-2 hover:bg-gray-700">
+              <%= link_to "Back to Index", { controller: "mockups", action: "index" }, class: "block" %>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Main Content -->
+      <div class="flex-1 overflow-y-auto">
+        <header class="bg-white shadow">
+          <div class="p-4 flex justify-between items-center">
+            <h2 class="text-xl font-semibold text-gray-800">
+              <%= content_for(:header) || "Admin Dashboard" %>
+            </h2>
+            <div class="flex items-center">
+              <span class="mr-2">Admin User</span>
+              <div class="w-8 h-8 rounded-full bg-gray-500"></div>
+            </div>
+          </div>
+        </header>
+
+        <main class="p-6">
+          <%= yield %>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

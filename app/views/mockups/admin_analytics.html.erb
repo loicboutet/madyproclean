@@ -1,0 +1,324 @@
+<% content_for :title, "Analytics - Admin - Base Rails App" %>
+<% content_for :header, "Analytics Dashboard" %>
+
+<div class="space-y-6">
+  <!-- Date Range Selector -->
+  <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <h3 class="text-lg font-medium">Analytics Overview</h3>
+        <p class="text-sm text-gray-500">Monitor system performance and user activities</p>
+      </div>
+      
+      <div class="flex items-center space-x-2">
+        <button class="px-3 py-1 border border-gray-300 rounded bg-gray-50 text-sm">Today</button>
+        <button class="px-3 py-1 border border-blue-300 rounded bg-blue-50 text-blue-700 text-sm">This Week</button>
+        <button class="px-3 py-1 border border-gray-300 rounded bg-gray-50 text-sm">This Month</button>
+        <button class="px-3 py-1 border border-gray-300 rounded bg-gray-50 text-sm">
+          <span class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Custom
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Key Metrics -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+      <div class="flex justify-between">
+        <div>
+          <p class="text-gray-500 text-sm">Unique Visitors</p>
+          <p class="text-2xl font-bold">12,721</p>
+          <p class="text-green-600 text-sm flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd" />
+            </svg>
+            8.2% vs previous period
+          </p>
+        </div>
+        <div class="text-blue-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+      <div class="flex justify-between">
+        <div>
+          <p class="text-gray-500 text-sm">Page Views</p>
+          <p class="text-2xl font-bold">47,589</p>
+          <p class="text-green-600 text-sm flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd" />
+            </svg>
+            12.3% vs previous period
+          </p>
+        </div>
+        <div class="text-purple-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+      <div class="flex justify-between">
+        <div>
+          <p class="text-gray-500 text-sm">Avg. Session Duration</p>
+          <p class="text-2xl font-bold">3m 47s</p>
+          <p class="text-red-600 text-sm flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M12 13a1 1 0 100 2h5a1 1 0 001-1V9a1 1 0 10-2 0v2.586l-4.293-4.293a1 1 0 00-1.414 0L8 9.586 3.707 5.293a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0L11 9.414 14.586 13H12z" clip-rule="evenodd" />
+            </svg>
+            2.1% vs previous period
+          </p>
+        </div>
+        <div class="text-yellow-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+      <div class="flex justify-between">
+        <div>
+          <p class="text-gray-500 text-sm">Bounce Rate</p>
+          <p class="text-2xl font-bold">28.4%</p>
+          <p class="text-green-600 text-sm flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M12 13a1 1 0 100 2h5a1 1 0 001-1V9a1 1 0 10-2 0v2.586l-4.293-4.293a1 1 0 00-1.414 0L8 9.586 3.707 5.293a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0L11 9.414 14.586 13H12z" clip-rule="evenodd" />
+            </svg>
+            3.7% improvement
+          </p>
+        </div>
+        <div class="text-green-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Charts Section -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-lg font-semibold">Traffic Overview</h3>
+        <select class="text-sm border border-gray-300 rounded p-1">
+          <option>Last 7 days</option>
+          <option>Last 30 days</option>
+          <option>Last 90 days</option>
+        </select>
+      </div>
+      
+      <!-- Traffic Chart placeholder -->
+      <div class="h-80 bg-gray-50 rounded flex items-center justify-center">
+        <div class="text-center text-gray-500">
+          <p>Line Chart visualization would be here</p>
+          <p class="text-sm">(Daily visitor trends)</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-lg font-semibold">Traffic Sources</h3>
+        <select class="text-sm border border-gray-300 rounded p-1">
+          <option>Last 7 days</option>
+          <option>Last 30 days</option>
+          <option>Last 90 days</option>
+        </select>
+      </div>
+      
+      <!-- Traffic Sources Chart placeholder -->
+      <div class="h-80 bg-gray-50 rounded flex items-center justify-center">
+        <div class="text-center text-gray-500">
+          <p>Pie Chart visualization would be here</p>
+          <p class="text-sm">(Traffic source distribution)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Top Pages and Browser Stats -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <h3 class="text-lg font-semibold mb-4">Top Pages</h3>
+      
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead>
+            <tr>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Page</th>
+              <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Views</th>
+              <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Unique Visitors</th>
+              <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Avg. Time</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <tr>
+              <td class="px-4 py-3 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900">/dashboard</div>
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-right">12,543</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-right">8,721</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-right">2:34</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-3 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900">/products</div>
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-right">9,873</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-right">6,234</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-right">3:12</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-3 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900">/blog/latest-updates</div>
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-right">7,239</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-right">5,892</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-right">4:18</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-3 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900">/about</div>
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-right">5,432</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-right">4,321</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-right">2:05</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-3 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900">/contact</div>
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-right">4,673</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-right">3,987</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 text-right">1:46</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <h3 class="text-lg font-semibold mb-4">Browser & Device Stats</h3>
+      
+      <div class="space-y-6">
+        <div>
+          <h4 class="text-sm font-medium text-gray-500 mb-2">Browsers</h4>
+          <div class="space-y-2">
+            <div>
+              <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium">Chrome</span>
+                <span class="text-sm text-gray-500">64%</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-blue-600 h-2 rounded-full" style="width: 64%"></div>
+              </div>
+            </div>
+            
+            <div>
+              <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium">Safari</span>
+                <span class="text-sm text-gray-500">21%</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-blue-600 h-2 rounded-full" style="width: 21%"></div>
+              </div>
+            </div>
+            
+            <div>
+              <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium">Firefox</span>
+                <span class="text-sm text-gray-500">10%</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-blue-600 h-2 rounded-full" style="width: 10%"></div>
+              </div>
+            </div>
+            
+            <div>
+              <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium">Edge</span>
+                <span class="text-sm text-gray-500">5%</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-blue-600 h-2 rounded-full" style="width: 5%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <h4 class="text-sm font-medium text-gray-500 mb-2">Devices</h4>
+          <div class="space-y-2">
+            <div>
+              <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium">Mobile</span>
+                <span class="text-sm text-gray-500">52%</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-green-600 h-2 rounded-full" style="width: 52%"></div>
+              </div>
+            </div>
+            
+            <div>
+              <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium">Desktop</span>
+                <span class="text-sm text-gray-500">38%</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-green-600 h-2 rounded-full" style="width: 38%"></div>
+              </div>
+            </div>
+            
+            <div>
+              <div class="flex justify-between mb-1">
+                <span class="text-sm font-medium">Tablet</span>
+                <span class="text-sm text-gray-500">10%</span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="bg-green-600 h-2 rounded-full" style="width: 10%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Export Options -->
+  <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 flex justify-end">
+    <div class="flex space-x-2">
+      <button class="flex items-center px-4 py-2 bg-white border border-gray-300 rounded text-sm font-medium text-gray-700">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Export CSV
+      </button>
+      <button class="flex items-center px-4 py-2 bg-white border border-gray-300 rounded text-sm font-medium text-gray-700">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Export PDF
+      </button>
+      <button class="flex items-center px-4 py-2 bg-blue-600 border border-blue-600 rounded text-sm font-medium text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+        Schedule Reports
+      </button>
+    </div>
+  </div>
+</div>

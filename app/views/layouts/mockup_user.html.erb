@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "User Mockup - Base Rails App" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <header class="bg-blue-600 text-white p-4">
+      <div class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center">
+          <h1 class="text-xl font-bold">User Portal</h1>
+        </div>
+        <nav>
+          <ul class="flex space-x-4">
+            <li><%= link_to "Dashboard", { controller: "mockups", action: "user_dashboard" }, class: "hover:underline" %></li>
+            <li><%= link_to "Profile", { controller: "mockups", action: "user_profile" }, class: "hover:underline" %></li>
+            <li><%= link_to "Settings", { controller: "mockups", action: "user_settings" }, class: "hover:underline" %></li>
+            <li><%= link_to "Back to Index", { controller: "mockups", action: "index" }, class: "hover:underline" %></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container mx-auto my-8 px-4">
+      <%= yield %>
+    </main>
+
+    <footer class="bg-gray-100 p-4 mt-8">
+      <div class="container mx-auto text-center text-gray-600">
+        <p>User Mockup Layout - Base Rails App &copy; <%= Time.now.year %></p>
+      </div>
+    </footer>
+  </body>
+</html>
