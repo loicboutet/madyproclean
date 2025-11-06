@@ -116,14 +116,14 @@
   <div class="form-grid">
     <div class="form-group">
       <label>ID de l'Horaire</label>
-      <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div class="">
         <p class="font-semibold text-lg">#<%= @schedule[:id] %></p>
       </div>
     </div>
 
     <div class="form-group">
       <label>Statut</label>
-      <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div class="">
         <% if @schedule[:status] == 'scheduled' %>
           <span class="badge-info">📅 Planifié</span>
         <% elsif @schedule[:status] == 'completed' %>
@@ -138,7 +138,7 @@
 
     <div class="form-group">
       <label>Agent</label>
-      <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div class="">
         <p class="font-semibold"><%= @schedule[:user_name] %></p>
         <p class="text-sm opacity-70"><%= @schedule[:employee_number] %></p>
       </div>
@@ -146,7 +146,7 @@
 
     <div class="form-group">
       <label>Site</label>
-      <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div class="">
         <p class="font-semibold"><%= @schedule[:site_name] %></p>
         <p class="text-sm opacity-70"><span class="badge"><%= @schedule[:site_code] %></span></p>
       </div>
@@ -154,7 +154,7 @@
 
     <div class="form-group">
       <label>Date Planifiée</label>
-      <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div class="">
         <p class="font-semibold"><%= @schedule[:scheduled_date].strftime('%d/%m/%Y') %></p>
         <p class="text-sm opacity-70"><%= l(@schedule[:scheduled_date], format: '%A') %></p>
       </div>
@@ -162,7 +162,7 @@
 
     <div class="form-group">
       <label>Plage Horaire</label>
-      <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div class="">
         <p class="font-semibold"><%= @schedule[:start_time] %> - <%= @schedule[:end_time] %></p>
         <% 
           start_parts = @schedule[:start_time].split(':')
@@ -175,7 +175,7 @@
 
     <div class="form-group">
       <label>Créé par</label>
-      <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div class="">
         <p class="font-semibold"><%= @schedule[:created_by_name] %></p>
         <p class="text-sm opacity-70">Le <%= @schedule[:created_at].strftime('%d/%m/%Y à %H:%M') %></p>
       </div>
@@ -183,7 +183,7 @@
 
     <div class="form-group">
       <label>Dernière Modification</label>
-      <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div class="">
         <p class="font-semibold"><%= @schedule[:updated_at].strftime('%d/%m/%Y à %H:%M') %></p>
       </div>
     </div>
@@ -193,7 +193,7 @@
     <div class="divider"></div>
     <div class="form-group">
       <label>Notes / Observations</label>
-      <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+      <div class="p-4 rounded-lg border border-blue-200">
         <p class="text-base"><%= @schedule[:notes] %></p>
       </div>
     </div>
@@ -219,7 +219,7 @@
     <div class="form-grid">
       <div class="form-group">
         <label>Agent Initial</label>
-        <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+        <div class="">
           <p class="font-semibold"><%= @schedule[:user_name] %></p>
           <p class="text-sm opacity-70"><%= @schedule[:employee_number] %></p>
         </div>

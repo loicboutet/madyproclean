@@ -113,14 +113,14 @@
   <div class="form-grid">
     <div class="form-group">
       <label>ID de l'Absence</label>
-      <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div class="">
         <p class="font-semibold text-lg">#<%= @absence[:id] %></p>
       </div>
     </div>
 
     <div class="form-group">
       <label>Type d'Absence</label>
-      <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div class="">
         <% if @absence[:absence_type] == 'vacation' %>
           <span class="badge-info">🏖️ Congés payés</span>
         <% elsif @absence[:absence_type] == 'sick_leave' %>
@@ -137,7 +137,7 @@
 
     <div class="form-group">
       <label>Agent</label>
-      <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div class="">
         <p class="font-semibold"><%= @absence[:user_name] %></p>
         <p class="text-sm opacity-70"><%= @absence[:employee_number] %></p>
       </div>
@@ -145,7 +145,7 @@
 
     <div class="form-group">
       <label>Durée</label>
-      <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div class="">
         <% duration = (@absence[:end_date] - @absence[:start_date]).to_i + 1 %>
         <p class="font-semibold"><%= duration %> jour<%= 's' if duration > 1 %></p>
       </div>
@@ -153,7 +153,7 @@
 
     <div class="form-group">
       <label>Date de Début</label>
-      <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div class="">
         <p class="font-semibold"><%= @absence[:start_date].strftime('%d/%m/%Y') %></p>
         <p class="text-sm opacity-70"><%= l(@absence[:start_date], format: '%A') %></p>
       </div>
@@ -161,7 +161,7 @@
 
     <div class="form-group">
       <label>Date de Fin</label>
-      <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div class="">
         <p class="font-semibold"><%= @absence[:end_date].strftime('%d/%m/%Y') %></p>
         <p class="text-sm opacity-70"><%= l(@absence[:end_date], format: '%A') %></p>
       </div>
@@ -169,7 +169,7 @@
 
     <div class="form-group">
       <label>Déclaré par</label>
-      <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div class="">
         <p class="font-semibold"><%= @absence[:declared_by_name] %></p>
         <p class="text-sm opacity-70">Le <%= @absence[:created_at].strftime('%d/%m/%Y à %H:%M') %></p>
       </div>
@@ -177,7 +177,7 @@
 
     <div class="form-group">
       <label>Dernière Modification</label>
-      <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div class="">
         <p class="font-semibold"><%= @absence[:updated_at].strftime('%d/%m/%Y à %H:%M') %></p>
       </div>
     </div>
@@ -187,7 +187,7 @@
     <div class="divider"></div>
     <div class="form-group">
       <label>Raison de l'Absence</label>
-      <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+      <div class="p-4 rounded-lg border border-blue-200">
         <p class="text-base"><%= @absence[:reason] %></p>
       </div>
     </div>
