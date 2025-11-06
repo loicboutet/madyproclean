@@ -1,16 +1,119 @@
-<h2>Forgot your password?</h2>
+<% content_for :title, "Mot de passe oublié - Mady ProClean" %>
 
-<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+<div class="container">
+    <!-- Header -->
+    <header class="header" style="position: relative;">
+        <div class="header-back">
+            <%= link_to login_path, class: "btn-secondary" do %>
+                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Retour
+            <% end %>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 2rem; min-height: 120px;">
+            <%= image_tag "logo_square.png", alt: "Mady ProClean Logo", style: "width: 80px; height: 80px; border-radius: 0.5rem; box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3); margin-bottom: 1rem; display: block;" %>
+            <h1 style="margin: 0; font-size: 2rem; font-weight: 700; color: var(--white); text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">Mot de passe oublié</h1>
+        </div>
+    </header>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
+    <!-- Password Reset Form -->
+    <div class="glass-card" style="max-width: 480px; margin: 0 auto;">
+        <!-- Alert for errors (if any) -->
+        <%= render "devise/shared/error_messages", resource: resource %>
 
-  <div class="actions">
-    <%= f.submit "Send me reset password instructions" %>
-  </div>
-<% end %>
+        <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.95rem; margin-bottom: 1.5rem; text-align: center;">
+            Entrez votre adresse email et nous vous enverrons des instructions pour réinitialiser votre mot de passe.
+        </p>
 
-<%= render "devise/shared/links" %>
+        <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "login-form" }) do |f| %>
+            <!-- Email Field -->
+            <div class="form-group">
+                <%= f.label :email, "Adresse Email" %>
+                <%= f.email_field :email, 
+                    autofocus: true,
+                    autocomplete: "email",
+                    placeholder: "exemple@email.com",
+                    class: "form-input" %>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group" style="margin-bottom: 0;">
+                <%= f.submit "Envoyer les instructions", class: "btn-primary", style: "width: 100%; justify-content: center; padding: 1rem;" %>
+            </div>
+        <% end %>
+
+        <div class="divider"></div>
+
+        <!-- Additional Options -->
+        <div style="text-align: center;">
+            <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.875rem; margin-bottom: 1rem;">
+                Vous vous souvenez de votre mot de passe ?
+            </p>
+            <%= link_to "Retour à la connexion", login_path, class: "btn-secondary", style: "width: 100%; justify-content: center;" %>
+        </div>
+    </div>
+
+    <!-- Footer Info -->
+    <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(0, 212, 255, 0.2);">
+        <p style="color: rgba(255, 255, 255, 0.5); font-size: 0.875rem;">
+            © 2025 Mady ProClean - Système de Gestion du Temps et RH
+        </p>
+        <p style="color: rgba(255, 255, 255, 0.4); font-size: 0.75rem; margin-top: 0.5rem;">
+            Connexion sécurisée avec chiffrement SSL
+        </p>
+    </div>
+</div>
+
+<style>
+/* Additional styles specific to password reset form */
+.login-form {
+    margin-top: 1rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: var(--white);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.form-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--cyan-electric);
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .glass-card {
+        margin: 0 1rem !important;
+        padding: 1.5rem;
+    }
+    
+    .header {
+        padding: 1rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .glass-card {
+        margin: 0 0.5rem !important;
+        padding: 1rem;
+    }
+}
+</style>

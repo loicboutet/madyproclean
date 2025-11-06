@@ -14,8 +14,8 @@ Rails.application.routes.draw do
   # Roles overview
   get 'roles', to: 'pages#roles'
   
-  # Devise for password recovery
-  devise_for :users, only: [:passwords], path: '', path_names: {
+  # Devise for password recovery and registration
+  devise_for :users, only: [:passwords, :registrations], path: '', path_names: {
     password: 'password_reset'
   }
   
