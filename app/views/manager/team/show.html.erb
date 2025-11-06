@@ -1,0 +1,329 @@
+<% content_for :page_title, "Détails du Planning ##{@demo_schedule[:id]}" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Détails du Planning #<%= @demo_schedule[:id] %></h1>
+      <p class="text-large mt-2">Informations complètes de ce planning</p>
+    </div>
+    <div class="button-group">
+      <%= link_to manager_team_index_path, class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Retour à la liste
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Status Card -->
+<div class="card">
+  <div class="flex items-center justify-between mb-6">
+    <h2 style="font-size: 1.875rem;">Statut du Planning</h2>
+    <% if @demo_schedule[:status] == 'scheduled' %>
+      <span class="badge-info" style="font-size: 1.125rem; padding: 0.75rem 1.5rem;">📅 Planifié</span>
+    <% elsif @demo_schedule[:status] == 'completed' %>
+      <span class="badge-success" style="font-size: 1.125rem; padding: 0.75rem 1.5rem;">✓ Complété</span>
+    <% elsif @demo_schedule[:status] == 'missed' %>
+      <span class="badge-warning" style="font-size: 1.125rem; padding: 0.75rem 1.5rem;">⚠ Manqué</span>
+    <% elsif @demo_schedule[:status] == 'cancelled' %>
+      <span class="badge badge-secondary" style="font-size: 1.125rem; padding: 0.75rem 1.5rem;">✕ Annulé</span>
+    <% end %>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-primary">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Date Planifiée</p>
+        <p class="stat-value" style="font-size: 1.5rem;"><%= @demo_schedule[:scheduled_date].strftime('%d/%m/%Y') %></p>
+        <p class="text-sm opacity-70 mt-1"><%= l(@demo_schedule[:scheduled_date], format: '%A') %></p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-info">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Durée Prévue</p>
+        <% duration_hours = ((@demo_schedule[:end_time] - @demo_schedule[:start_time]) / 3600).round(1) %>
+        <p class="stat-value" style="font-size: 1.5rem;"><%= duration_hours %> heures</p>
+        <p class="text-sm opacity-70 mt-1"><%= (duration_hours * 60).to_i %> minutes</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-success">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Agent Assigné</p>
+        <p class="stat-value" style="font-size: 1.25rem;"><%= @demo_schedule[:user_name] %></p>
+        <p class="text-sm opacity-70 mt-1"><%= @demo_schedule[:employee_number] %></p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-warning">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Site d'Affectation</p>
+        <p class="stat-value" style="font-size: 1.25rem;"><%= @demo_schedule[:site_name] %></p>
+        <p class="text-sm opacity-70 mt-1"><span class="badge"><%= @demo_schedule[:site_code] %></span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Schedule Details -->
+<div class="card">
+  <h2 class="mb-6" style="font-size: 1.875rem;">
+    <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    Informations du Planning
+  </h2>
+
+  <div class="form-grid">
+    <div class="form-group">
+      <label>ID du Planning</label>
+      <div class="">
+        <p class="font-semibold text-lg">#<%= @demo_schedule[:id] %></p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Statut</label>
+      <div class="">
+        <% if @demo_schedule[:status] == 'scheduled' %>
+          <span class="badge-info">📅 Planifié</span>
+        <% elsif @demo_schedule[:status] == 'completed' %>
+          <span class="badge-success">✓ Complété</span>
+        <% elsif @demo_schedule[:status] == 'missed' %>
+          <span class="badge-warning">⚠ Manqué</span>
+        <% elsif @demo_schedule[:status] == 'cancelled' %>
+          <span class="badge badge-secondary">✕ Annulé</span>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Agent Assigné</label>
+      <div class="">
+        <p class="font-semibold"><%= @demo_schedule[:user_name] %></p>
+        <p class="text-sm opacity-70"><%= @demo_schedule[:employee_number] %></p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Site d'Affectation</label>
+      <div class="">
+        <p class="font-semibold"><%= @demo_schedule[:site_name] %></p>
+        <p class="text-sm opacity-70"><span class="badge"><%= @demo_schedule[:site_code] %></span></p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Date Planifiée</label>
+      <div class="">
+        <p class="font-semibold"><%= @demo_schedule[:scheduled_date].strftime('%d/%m/%Y') %></p>
+        <p class="text-sm opacity-70"><%= l(@demo_schedule[:scheduled_date], format: '%A') %></p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Horaires Prévus</label>
+      <div class="">
+        <p class="font-semibold">
+          <%= @demo_schedule[:start_time].strftime('%H:%M') %> - <%= @demo_schedule[:end_time].strftime('%H:%M') %>
+        </p>
+        <p class="text-sm opacity-70">Heure de début et heure de fin</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Heure de Début</label>
+      <div class="">
+        <p class="font-semibold"><%= @demo_schedule[:start_time].strftime('%H:%M') %></p>
+        <p class="text-sm opacity-70">Début de service prévu</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Heure de Fin</label>
+      <div class="">
+        <p class="font-semibold"><%= @demo_schedule[:end_time].strftime('%H:%M') %></p>
+        <p class="text-sm opacity-70">Fin de service prévue</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Durée Prévue</label>
+      <div class="">
+        <% duration_hours = ((@demo_schedule[:end_time] - @demo_schedule[:start_time]) / 3600).round(1) %>
+        <p class="font-semibold"><%= duration_hours %> heures</p>
+        <p class="text-sm opacity-70"><%= (duration_hours * 60).to_i %> minutes de travail prévu</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Créé par</label>
+      <div class="">
+        <p class="font-semibold"><%= @demo_schedule[:created_by_name] || 'Administrateur' %></p>
+        <p class="text-sm opacity-70">Responsable de la planification</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Date de Création</label>
+      <div class="">
+        <p class="font-semibold"><%= @demo_schedule[:created_at].strftime('%d/%m/%Y à %H:%M') %></p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Dernière Mise à Jour</label>
+      <div class="">
+        <p class="font-semibold"><%= @demo_schedule[:updated_at].strftime('%d/%m/%Y à %H:%M') %></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if @demo_schedule[:site_address] %>
+  <div class="divider"></div>
+
+  <!-- Site Information -->
+  <div class="card">
+    <h2 class="mb-6" style="font-size: 1.875rem;">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      Informations du Site
+    </h2>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Nom du Site</label>
+        <div class="">
+          <p class="font-semibold"><%= @demo_schedule[:site_name] %></p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Code du Site</label>
+        <div class="">
+          <p class="font-semibold"><span class="badge"><%= @demo_schedule[:site_code] %></span></p>
+        </div>
+      </div>
+
+      <div class="form-group" style="grid-column: 1 / -1;">
+        <label>Adresse du Site</label>
+        <div class="">
+          <p class="font-semibold"><%= @demo_schedule[:site_address] %></p>
+          <p class="text-sm opacity-70">Localisation complète du site</p>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<% if @demo_schedule[:replaced_by_id] %>
+  <div class="divider"></div>
+
+  <!-- Replacement Information -->
+  <div class="card" style="border-left: 4px solid #3b82f6;">
+    <h2 class="mb-6" style="font-size: 1.875rem;">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+      </svg>
+      Informations de Remplacement
+    </h2>
+
+    <div class="alert alert-info mb-6">
+      <strong>🔄 Remplacement:</strong> Ce planning a fait l'objet d'un remplacement d'agent
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Agent Remplaçant</label>
+        <div class="">
+          <p class="font-semibold"><%= @demo_schedule[:replaced_by_name] || 'Agent de remplacement' %></p>
+          <p class="text-sm opacity-70">Nouvel agent assigné</p>
+        </div>
+      </div>
+
+      <div class="form-group" style="grid-column: 1 / -1;">
+        <label>Raison du Remplacement</label>
+        <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <p class="text-base"><%= @demo_schedule[:replacement_reason] || 'Aucune raison spécifiée' %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<% if @demo_schedule[:notes].present? %>
+  <div class="divider"></div>
+
+  <!-- Notes -->
+  <div class="card">
+    <h2 class="mb-6" style="font-size: 1.875rem;">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+      </svg>
+      Notes / Observations
+    </h2>
+    
+    <div class="p-4 rounded-lg border border-blue-200">
+      <p class="text-base"><%= @demo_schedule[:notes] %></p>
+    </div>
+  </div>
+<% end %>
+
+<div class="divider"></div>
+
+<!-- Actions -->
+<div class="glass-card">
+  <h2 class="mb-4" style="font-size: 1.875rem;">Actions</h2>
+  
+  <div class="alert alert-info mb-6">
+    <strong>Information:</strong> En tant que manager, vous pouvez consulter les détails des plannings. Pour gérer les remplacements ou apporter des modifications, utilisez les fonctionnalités dédiées.
+  </div>
+  
+  <div class="button-group">
+    <%= link_to manager_team_index_path, class: "btn-secondary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Retour à la liste
+    <% end %>
+    
+    <%= link_to manager_replacements_path, class: "btn-primary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+      </svg>
+      Gérer les Remplacements
+    <% end %>
+  </div>
+</div>
