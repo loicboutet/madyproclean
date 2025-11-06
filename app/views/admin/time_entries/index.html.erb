@@ -25,45 +25,45 @@
   <form>
     <div class="form-grid form-grid-3">
       <div class="form-group">
-        <label for="filter-agent">Agent</label>
-        <select id="filter-agent">
+        <label for="user_id">Agent</label>
+        <select name="user_id" id="user_id">
           <option value="">Tous les agents</option>
           <% @sample_users.each do |user| %>
-            <option value="<%= user[:id] %>"><%= "#{user[:first_name]} #{user[:last_name]}" %></option>
+            <option value="<%= user[:id] %>" <%= 'selected' if params[:user_id].to_i == user[:id] %>><%= "#{user[:first_name]} #{user[:last_name]}" %></option>
           <% end %>
         </select>
       </div>
 
       <div class="form-group">
-        <label for="filter-site">Site</label>
-        <select id="filter-site">
+        <label for="site_id">Site</label>
+        <select name="site_id" id="site_id">
           <option value="">Tous les sites</option>
           <% @sample_sites.each do |site| %>
-            <option value="<%= site[:id] %>"><%= site[:name] %></option>
+            <option value="<%= site[:id] %>" <%= 'selected' if params[:site_id].to_i == site[:id] %>><%= site[:name] %></option>
           <% end %>
         </select>
       </div>
 
       <div class="form-group">
-        <label for="filter-status">Statut</label>
-        <select id="filter-status">
+        <label for="status">Statut</label>
+        <select name="status" id="status">
           <option value="">Tous les statuts</option>
-          <option value="completed">Complet</option>
-          <option value="active">En cours</option>
-          <option value="anomaly">Anomalie</option>
+          <option value="completed" <%= 'selected' if params[:status] == 'completed' %>>Complet</option>
+          <option value="active" <%= 'selected' if params[:status] == 'active' %>>En cours</option>
+          <option value="anomaly" <%= 'selected' if params[:status] == 'anomaly' %>>Anomalie</option>
         </select>
       </div>
     </div>
 
     <div class="form-grid">
       <div class="form-group">
-        <label for="filter-start-date">Date de début</label>
-        <input type="date" id="filter-start-date" value="2025-11-04">
+        <label for="start_date">Date de début</label>
+        <input type="date" name="start_date" id="start_date" value="<%= params[:start_date] || '2025-11-04' %>">
       </div>
 
       <div class="form-group">
-        <label for="filter-end-date">Date de fin</label>
-        <input type="date" id="filter-end-date" value="2025-11-06">
+        <label for="end_date">Date de fin</label>
+        <input type="date" name="end_date" id="end_date" value="<%= params[:end_date] || '2025-11-06' %>">
       </div>
     </div>
 
@@ -87,7 +87,7 @@
 <div class="divider"></div>
 
 <!-- Statistics Cards -->
-<div class="stats-grid">
+  <div class="stats-grid">
   <div class="stat-card">
     <div class="stat-icon stat-icon-primary">
       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,7 +96,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Total Pointages</p>
-      <p class="stat-value"><%= @sample_time_entries.length %></p>
+      <p class="stat-value"><%= @time_entries.length %></p>
     </div>
   </div>
 
@@ -108,7 +108,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Complets</p>
-      <p class="stat-value"><%= @sample_time_entries.count { |e| e[:status] == 'completed' } %></p>
+      <p class="stat-value"><%= @time_entries.count { |e| e[:status] == 'completed' } %></p>
     </div>
   </div>
 
@@ -120,7 +120,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">En Cours</p>
-      <p class="stat-value"><%= @sample_time_entries.count { |e| e[:status] == 'active' } %></p>
+      <p class="stat-value"><%= @time_entries.count { |e| e[:status] == 'active' } %></p>
     </div>
   </div>
 
@@ -132,7 +132,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Anomalies</p>
-      <p class="stat-value"><%= @sample_time_entries.count { |e| e[:status] == 'anomaly' } %></p>
+      <p class="stat-value"><%= @time_entries.count { |e| e[:status] == 'anomaly' } %></p>
     </div>
   </div>
 </div>
@@ -160,7 +160,7 @@
         </tr>
       </thead>
       <tbody>
-        <% @sample_time_entries.each do |entry| %>
+        <% @time_entries.each do |entry| %>
           <tr>
             <td><strong>#<%= entry[:id] %></strong></td>
             <td>
@@ -222,34 +222,26 @@
                 </button>
                 
                 <div class="dropdown-menu hidden" data-dropdown-target="menu">
-                  <a href="#" class="dropdown-item">
+                  <%= link_to admin_time_entry_path(entry[:id]), class: "dropdown-item" do %>
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                     </svg>
                     <span>Voir</span>
-                  </a>
-                  <a href="#" class="dropdown-item">
+                  <% end %>
+                  <%= link_to edit_admin_time_entry_path(entry[:id]), class: "dropdown-item" do %>
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                     </svg>
                     <span>Modifier</span>
-                  </a>
-                  <% if entry[:status] == 'anomaly' %>
-                    <a href="#" class="dropdown-item">
-                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                      </svg>
-                      <span>Corriger</span>
-                    </a>
                   <% end %>
                   <div class="dropdown-divider"></div>
-                  <a href="#" class="dropdown-item dropdown-item-danger">
+                  <%= button_to admin_time_entry_path(entry[:id]), method: :delete, data: { confirm: 'Êtes-vous sûr ?' }, class: "dropdown-item dropdown-item-danger", form: { style: 'display: inline;' } do %>
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                     </svg>
                     <span>Supprimer</span>
-                  </a>
+                  <% end %>
                 </div>
               </div>
             </td>
@@ -265,82 +257,19 @@
 
 <div class="divider"></div>
 
-<!-- Manual Correction Form -->
+<!-- Add New Time Entry -->
 <div class="glass-card">
-  <h2 class="mb-4">Correction Manuelle de Pointage</h2>
+  <h2 class="mb-4">Ajouter un Nouveau Pointage</h2>
   <div class="alert alert-info mb-6">
-    <strong>Information:</strong> Cette option est réservée aux administrateurs pour corriger les anomalies ou ajouter des pointages manuellement.
+    <strong>Information:</strong> Utilisez ce formulaire pour ajouter manuellement un pointage ou corriger une anomalie.
   </div>
-
-  <form>
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="manual-agent">Sélectionner un agent</label>
-        <select id="manual-agent" required>
-          <option value="">-- Choisir un agent --</option>
-          <% @sample_users.each do |user| %>
-            <option value="<%= user[:id] %>"><%= "#{user[:first_name]} #{user[:last_name]} (#{user[:employee_number]})" %></option>
-          <% end %>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="manual-site">Site</label>
-        <select id="manual-site" required>
-          <option value="">-- Choisir un site --</option>
-          <% @sample_sites.each do |site| %>
-            <option value="<%= site[:id] %>"><%= "#{site[:name]} (#{site[:code]})" %></option>
-          <% end %>
-        </select>
-      </div>
-    </div>
-
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="manual-checkin-date">Date d'arrivée</label>
-        <input type="date" id="manual-checkin-date" required>
-      </div>
-
-      <div class="form-group">
-        <label for="manual-checkin-time">Heure d'arrivée</label>
-        <input type="time" id="manual-checkin-time" required>
-      </div>
-    </div>
-
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="manual-checkout-date">Date de départ</label>
-        <input type="date" id="manual-checkout-date">
-      </div>
-
-      <div class="form-group">
-        <label for="manual-checkout-time">Heure de départ</label>
-        <input type="time" id="manual-checkout-time">
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="manual-notes">Notes / Raison de la correction</label>
-      <textarea id="manual-notes" placeholder="Expliquer la raison de cette correction manuelle..." rows="4"></textarea>
-    </div>
-
-    <div class="alert alert-success">
-      <strong>Note:</strong> Cette action sera enregistrée dans l'historique avec votre identifiant administrateur et sera marquée comme "Corrigé manuellement".
-    </div>
-
-    <div class="button-group mt-6">
-      <button type="submit" class="btn-primary">
-        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-        </svg>
-        Enregistrer la correction
-      </button>
-      <button type="reset" class="btn-secondary">
-        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-        Annuler
-      </button>
-    </div>
-  </form>
+  
+  <div class="button-group">
+    <%= link_to new_admin_time_entry_path, class: "btn-primary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+      </svg>
+      Créer un nouveau pointage
+    <% end %>
+  </div>
 </div>

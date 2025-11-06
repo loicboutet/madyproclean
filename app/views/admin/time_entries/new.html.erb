@@ -1,0 +1,202 @@
+<% content_for :page_title, "Nouveau Pointage" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Créer un Nouveau Pointage</h1>
+      <p class="text-large mt-2">Ajoutez manuellement un pointage pour un agent</p>
+    </div>
+    <div class="button-group">
+      <%= link_to admin_time_entries_path, class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Retour à la liste
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Form -->
+<div class="card">
+  <div class="alert alert-info mb-6">
+    <strong>Information:</strong> Cette action sera enregistrée comme "Corrigé manuellement" avec votre identifiant administrateur.
+  </div>
+
+  <%= form_with url: admin_time_entries_path, method: :post, local: true do |form| %>
+    
+    <!-- Agent & Site Selection -->
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="time_entry_user_id">Agent <span class="text-danger">*</span></label>
+        <select name="time_entry[user_id]" id="time_entry_user_id" required>
+          <option value="">-- Sélectionner un agent --</option>
+          <% @sample_users.each do |user| %>
+            <option value="<%= user[:id] %>"><%= "#{user[:first_name]} #{user[:last_name]} (#{user[:employee_number]})" %></option>
+          <% end %>
+        </select>
+        <small class="text-sm opacity-70">Choisissez l'agent concerné par ce pointage</small>
+      </div>
+
+      <div class="form-group">
+        <label for="time_entry_site_id">Site <span class="text-danger">*</span></label>
+        <select name="time_entry[site_id]" id="time_entry_site_id" required>
+          <option value="">-- Sélectionner un site --</option>
+          <% @sample_sites.each do |site| %>
+            <option value="<%= site[:id] %>"><%= "#{site[:name]} (#{site[:code]})" %></option>
+          <% end %>
+        </select>
+        <small class="text-sm opacity-70">Sélectionnez le site de travail</small>
+      </div>
+    </div>
+
+    <!-- Clock In Time -->
+    <div class="divider"></div>
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      Horaires d'Arrivée
+    </h2>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="time_entry_clocked_in_date">Date d'arrivée <span class="text-danger">*</span></label>
+        <input 
+          type="date" 
+          name="time_entry[clocked_in_date]" 
+          id="time_entry_clocked_in_date" 
+          value="<%= Date.today.strftime('%Y-%m-%d') %>"
+          required>
+      </div>
+
+      <div class="form-group">
+        <label for="time_entry_clocked_in_time">Heure d'arrivée <span class="text-danger">*</span></label>
+        <input 
+          type="time" 
+          name="time_entry[clocked_in_time]" 
+          id="time_entry_clocked_in_time" 
+          value="08:00"
+          required>
+      </div>
+    </div>
+
+    <!-- Clock Out Time -->
+    <div class="divider"></div>
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+      </svg>
+      Horaires de Départ (optionnel)
+    </h2>
+    
+    <div class="alert alert-warning mb-4">
+      <strong>Note:</strong> Si vous laissez les champs de départ vides, le pointage sera marqué comme "En cours".
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="time_entry_clocked_out_date">Date de départ</label>
+        <input 
+          type="date" 
+          name="time_entry[clocked_out_date]" 
+          id="time_entry_clocked_out_date"
+          value="">
+      </div>
+
+      <div class="form-group">
+        <label for="time_entry_clocked_out_time">Heure de départ</label>
+        <input 
+          type="time" 
+          name="time_entry[clocked_out_time]" 
+          id="time_entry_clocked_out_time"
+          value="">
+      </div>
+    </div>
+
+    <!-- Status -->
+    <div class="divider"></div>
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      Statut et Notes
+    </h2>
+
+    <div class="form-group">
+      <label for="time_entry_status">Statut</label>
+      <select name="time_entry[status]" id="time_entry_status">
+        <option value="active">En cours</option>
+        <option value="completed" selected>Complet</option>
+        <option value="anomaly">Anomalie</option>
+      </select>
+      <small class="text-sm opacity-70">Choisissez "Complet" si l'agent a pointé son départ</small>
+    </div>
+
+    <div class="form-group">
+      <label for="time_entry_notes">Notes / Raison de la correction</label>
+      <textarea 
+        name="time_entry[notes]" 
+        id="time_entry_notes" 
+        rows="4"
+        placeholder="Expliquez la raison de ce pointage manuel (ex: oubli de badger, problème technique, etc.)"></textarea>
+      <small class="text-sm opacity-70">Ces notes seront enregistrées avec le pointage</small>
+    </div>
+
+    <!-- Hidden field to combine date and time -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        
+        form.addEventListener('submit', function(e) {
+          const inDate = document.getElementById('time_entry_clocked_in_date').value;
+          const inTime = document.getElementById('time_entry_clocked_in_time').value;
+          const outDate = document.getElementById('time_entry_clocked_out_date').value;
+          const outTime = document.getElementById('time_entry_clocked_out_time').value;
+          
+          // Create hidden inputs for combined datetime
+          if (inDate && inTime) {
+            const clockedInAt = document.createElement('input');
+            clockedInAt.type = 'hidden';
+            clockedInAt.name = 'time_entry[clocked_in_at]';
+            clockedInAt.value = inDate + ' ' + inTime + ':00';
+            form.appendChild(clockedInAt);
+          }
+          
+          if (outDate && outTime) {
+            const clockedOutAt = document.createElement('input');
+            clockedOutAt.type = 'hidden';
+            clockedOutAt.name = 'time_entry[clocked_out_at]';
+            clockedOutAt.value = outDate + ' ' + outTime + ':00';
+            form.appendChild(clockedOutAt);
+          }
+        });
+      });
+    </script>
+
+    <!-- Actions -->
+    <div class="divider"></div>
+    <div class="alert alert-success mb-6">
+      <strong>Important:</strong> Ce pointage sera automatiquement marqué comme "Corrigé manuellement" avec votre identifiant.
+    </div>
+
+    <div class="button-group">
+      <button type="submit" class="btn-primary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        Créer le pointage
+      </button>
+      
+      <%= link_to admin_time_entries_path, class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+        Annuler
+      <% end %>
+    </div>
+  <% end %>
+</div>

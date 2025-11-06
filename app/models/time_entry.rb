@@ -1,0 +1,3 @@
+class TimeEntry < ApplicationRecord
+ 
+end
