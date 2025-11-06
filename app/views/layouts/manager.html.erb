@@ -223,7 +223,9 @@
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 2rem;">
           <!-- Logo Section -->
           <div style="display: flex; align-items: center; gap: 1rem; flex-shrink: 0;">
-            <%= image_tag "logo_square.png", alt: "Mady ProClean Logo", style: "width: 50px; height: 50px; border-radius: 0.5rem; box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);" %>
+            <%= link_to root_path do %>
+              <%= image_tag "logo_square.png", alt: "Mady ProClean Logo", style: "width: 50px; height: 50px; border-radius: 0.5rem; box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3); cursor: pointer;" %>
+            <% end %>
             <div>
               <h1 style="font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg, #00D4FF, #00FFE0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0;">Mady ProClean</h1>
               <p style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.6); margin: 0;">Portail Manager</p>
