@@ -1263,3 +1263,157 @@ input[type="radio"] {
 .chart-container canvas {
     max-height: 300px;
 }
+
+/* Utility Classes */
+.gradient-heading {
+    background: linear-gradient(135deg, var(--cyan-electric), var(--turquoise));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.flex {
+    display: flex;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+.mt-1 {
+    margin-top: 0.25rem;
+}
+
+.mt-6 {
+    margin-top: 1.5rem;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+}
+
+.opacity-70 {
+    opacity: 0.7;
+}
+
+.text-warning {
+    color: #ffc107;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: rgba(0, 212, 255, 0.1);
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: rgba(0, 212, 255, 0.3);
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 212, 255, 0.5);
+}
+
+/* Stats Grid Icons */
+.stat-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    flex-shrink: 0;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-icon svg {
+    width: 2rem;
+    height: 2rem;
+    stroke-width: 2.5;
+}
+
+.stat-icon-primary {
+    background: linear-gradient(135deg, var(--cyan-electric), var(--turquoise));
+}
+
+.stat-icon-primary svg {
+    color: var(--dark-blue);
+}
+
+.stat-icon-success {
+    background: linear-gradient(135deg, #10b981, #34d399);
+}
+
+.stat-icon-success svg {
+    color: #064e3b;
+}
+
+.stat-icon-info {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+}
+
+.stat-icon-info svg {
+    color: #1e3a8a;
+}
+
+.stat-icon-warning {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+}
+
+.stat-icon-warning svg {
+    color: #78350f;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--cyan-electric), var(--turquoise));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.25rem;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
