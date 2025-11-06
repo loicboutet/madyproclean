@@ -265,13 +265,42 @@ p {
     border: 1px solid rgba(0, 212, 255, 0.2);
     border-radius: 1rem;
     padding: 1.5rem;
-    text-align: center;
     transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
 }
 
 .stat-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+}
+
+.stat-card-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--cyan-electric), var(--turquoise));
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-card-icon svg {
+    width: 2rem;
+    height: 2rem;
+    color: var(--dark-blue);
+    stroke-width: 2.5;
+}
+
+.stat-card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
 }
 
 .stat-value {
@@ -281,7 +310,8 @@ p {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
+    line-height: 1;
 }
 
 .stat-label {
@@ -289,6 +319,7 @@ p {
     color: rgba(255, 255, 255, 0.7);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    line-height: 1.2;
 }
 
 /* Feature Grid */
@@ -577,6 +608,15 @@ tr:hover {
     text-align: center;
 }
 
+.admin-sidebar-logo-img {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem;
+    display: block;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+}
+
 .admin-sidebar-logo {
     font-size: 1.5rem;
     font-weight: 700;
@@ -754,8 +794,19 @@ tr:hover {
 }
 
 /* Responsive Admin Layout */
+@media (max-width: 1024px) {
+    .admin-sidebar {
+        width: 240px;
+    }
+
+    .admin-main-wrapper {
+        margin-left: 240px;
+    }
+}
+
 @media (max-width: 768px) {
     .admin-sidebar {
+        width: 260px;
         transform: translateX(-100%);
         transition: transform 0.3s ease;
     }
@@ -772,8 +823,92 @@ tr:hover {
         padding: 1rem;
     }
 
+    .admin-header-title {
+        font-size: 1.25rem;
+    }
+
+    .admin-user-info {
+        display: none;
+    }
+
     .admin-content {
         padding: 1rem;
+    }
+
+    .admin-footer {
+        padding: 1rem;
+    }
+
+    .admin-footer-links {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    /* Responsive Cards */
+    .card, .glass-card {
+        padding: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.75rem;
+    }
+
+    h3 {
+        font-size: 1.25rem;
+    }
+
+    /* Responsive Tables */
+    table {
+        font-size: 0.875rem;
+    }
+
+    th, td {
+        padding: 0.75rem 0.5rem;
+    }
+
+    /* Responsive Buttons */
+    .button-group {
+        flex-direction: column;
+    }
+
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .stat-card-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    .stat-card-icon svg {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+
+    .chart-container canvas {
+        max-height: 250px;
+    }
+
+    /* Responsive Table - Stack on very small screens */
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
     }
 }
 
