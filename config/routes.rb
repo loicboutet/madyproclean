@@ -8,7 +8,8 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Root
-  root 'pages#home'
+  root 'pages#roles'
+  get 'home', to: 'pages#home'
   
   # Roles overview
   get 'roles', to: 'pages#roles'

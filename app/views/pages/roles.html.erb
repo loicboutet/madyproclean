@@ -26,18 +26,18 @@
         <div class="glass-card">
             <div class="role-header">
                 <h2><%= @roles_data[:admin][:name] %></h2>
-                <p class="role-count"><%= @roles_data[:admin][:count] %></p>
+                
                 <span class="badge-success"><%= @roles_data[:admin][:access_level] %></span>
                 <p class="role-description"><%= @roles_data[:admin][:description] %></p>
             </div>
             
-            <h3><%= @roles_data[:admin][:routes].length %> Routes Disponibles</h3>
+           
             <ul class="routes-list">
                 <% @roles_data[:admin][:routes].each do |route| %>
                     <li class="route-item">
                         <% if route[:clickable] %>
                             <a href="<%= route[:path] %>">
-                                <div class="route-path clickable">GET <%= route[:path] %></div>
+                                
                                 <p class="route-description"><%= route[:description] %></p>
                             </a>
                         <% else %>
@@ -53,18 +53,18 @@
         <div class="glass-card">
             <div class="role-header">
                 <h2><%= @roles_data[:manager][:name] %></h2>
-                <p class="role-count"><%= @roles_data[:manager][:count] %></p>
+                
                 <span class="badge-success"><%= @roles_data[:manager][:access_level] %></span>
                 <p class="role-description"><%= @roles_data[:manager][:description] %></p>
             </div>
             
-            <h3><%= @roles_data[:manager][:routes].length %> Routes Disponibles</h3>
+            
             <ul class="routes-list">
                 <% @roles_data[:manager][:routes].each do |route| %>
                     <li class="route-item">
                         <% if route[:clickable] %>
                             <a href="<%= route[:path] %>">
-                                <div class="route-path clickable">GET <%= route[:path] %></div>
+                               
                                 <p class="route-description"><%= route[:description] %></p>
                             </a>
                         <% else %>
@@ -76,32 +76,7 @@
             </ul>
         </div>
 
-        <!-- Agent Card -->
-        <div class="glass-card">
-            <div class="role-header">
-                <h2><%= @roles_data[:agent][:name] %></h2>
-                <p class="role-count"><%= @roles_data[:agent][:count] %></p>
-                <span class="badge-warning"><%= @roles_data[:agent][:access_level] %></span>
-                <p class="role-description"><%= @roles_data[:agent][:description] %></p>
-            </div>
-            
-            <h3><%= @roles_data[:agent][:routes].length %> Routes Disponibles</h3>
-            <ul class="routes-list">
-                <% @roles_data[:agent][:routes].each do |route| %>
-                    <li class="route-item">
-                        <% if route[:clickable] %>
-                            <a href="<%= route[:path] %>">
-                                <div class="route-path clickable">GET <%= route[:path] %></div>
-                                <p class="route-description"><%= route[:description] %></p>
-                            </a>
-                        <% else %>
-                            <div class="route-path">GET <%= route[:path] %></div>
-                            <p class="route-description"><%= route[:description] %></p>
-                        <% end %>
-                    </li>
-                <% end %>
-            </ul>
-        </div>
+        
     </section>
 
     <div class="divider"></div>
