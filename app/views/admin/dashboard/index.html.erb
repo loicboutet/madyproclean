@@ -28,6 +28,41 @@
   </div>
 </div>
 
+<!-- Charts Section -->
+<div class="charts-grid" id="chartsContainer">
+  <!-- Time Entries Chart -->
+  <div class="glass-card">
+    <h3>Pointages de la Semaine</h3>
+    <div class="chart-container">
+      <canvas id="timeEntriesChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Site Occupancy Chart -->
+  <div class="glass-card">
+    <h3>Occupation par Site</h3>
+    <div class="chart-container">
+      <canvas id="siteOccupancyChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Absence Rate Chart -->
+  <div class="glass-card">
+    <h3>Taux d'Absence (6 Mois)</h3>
+    <div class="chart-container">
+      <canvas id="absenceRateChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Anomalies Chart -->
+  <div class="glass-card">
+    <h3>Distribution des Anomalies</h3>
+    <div class="chart-container">
+      <canvas id="anomaliesChart"></canvas>
+    </div>
+  </div>
+</div>
+
 <!-- Recent Activity -->
 <div class="glass-card">
   <h3>Pointages Récents</h3>
@@ -101,3 +136,76 @@
     <% end %>
   </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const chartData = <%= raw @chart_data.to_json %>;
+
+    // Common chart options
+    const commonOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            color: '#FFFFFF',
+            font: { size: 12 }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(0, 212, 255, 0.1)' },
+          ticks: { color: '#FFFFFF' }
+        },
+        x: {
+          grid: { color: 'rgba(0, 212, 255, 0.1)' },
+          ticks: { color: '#FFFFFF' }
+        }
+      }
+    };
+
+    // Time Entries Chart (Line)
+    new Chart(document.getElementById('timeEntriesChart'), {
+      type: 'line',
+      data: chartData.time_entries,
+      options: commonOptions
+    });
+
+    // Site Occupancy Chart (Bar)
+    new Chart(document.getElementById('siteOccupancyChart'), {
+      type: 'bar',
+      data: chartData.site_occupancy,
+      options: commonOptions
+    });
+
+    // Absence Rate Chart (Line with Area)
+    new Chart(document.getElementById('absenceRateChart'), {
+      type: 'line',
+      data: chartData.absence_rate,
+      options: commonOptions
+    });
+
+    // Anomalies Chart (Doughnut)
+    new Chart(document.getElementById('anomaliesChart'), {
+      type: 'doughnut',
+      data: chartData.anomalies,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              color: '#FFFFFF',
+              font: { size: 12 },
+              padding: 15
+            }
+          }
+        }
+      }
+    });
+  });
+</script>
