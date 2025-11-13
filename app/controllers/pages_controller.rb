@@ -1,5 +1,6 @@
 class PagesController < ApplicationController
-  before_action :redirect_if_authenticated, only: [:roles]
+  # Allow everyone to view roles page
+  # before_action :redirect_if_authenticated, only: [:roles]
 
   def home
   end

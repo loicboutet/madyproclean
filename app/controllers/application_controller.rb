@@ -27,19 +27,22 @@ class ApplicationController < ActionController::Base
     elsif current_user.manager?
       redirect_to manager_dashboard_path
     else
-      redirect_to root_path
+      # Agents don't have a dedicated dashboard, send them to home
+      redirect_to home_path
     end
   end
 
   # Authorization helpers
   def authorize_admin!
-    unless current_user&.admin?
+    return unless current_user # authenticate_user! will handle redirect
+    unless current_user.admin?
       redirect_to root_path, alert: 'Access denied. Admin privileges required.'
     end
   end
 
   def authorize_manager!
-    unless current_user&.manager? || current_user&.admin?
+    return unless current_user # authenticate_user! will handle redirect
+    unless current_user.manager? || current_user.admin?
       redirect_to root_path, alert: 'Access denied. Manager or Admin privileges required.'
     end
   end
