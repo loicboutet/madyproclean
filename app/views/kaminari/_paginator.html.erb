@@ -1,0 +1,35 @@
+<%# The container tag
+  - available local variables
+    current_page:  a page object for the currently displayed page
+    total_pages:   total number of pages
+    per_page:      number of items to fetch per page
+    remote:        data-remote
+    paginator:     the paginator that renders the pagination tags inside
+-%>
+<% if total_pages > 0 %>
+  <div class="pagination-wrapper">
+    <!-- Pagination Info -->
+    <div class="pagination-info">
+      <p class="pagination-text">
+        Page <strong><%= current_page.number %></strong> sur <strong><%= total_pages %></strong>
+      </p>
+    </div>
+
+    <!-- Pagination Controls -->
+    <% if total_pages > 1 %>
+      <nav class="pagination-nav" role="navigation" aria-label="Pagination">
+        <ul class="pagination-list">
+          <%= render 'kaminari/prev_page', current_page: current_page, total_pages: total_pages, per_page: per_page, remote: remote, url: (current_page.first? ? '#' : url_for(page: current_page.number - 1)) %>
+          <% paginator.each_relevant_page do |page| %>
+            <% if page.left_outer? || page.right_outer? || page.inside_window? %>
+              <%= render 'kaminari/page', page: page, current_page: current_page, total_pages: total_pages, per_page: per_page, remote: remote, url: url_for(page: page.number) %>
+            <% elsif !page.was_truncated? -%>
+              <%= render 'kaminari/gap' %>
+            <% end %>
+          <% end %>
+          <%= render 'kaminari/next_page', current_page: current_page, total_pages: total_pages, per_page: per_page, remote: remote, url: (current_page.last? ? '#' : url_for(page: current_page.number + 1)) %>
+        </ul>
+      </nav>
+    <% end %>
+  </div>
+<% end %>
