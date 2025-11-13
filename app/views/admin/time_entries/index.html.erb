@@ -27,7 +27,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Total Pointages</p>
-      <p class="stat-value"><%= @time_entries.length %></p>
+      <p class="stat-value"><%= @total_count %></p>
     </div>
   </div>
 
@@ -39,7 +39,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Complets</p>
-      <p class="stat-value"><%= @time_entries.where(status: 'completed').count %></p>
+      <p class="stat-value"><%= @completed_count %></p>
     </div>
   </div>
 
@@ -51,7 +51,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">En Cours</p>
-      <p class="stat-value"><%= @time_entries.where(status: 'active').count %></p>
+      <p class="stat-value"><%= @active_count %></p>
     </div>
   </div>
 
@@ -63,7 +63,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Anomalies</p>
-      <p class="stat-value"><%= @time_entries.where(status: 'anomaly').count %></p>
+      <p class="stat-value"><%= @anomaly_count %></p>
     </div>
   </div>
 </div>

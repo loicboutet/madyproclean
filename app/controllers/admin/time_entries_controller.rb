@@ -31,6 +31,15 @@ class Admin::TimeEntriesController < ApplicationController
       @time_entries = @time_entries.where('clocked_in_at <= ?', end_date.end_of_day)
     end
     
+    # Calculate statistics before pagination
+    @total_count = @time_entries.count
+    @completed_count = @time_entries.where(status: 'completed').count
+    @active_count = @time_entries.where(status: 'active').count
+    @anomaly_count = @time_entries.where(status: 'anomaly').count
+    
+    # Paginate results (20 per page)
+    @time_entries = @time_entries.page(params[:page]).per(20)
+    
     # Load users and sites for filters
     @users = User.agents.active.order(:first_name, :last_name)
     @sites = Site.active.alphabetical

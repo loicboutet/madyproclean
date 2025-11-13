@@ -1,63 +1,97 @@
-<%# Simple reusable pagination partial
+<%# Dynamic pagination partial using Kaminari
     Usage: <%= render 'shared/pagination' %>
-    This shows a static pagination example that can be customized
+    Works with any Kaminari paginated collection
 -%>
 
-<div class="pagination-wrapper">
-  <!-- Pagination Info -->
-  <div class="pagination-info">
-    <p class="pagination-text">
-      Affichage de <strong>1</strong> à <strong>10</strong> sur <strong>45</strong> entrées
-    </p>
+<% if @time_entries.present? %>
+  <div class="pagination-wrapper">
+    <!-- Pagination Info -->
+    <div class="pagination-info">
+      <p class="pagination-text">
+        Affichage de <strong><%= @time_entries.offset_value + 1 %></strong> à <strong><%= [@time_entries.offset_value + @time_entries.length, @time_entries.total_count].min %></strong> sur <strong><%= @time_entries.total_count %></strong> entrées
+      </p>
+    </div>
+
+    <!-- Pagination Controls -->
+    <% if @time_entries.total_pages > 1 %>
+      <nav class="pagination-nav" role="navigation" aria-label="Pagination">
+        <ul class="pagination-list">
+          <!-- Previous Page -->
+          <% if @time_entries.prev_page %>
+            <li class="pagination-item pagination-prev">
+              <%= link_to admin_time_entries_path(params.permit(:user_id, :site_id, :status, :start_date, :end_date).merge(page: @time_entries.prev_page)) do %>
+                <svg class="pagination-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                <span>Précédent</span>
+              <% end %>
+            </li>
+          <% else %>
+            <li class="pagination-item pagination-prev disabled">
+              <span>
+                <svg class="pagination-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                <span>Précédent</span>
+              </span>
+            </li>
+          <% end %>
+
+          <!-- Page Numbers -->
+          <% page_range = [] %>
+          <% if @time_entries.total_pages <= 7 %>
+            <% page_range = (1..@time_entries.total_pages).to_a %>
+          <% else %>
+            <% if @time_entries.current_page <= 4 %>
+              <% page_range = (1..5).to_a + [nil, @time_entries.total_pages] %>
+            <% elsif @time_entries.current_page >= @time_entries.total_pages - 3 %>
+              <% page_range = [1, nil] + ((@time_entries.total_pages - 4)..@time_entries.total_pages).to_a %>
+            <% else %>
+              <% page_range = [1, nil, @time_entries.current_page - 1, @time_entries.current_page, @time_entries.current_page + 1, nil, @time_entries.total_pages] %>
+            <% end %>
+          <% end %>
+
+          <% page_range.each do |page_num| %>
+            <% if page_num.nil? %>
+              <!-- Gap/Ellipsis -->
+              <li class="pagination-item pagination-gap">
+                <span>...</span>
+              </li>
+            <% elsif page_num == @time_entries.current_page %>
+              <!-- Current Page (active) -->
+              <li class="pagination-item pagination-page active">
+                <span><%= page_num %></span>
+              </li>
+            <% else %>
+              <!-- Other Pages -->
+              <li class="pagination-item pagination-page">
+                <%= link_to page_num, admin_time_entries_path(params.permit(:user_id, :site_id, :status, :start_date, :end_date).merge(page: page_num)) %>
+              </li>
+            <% end %>
+          <% end %>
+
+          <!-- Next Page -->
+          <% if @time_entries.next_page %>
+            <li class="pagination-item pagination-next">
+              <%= link_to admin_time_entries_path(params.permit(:user_id, :site_id, :status, :start_date, :end_date).merge(page: @time_entries.next_page)) do %>
+                <span>Suivant</span>
+                <svg class="pagination-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              <% end %>
+            </li>
+          <% else %>
+            <li class="pagination-item pagination-next disabled">
+              <span>
+                <span>Suivant</span>
+                <svg class="pagination-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </span>
+            </li>
+          <% end %>
+        </ul>
+      </nav>
+    <% end %>
   </div>
-
-  <!-- Pagination Controls -->
-  <nav class="pagination-nav" role="navigation" aria-label="Pagination">
-    <ul class="pagination-list">
-      <!-- Previous Page (disabled state example) -->
-      <li class="pagination-item pagination-prev disabled">
-        <span>
-          <svg class="pagination-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-          </svg>
-          <span>Précédent</span>
-        </span>
-      </li>
-
-      <!-- Page 1 (active) -->
-      <li class="pagination-item pagination-page active">
-        <span>1</span>
-      </li>
-
-      <!-- Page 2 -->
-      <li class="pagination-item pagination-page">
-        <a href="#">2</a>
-      </li>
-
-      <!-- Page 3 -->
-      <li class="pagination-item pagination-page">
-        <a href="#">3</a>
-      </li>
-
-      <!-- Gap/Ellipsis -->
-      <li class="pagination-item pagination-gap">
-        <span>...</span>
-      </li>
-
-      <!-- Page 5 (last page) -->
-      <li class="pagination-item pagination-page">
-        <a href="#">5</a>
-      </li>
-
-      <!-- Next Page -->
-      <li class="pagination-item pagination-next">
-        <a href="#">
-          <span>Suivant</span>
-          <svg class="pagination-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-          </svg>
-        </a>
-      </li>
-    </ul>
-  </nav>
-</div>
+<% end %>
