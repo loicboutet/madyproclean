@@ -8,7 +8,12 @@ class SessionsController < ApplicationController
     user = User.find_by(email: session_params[:email])
     
     if user && user.valid_password?(session_params[:password])
-      sign_in(user)
+      # Use Devise's sign_in method with proper scoping
+      sign_in(:user, user)
+      
+      # Handle remember me
+      user.remember_me! if session_params[:remember_me] == '1'
+      
       redirect_to_dashboard
     else
       flash.now[:alert] = "Email ou mot de passe incorrect."
@@ -17,7 +22,9 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    sign_out(current_user) if current_user
+    if current_user
+      sign_out(:user)
+    end
     redirect_to root_path, notice: "Vous avez été déconnecté avec succès."
   end
 
