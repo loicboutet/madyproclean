@@ -25,7 +25,7 @@ class SessionsController < ApplicationController
     if current_user
       sign_out(:user)
     end
-    redirect_to root_path, notice: "Vous avez été déconnecté avec succès."
+    redirect_to home_path, notice: "Vous avez été déconnecté avec succès."
   end
 
   private
