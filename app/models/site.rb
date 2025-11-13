@@ -22,6 +22,19 @@ class Site < ApplicationRecord
     "https://clock.example.com/c/#{qr_code_token}"
   end
 
+  def qr_code_svg
+    # Generate QR code as SVG
+    require 'rqrcode'
+    qr = RQRCode::QRCode.new(qr_code_url)
+    qr.as_svg(
+      color: '000',
+      shape_rendering: 'crispEdges',
+      module_size: 6,
+      standalone: true,
+      use_path: true
+    )
+  end
+
   def current_agents
     # Returns agents currently on site (active time entries)
     time_entries.active.includes(:user).map(&:user)
