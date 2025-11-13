@@ -1,4 +1,314 @@
 namespace :reports do
+  desc "Generate 50 sample reports in the database"
+  task generate_reports: :environment do
+    puts "\n📊 Generating 50 sample reports in database..."
+    puts "=" * 60
+    
+    # Check if we have users
+    if User.count.zero?
+      puts "❌ ERROR: No users found!"
+      puts "   Please run 'rails db:seed' first to create users."
+      exit 1
+    end
+    
+    # Get users who can generate reports (admins and managers)
+    report_generators = User.where(role: ['admin', 'manager']).to_a
+    if report_generators.empty?
+      puts "❌ ERROR: No admin or manager users found!"
+      puts "   Please run 'rails db:seed' first."
+      exit 1
+    end
+    
+    # Get sites for site-specific reports
+    sites = Site.all.to_a
+    
+    # Clear existing demo reports
+    Report.destroy_all
+    puts "   ✓ Cleared existing reports"
+    
+    # Report types and their configurations
+    report_types = [
+      {
+        type: 'monthly',
+        weight: 15,  # 15 out of 50
+        generator: ->(index, user, sites) {
+          month_offset = index % 12
+          start_date = Date.current.beginning_of_month - month_offset.months
+          end_date = start_date.end_of_month
+          
+          {
+            title: "Rapport Mensuel - #{I18n.l(start_date, format: '%B %Y')}",
+            report_type: 'monthly',
+            period_start: start_date,
+            period_end: end_date,
+            generated_at: start_date.next_month.beginning_of_month + rand(0..5).days + rand(8..10).hours,
+            generated_by: user,
+            status: ['completed', 'completed', 'completed', 'generating'].sample,
+            description: 'Rapport mensuel complet des présences et heures travaillées pour tous les agents',
+            total_hours: rand(3500.0..5000.0).round(2),
+            total_agents: rand(100..150),
+            total_sites: sites.count,
+            filters_applied: { all_agents: true, all_sites: true },
+            file_format: ['PDF', 'Excel', 'CSV'].sample,
+            file_size: "#{rand(1.5..3.5).round(1)} MB"
+          }
+        }
+      },
+      {
+        type: 'hr',
+        weight: 8,
+        generator: ->(index, user, sites) {
+          quarter = index % 4
+          year = Date.current.year - (index / 4)
+          start_date = Date.new(year, (quarter * 3) + 1, 1)
+          end_date = start_date + 2.months
+          end_date = end_date.end_of_month
+          
+          total_absences = rand(50..120)
+          total_agents = rand(100..150)
+          absence_rate = (total_absences.to_f / total_agents * 100).round(2)
+          
+          {
+            title: "Rapport RH - Taux d'Absence T#{quarter + 1} #{year}",
+            report_type: 'hr',
+            period_start: start_date,
+            period_end: end_date,
+            generated_at: end_date + rand(1..10).days + rand(9..16).hours,
+            generated_by: user,
+            status: 'completed',
+            description: "Analyse des absences et taux de couverture d'équipe pour le trimestre #{quarter + 1}",
+            total_absences: total_absences,
+            absence_rate: absence_rate,
+            coverage_rate: (100 - absence_rate).round(2),
+            total_agents: total_agents,
+            filters_applied: { absence_types: ['vacation', 'sick_leave', 'other'] },
+            file_format: ['Excel', 'PDF'].sample,
+            file_size: "#{rand(1.0..2.5).round(1)} MB"
+          }
+        }
+      },
+      {
+        type: 'time_tracking',
+        weight: 10,
+        generator: ->(index, user, sites) {
+          site = sites.sample
+          month_offset = index % 6
+          start_date = Date.current.beginning_of_month - month_offset.months
+          end_date = start_date.end_of_month
+          
+          {
+            title: "Rapport Temps Travaillé - #{site.name}",
+            report_type: 'time_tracking',
+            period_start: start_date,
+            period_end: end_date,
+            generated_at: end_date + rand(1..5).days + rand(9..15).hours,
+            generated_by: user,
+            status: 'completed',
+            description: "Détail des heures travaillées pour #{site.name}",
+            total_hours: rand(800.0..2500.0).round(2),
+            total_agents: rand(20..60),
+            total_sites: 1,
+            site_name: site.name,
+            site_code: site.code,
+            filters_applied: { site_id: site.id },
+            file_format: ['CSV', 'Excel'].sample,
+            file_size: "#{rand(500..1500)} KB"
+          }
+        }
+      },
+      {
+        type: 'scheduling',
+        weight: 6,
+        generator: ->(index, user, sites) {
+          month_offset = index % 3
+          start_date = (Date.current + month_offset.months).beginning_of_month
+          end_date = start_date.end_of_month
+          
+          total_schedules = rand(350..500)
+          scheduled = rand(250..total_schedules)
+          
+          {
+            title: "Rapport Planification - #{I18n.l(start_date, format: '%B %Y')}",
+            report_type: 'scheduling',
+            period_start: start_date,
+            period_end: end_date,
+            generated_at: start_date - rand(3..10).days + rand(14..17).hours,
+            generated_by: user,
+            status: start_date > Date.current ? 'pending' : ['completed', 'generating'].sample,
+            description: "Planification prévisionnelle des horaires pour #{I18n.l(start_date, format: '%B %Y')}",
+            total_schedules: total_schedules,
+            scheduled_count: scheduled,
+            completed_count: start_date < Date.current ? rand(0..scheduled) : 0,
+            missed_count: start_date < Date.current ? rand(0..20) : 0,
+            filters_applied: { all_sites: true },
+            file_format: 'PDF',
+            file_size: start_date > Date.current ? nil : "#{rand(1.5..2.5).round(1)} MB"
+          }
+        }
+      },
+      {
+        type: 'anomalies',
+        weight: 5,
+        generator: ->(index, user, sites) {
+          month_offset = index % 6
+          start_date = Date.current.beginning_of_month - month_offset.months
+          end_date = start_date.end_of_month
+          
+          total_anomalies = rand(15..45)
+          resolved = rand((total_anomalies * 0.6).to_i..total_anomalies)
+          
+          {
+            title: "Rapport Anomalies - #{I18n.l(start_date, format: '%B %Y')}",
+            report_type: 'anomalies',
+            period_start: start_date,
+            period_end: end_date,
+            generated_at: end_date + rand(1..3).days + rand(10..14).hours,
+            generated_by: user,
+            status: 'completed',
+            description: 'Liste des anomalies détectées et leur résolution',
+            total_anomalies: total_anomalies,
+            resolved_anomalies: resolved,
+            unresolved_anomalies: total_anomalies - resolved,
+            filters_applied: { severity: ['high', 'medium'] },
+            file_format: ['Excel', 'CSV'].sample,
+            file_size: "#{rand(400..900)} KB"
+          }
+        }
+      },
+      {
+        type: 'payroll_export',
+        weight: 3,
+        generator: ->(index, user, sites) {
+          month_offset = index % 12
+          start_date = Date.current.beginning_of_month - month_offset.months
+          end_date = start_date.end_of_month
+          
+          {
+            title: "Rapport Export Paie - #{I18n.l(start_date, format: '%B %Y')}",
+            report_type: 'payroll_export',
+            period_start: start_date,
+            period_end: end_date,
+            generated_at: end_date + 1.day + 8.hours,
+            generated_by: user,
+            status: 'completed',
+            description: 'Export des données pour le traitement de la paie',
+            total_hours: rand(3500.0..5000.0).round(2),
+            total_agents: rand(100..150),
+            filters_applied: { active_agents: true },
+            file_format: 'CSV',
+            file_size: "#{rand(800..1500)} KB"
+          }
+        }
+      },
+      {
+        type: 'site_performance',
+        weight: 2,
+        generator: ->(index, user, sites) {
+          quarter = index % 4
+          year = Date.current.year
+          start_date = Date.new(year, (quarter * 3) + 1, 1)
+          end_date = start_date + 2.months
+          end_date = end_date.end_of_month
+          
+          {
+            title: "Rapport Performance Sites - T#{quarter + 1} #{year}",
+            report_type: 'site_performance',
+            period_start: start_date,
+            period_end: end_date,
+            generated_at: start_date > Date.current ? nil : (end_date + rand(1..7).days),
+            generated_by: user,
+            status: start_date > Date.current ? 'pending' : ['completed', 'generating'].sample,
+            description: 'Analyse de performance et utilisation de tous les sites',
+            total_sites: sites.count,
+            total_hours: rand(8000.0..15000.0).round(2),
+            total_agents: rand(100..150),
+            filters_applied: { all_sites: true },
+            file_format: 'PDF',
+            file_size: start_date > Date.current ? nil : "#{rand(2.0..4.0).round(1)} MB"
+          }
+        }
+      },
+      {
+        type: 'agent_performance',
+        weight: 1,
+        generator: ->(index, user, sites) {
+          quarter = index % 4
+          year = Date.current.year
+          start_date = Date.new(year, (quarter * 3) + 1, 1)
+          end_date = start_date + 2.months
+          end_date = end_date.end_of_month
+          
+          {
+            title: "Rapport Performance Agents - T#{quarter + 1} #{year}",
+            report_type: 'agent_performance',
+            period_start: start_date,
+            period_end: end_date,
+            generated_at: start_date > Date.current ? nil : (end_date + rand(1..7).days),
+            generated_by: user,
+            status: start_date > Date.current ? 'pending' : 'completed',
+            description: 'Analyse de performance individuelle des agents',
+            total_agents: rand(100..150),
+            total_hours: rand(8000.0..15000.0).round(2),
+            filters_applied: { active_agents: true },
+            file_format: 'Excel',
+            file_size: start_date > Date.current ? nil : "#{rand(1.5..3.0).round(1)} MB"
+          }
+        }
+      }
+    ]
+    
+    # Generate reports based on weights
+    reports_to_create = []
+    report_types.each do |config|
+      config[:weight].times do |i|
+        reports_to_create << {
+          config: config,
+          index: i
+        }
+      end
+    end
+    
+    # Shuffle to mix up the report types
+    reports_to_create = reports_to_create.shuffle.first(50)
+    
+    created_count = 0
+    reports_to_create.each_with_index do |item, idx|
+      user = report_generators.sample
+      report_data = item[:config][:generator].call(item[:index], user, sites)
+      
+      begin
+        Report.create!(report_data)
+        created_count += 1
+        print "\r   Creating reports... #{created_count}/50"
+      rescue => e
+        puts "\n   ⚠️  Error creating report: #{e.message}"
+      end
+    end
+    
+    puts "\n"
+    puts "=" * 60
+    puts "✅ Report generation complete!"
+    puts "\n📊 Summary:"
+    puts "   - Total reports created: #{Report.count}"
+    
+    Report::REPORT_TYPES.each do |type|
+      count = Report.where(report_type: type).count
+      puts "   - #{type.titleize}: #{count}" if count > 0
+    end
+    
+    puts "\n📈 By Status:"
+    Report::STATUSES.each do |status|
+      count = Report.where(status: status).count
+      puts "   - #{status.titleize}: #{count}" if count > 0
+    end
+    
+    puts "\n💡 Next steps:"
+    puts "   1. Visit http://localhost:3000/admin/reports"
+    puts "   2. Browse the generated reports"
+    puts "   3. Use filters to view reports by type"
+    puts "\n"
+  end
+  
   desc "Generate sample time entries for testing monthly reports (without deleting existing data)"
   task generate_sample_data: :environment do
     puts "\n🕐 Generating sample time entries for monthly reports testing..."

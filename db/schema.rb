@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_13_173812) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_13_201847) do
   create_table "anomaly_logs", force: :cascade do |t|
     t.string "anomaly_type", null: false
     t.string "severity", default: "medium", null: false
@@ -32,6 +32,42 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_13_173812) do
     t.index ["severity"], name: "index_anomaly_logs_on_severity"
     t.index ["time_entry_id"], name: "index_anomaly_logs_on_time_entry_id"
     t.index ["user_id"], name: "index_anomaly_logs_on_user_id"
+  end
+
+  create_table "reports", force: :cascade do |t|
+    t.string "title", null: false
+    t.string "report_type", null: false
+    t.date "period_start"
+    t.date "period_end"
+    t.datetime "generated_at"
+    t.integer "generated_by_id"
+    t.string "status", default: "pending", null: false
+    t.text "description"
+    t.decimal "total_hours", precision: 10, scale: 2
+    t.integer "total_agents"
+    t.integer "total_sites"
+    t.text "filters_applied"
+    t.string "file_format"
+    t.string "file_size"
+    t.integer "total_absences"
+    t.decimal "absence_rate", precision: 5, scale: 2
+    t.decimal "coverage_rate", precision: 5, scale: 2
+    t.integer "total_anomalies"
+    t.integer "resolved_anomalies"
+    t.integer "unresolved_anomalies"
+    t.integer "total_schedules"
+    t.integer "scheduled_count"
+    t.integer "completed_count"
+    t.integer "missed_count"
+    t.string "site_name"
+    t.string "site_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["generated_at"], name: "index_reports_on_generated_at"
+    t.index ["generated_by_id"], name: "index_reports_on_generated_by_id"
+    t.index ["period_start", "period_end"], name: "index_reports_on_period_start_and_period_end"
+    t.index ["report_type"], name: "index_reports_on_report_type"
+    t.index ["status"], name: "index_reports_on_status"
   end
 
   create_table "schedules", force: :cascade do |t|

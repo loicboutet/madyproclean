@@ -27,7 +27,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Total Rapports</p>
-      <p class="stat-value"><%= @all_reports.length %></p>
+      <p class="stat-value"><%= @all_reports_count %></p>
     </div>
   </div>
 
@@ -39,7 +39,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Complétés</p>
-      <p class="stat-value"><%= @all_reports.count { |r| r[:status] == 'completed' } %></p>
+      <p class="stat-value"><%= @completed_count %></p>
     </div>
   </div>
 
@@ -51,7 +51,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">En Cours</p>
-      <p class="stat-value"><%= @all_reports.count { |r| r[:status] == 'generating' } %></p>
+      <p class="stat-value"><%= @generating_count %></p>
     </div>
   </div>
 
@@ -63,7 +63,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">En Attente</p>
-      <p class="stat-value"><%= @all_reports.count { |r| r[:status] == 'pending' } %></p>
+      <p class="stat-value"><%= @pending_count %></p>
     </div>
   </div>
 </div>
@@ -193,17 +193,17 @@
         <% else %>
           <% @reports.each do |report| %>
             <tr>
-              <td><strong>#<%= report[:id] %></strong></td>
+              <td><strong>#<%= report.id %></strong></td>
               <td>
                 <div>
-                  <p class="font-semibold"><%= report[:title] %></p>
-                  <% if report[:description] %>
-                    <p class="text-sm opacity-70"><%= report[:description].truncate(50) %></p>
+                  <p class="font-semibold"><%= report.title %></p>
+                  <% if report.description %>
+                    <p class="text-sm opacity-70"><%= report.description.truncate(50) %></p>
                   <% end %>
                 </div>
               </td>
               <td>
-                <% case report[:report_type] %>
+                <% case report.report_type %>
                 <% when 'monthly' %>
                   <span class="badge-info">📅 Mensuel</span>
                 <% when 'hr' %>
@@ -222,32 +222,34 @@
               </td>
               <td>
                 <div>
-                  <p class="font-semibold"><%= report[:period_start].strftime('%d/%m/%Y') %></p>
-                  <p class="text-sm opacity-70">au <%= report[:period_end].strftime('%d/%m/%Y') %></p>
+                  <p class="font-semibold"><%= report.period_start&.strftime('%d/%m/%Y') || 'N/A' %></p>
+                  <p class="text-sm opacity-70">au <%= report.period_end&.strftime('%d/%m/%Y') || 'N/A' %></p>
                 </div>
               </td>
               <td>
-                <% if report[:status] == 'completed' %>
+                <% if report.status == 'completed' %>
                   <span class="badge-success">✓ Complété</span>
-                <% elsif report[:status] == 'generating' %>
+                <% elsif report.status == 'generating' %>
                   <span class="badge-info">⏳ En cours</span>
-                <% elsif report[:status] == 'pending' %>
+                <% elsif report.status == 'pending' %>
                   <span class="badge-warning">⏸️ En attente</span>
-                <% elsif report[:status] == 'failed' %>
+                <% elsif report.status == 'failed' %>
                   <span class="badge-danger">✗ Échoué</span>
                 <% end %>
               </td>
               <td>
                 <div>
-                  <p class="font-semibold"><%= report[:generated_by_name] %></p>
-                  <p class="text-sm opacity-70"><%= report[:generated_at].strftime('%d/%m/%Y %H:%M') %></p>
+                  <p class="font-semibold"><%= report.generated_by&.full_name || 'Système' %></p>
+                  <% if report.generated_at %>
+                    <p class="text-sm opacity-70"><%= report.generated_at.strftime('%d/%m/%Y %H:%M') %></p>
+                  <% end %>
                 </div>
               </td>
               <td>
                 <div>
-                  <span class="badge"><%= report[:file_format] %></span>
-                  <% if report[:file_size] %>
-                    <p class="text-sm opacity-70 mt-1"><%= report[:file_size] %></p>
+                  <span class="badge"><%= report.file_format %></span>
+                  <% if report.file_size %>
+                    <p class="text-sm opacity-70 mt-1"><%= report.file_size %></p>
                   <% end %>
                 </div>
               </td>
@@ -260,14 +262,14 @@
                   </button>
                   
                   <div class="dropdown-menu hidden" data-dropdown-target="menu">
-                    <%= link_to admin_report_path(report[:id]), class: "dropdown-item" do %>
+                    <%= link_to admin_report_path(report.id), class: "dropdown-item" do %>
                       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                       </svg>
                       <span>Voir</span>
                     <% end %>
-                    <% if report[:status] == 'completed' %>
+                    <% if report.status == 'completed' %>
                       <%= link_to "#", class: "dropdown-item" do %>
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
@@ -292,10 +294,8 @@
     </table>
   </div>
 
-  <!-- Pagination (disabled for demo data) -->
-  <% if false # @reports.respond_to?(:total_pages) %>
-    <%= render 'shared/pagination' %>
-  <% end %>
+  <!-- Pagination -->
+  <%= paginate @reports, params: params.permit(:report_type, :status, :start_date, :end_date, :search).to_h %>
 </div>
 
 <div class="divider"></div>

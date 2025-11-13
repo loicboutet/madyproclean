@@ -6,38 +6,44 @@ class Admin::ReportsController < ApplicationController
   before_action :load_demo_data
   
   def index
-    # Apply filters to demo data
-    @reports = @all_reports.dup
+    # Use Report model from database
+    @reports = Report.includes(:generated_by).all.recent
     
     # Filter by report type
     if params[:report_type].present?
-      @reports = @reports.select { |r| r[:report_type] == params[:report_type] }
+      @reports = @reports.by_type(params[:report_type])
     end
     
     # Filter by status
     if params[:status].present?
-      @reports = @reports.select { |r| r[:status] == params[:status] }
+      @reports = @reports.by_status(params[:status])
     end
     
     # Filter by date range
     if params[:start_date].present?
       start_date = Date.parse(params[:start_date])
-      @reports = @reports.select { |r| r[:period_start] >= start_date }
+      @reports = @reports.where('period_start >= ?', start_date)
     end
     
     if params[:end_date].present?
       end_date = Date.parse(params[:end_date])
-      @reports = @reports.select { |r| r[:period_end] <= end_date }
+      @reports = @reports.where('period_end <= ?', end_date)
     end
     
     # Search
     if params[:search].present?
-      search_term = params[:search].downcase
-      @reports = @reports.select do |r|
-        r[:title].downcase.include?(search_term) ||
-        (r[:description] && r[:description].downcase.include?(search_term))
-      end
+      search_term = "%#{params[:search]}%"
+      @reports = @reports.where('title LIKE ? OR description LIKE ?', search_term, search_term)
     end
+    
+    # Paginate results (10 per page)
+    @reports = @reports.page(params[:page]).per(10)
+    
+    # Keep all reports count for stats (before pagination)
+    @all_reports_count = Report.count
+    @completed_count = Report.completed.count
+    @generating_count = Report.generating.count
+    @pending_count = Report.pending.count
   end
 
   def show
@@ -268,8 +274,7 @@ class Admin::ReportsController < ApplicationController
   end
 
   def set_report
-    load_demo_data
-    @report = @all_reports.find { |r| r[:id] == params[:id].to_i }
+    @report = Report.find_by(id: params[:id])
     
     unless @report
       redirect_to admin_reports_path, alert: 'Rapport non trouvé.'
