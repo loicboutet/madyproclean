@@ -4,7 +4,11 @@ class Admin::DashboardController < ApplicationController
   layout 'admin'
   
   def index
-    # Sample data for charts - Replace with real database queries later
+    # Real-time site occupancy data
+    @sites = Site.active.alphabetical.page(params[:page]).per(10)
+    @total_active_agents = TimeEntry.active.count
+    
+    # Chart data
     @chart_data = {
       time_entries: time_entries_chart_data,
       site_occupancy: site_occupancy_chart_data,
@@ -33,21 +37,26 @@ class Admin::DashboardController < ApplicationController
   end
 
   def site_occupancy_chart_data
-    # Sample: Current agents per site
-    # TODO: Replace with real site data
+    # Real data: Current agents per site
+    sites = Site.active.alphabetical.limit(10)
+    
     {
-      labels: ['Site A', 'Site B', 'Site C', 'Site D', 'Site E', 'Site F'],
+      labels: sites.map(&:name),
       datasets: [
         {
           label: 'Agents Actifs',
-          data: [12, 19, 8, 15, 10, 7],
+          data: sites.map(&:current_agent_count),
           backgroundColor: [
             'rgba(0, 212, 255, 0.8)',
             'rgba(0, 255, 224, 0.8)',
             'rgba(102, 227, 255, 0.8)',
             'rgba(0, 212, 255, 0.6)',
             'rgba(0, 255, 224, 0.6)',
-            'rgba(102, 227, 255, 0.6)'
+            'rgba(102, 227, 255, 0.6)',
+            'rgba(0, 212, 255, 0.4)',
+            'rgba(0, 255, 224, 0.4)',
+            'rgba(102, 227, 255, 0.4)',
+            'rgba(0, 212, 255, 0.2)'
           ],
           borderColor: '#00D4FF',
           borderWidth: 1

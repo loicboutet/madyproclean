@@ -28,7 +28,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Total Sites</p>
-      <p class="stat-value"><%= @all_sites.length %></p>
+      <p class="stat-value"><%= Site.count %></p>
     </div>
   </div>
 
@@ -40,7 +40,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Sites Actifs</p>
-      <p class="stat-value"><%= @all_sites.count { |s| s[:active] == true } %></p>
+      <p class="stat-value"><%= Site.active.count %></p>
     </div>
   </div>
 
@@ -52,7 +52,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Sites Inactifs</p>
-      <p class="stat-value"><%= @all_sites.count { |s| s[:active] == false } %></p>
+      <p class="stat-value"><%= Site.where(active: false).count %></p>
     </div>
   </div>
 
@@ -63,8 +63,8 @@
       </svg>
     </div>
     <div class="stat-content">
-      <p class="stat-label">Résultats</p>
-      <p class="stat-value"><%= @sites.length %></p>
+      <p class="stat-label">Agents Actifs</p>
+      <p class="stat-value"><%= TimeEntry.active.count %></p>
     </div>
   </div>
 </div>
@@ -138,19 +138,18 @@
     <table>
       <thead>
         <tr>
-          <th>ID</th>
           <th>Nom du Site</th>
           <th>Code</th>
+          <th style="text-align: center;">Agents Actifs</th>
           <th>Adresse</th>
           <th>Statut</th>
-          <th>QR Code Token</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         <% if @sites.empty? %>
           <tr>
-            <td colspan="7" style="text-align: center; padding: 2rem;">
+            <td colspan="6" style="text-align: center; padding: 2rem;">
               <div class="alert alert-warning" style="display: inline-block;">
                 <strong>Aucun site trouvé</strong> avec les filtres actuels
               </div>
@@ -158,31 +157,47 @@
           </tr>
         <% else %>
           <% @sites.each do |site| %>
+            <% current_time_entries = site.current_time_entries %>
             <tr>
-              <td><strong>#<%= site[:id] %></strong></td>
               <td>
                 <div>
-                  <p class="font-semibold"><%= site[:name] %></p>
-                  <% if site[:description].present? %>
-                    <p class="text-sm opacity-70"><%= truncate(site[:description], length: 50) %></p>
+                  <p class="font-semibold"><%= site.name %></p>
+                  <% if site.description.present? %>
+                    <p class="text-sm opacity-70"><%= truncate(site.description, length: 50) %></p>
                   <% end %>
                 </div>
               </td>
               <td>
-                <span class="badge"><%= site[:code] %></span>
+                <span class="badge"><%= site.code %></span>
+              </td>
+              <td style="text-align: center;">
+                <% if current_time_entries.any? %>
+                  <%= link_to admin_site_path(site), style: "text-decoration: none;" do %>
+                    <span class="badge" style="background-color: #00D4FF; color: #000; font-size: 1rem; padding: 0.5rem 1rem; cursor: pointer;" title="Cliquez pour voir les détails">
+                      <%= current_time_entries.count %>
+                    </span>
+                  <% end %>
+                  <div style="margin-top: 0.25rem; font-size: 0.75rem; color: #00FFE0;">
+                    <%= current_time_entries.map { |e| e.user.first_name }.first(2).join(', ') %>
+                    <% if current_time_entries.count > 2 %>
+                      + <%= current_time_entries.count - 2 %> autres
+                    <% end %>
+                  </div>
+                <% else %>
+                  <span class="badge" style="background-color: #444; color: #888;">
+                    0
+                  </span>
+                <% end %>
               </td>
               <td>
-                <p class="text-sm"><%= site[:address] %></p>
+                <p class="text-sm"><%= site.address.presence || '-' %></p>
               </td>
               <td>
-                <% if site[:active] %>
+                <% if site.active %>
                   <span class="badge-success">✓ Actif</span>
                 <% else %>
                   <span class="badge-warning">✗ Inactif</span>
                 <% end %>
-              </td>
-              <td>
-                <span class="text-sm opacity-70 font-mono"><%= truncate(site[:qr_code_token], length: 20) %></span>
               </td>
               <td>
                 <div class="dropdown-wrapper" data-controller="dropdown">
@@ -193,27 +208,27 @@
                   </button>
                   
                   <div class="dropdown-menu hidden" data-dropdown-target="menu">
-                    <%= link_to admin_site_path(site[:id]), class: "dropdown-item" do %>
+                    <%= link_to admin_site_path(site), class: "dropdown-item" do %>
                       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                       </svg>
                       <span>Voir</span>
                     <% end %>
-                    <%= link_to edit_admin_site_path(site[:id]), class: "dropdown-item" do %>
+                    <%= link_to edit_admin_site_path(site), class: "dropdown-item" do %>
                       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                       </svg>
                       <span>Modifier</span>
                     <% end %>
-                    <%= link_to qr_code_admin_site_path(site[:id]), class: "dropdown-item" do %>
+                    <%= link_to qr_code_admin_site_path(site), class: "dropdown-item" do %>
                       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2m5-7v2M7 4h10"/>
                       </svg>
                       <span>Voir QR Code</span>
                     <% end %>
                     <div class="dropdown-divider"></div>
-                    <%= button_to admin_site_path(site[:id]), method: :delete, data: { confirm: 'Êtes-vous sûr de vouloir désactiver ce site ?' }, class: "dropdown-item dropdown-item-danger", form: { style: 'display: inline;' } do %>
+                    <%= button_to admin_site_path(site), method: :delete, data: { confirm: 'Êtes-vous sûr de vouloir désactiver ce site ?' }, class: "dropdown-item dropdown-item-danger", form: { style: 'display: inline;' } do %>
                       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
                       </svg>
@@ -230,7 +245,7 @@
   </div>
 
   <!-- Pagination -->
-  <%= render 'shared/pagination' %>
+  <%= render 'shared/pagination', collection: @sites %>
 </div>
 
 <div class="divider"></div>

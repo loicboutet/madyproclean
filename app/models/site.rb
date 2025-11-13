@@ -24,7 +24,26 @@ class Site < ApplicationRecord
 
   def current_agents
     # Returns agents currently on site (active time entries)
-    time_entries.joins(:user).where(status: 'active').map(&:user)
+    time_entries.active.includes(:user).map(&:user)
+  end
+
+  def current_time_entries
+    # Returns active time entries with user information
+    time_entries.active.includes(:user).order(clocked_in_at: :desc)
+  end
+
+  def current_agent_count
+    time_entries.active.count
+  end
+
+  def self.with_current_occupancy
+    # Efficiently loads all sites with their current occupancy data
+    includes(time_entries: :user)
+      .left_joins(:time_entries)
+      .where('time_entries.status = ? OR time_entries.id IS NULL', 'active')
+      .group('sites.id')
+      .select('sites.*, COUNT(CASE WHEN time_entries.status = ? THEN 1 END) as agents_count', 'active')
+      .order(:name)
   end
 
   private
