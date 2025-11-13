@@ -1,4 +1,6 @@
 class Manager::AbsencesController < ApplicationController
+  before_action :authenticate_user!
+  before_action :authorize_manager!
   layout 'manager'
   before_action :set_absence, only: [:show, :edit, :update, :destroy]
   before_action :load_demo_data

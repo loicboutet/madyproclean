@@ -1,4 +1,6 @@
 class Manager::TimeEntriesController < ApplicationController
+  before_action :authenticate_user!
+  before_action :authorize_manager!
   layout 'manager'
   before_action :set_time_entry, only: [:show]
   before_action :load_demo_data

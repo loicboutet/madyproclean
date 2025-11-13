@@ -11,6 +11,26 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name, :employee_number, :phone_number])
   end
 
+  # Authentication helper
+  def authenticate_user!
+    unless current_user
+      redirect_to login_path, alert: 'Vous devez vous connecter pour accéder à cette page.'
+    end
+  end
+
+  # Redirect to role-specific dashboard
+  def redirect_to_dashboard
+    return unless current_user
+    
+    if current_user.admin?
+      redirect_to admin_dashboard_path
+    elsif current_user.manager?
+      redirect_to manager_dashboard_path
+    else
+      redirect_to root_path
+    end
+  end
+
   # Authorization helpers
   def authorize_admin!
     unless current_user&.admin?

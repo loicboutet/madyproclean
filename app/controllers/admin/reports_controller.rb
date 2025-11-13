@@ -1,4 +1,6 @@
 class Admin::ReportsController < ApplicationController
+  before_action :authenticate_user!
+  before_action :authorize_admin!
   layout 'admin'
   before_action :set_report, only: [:show]
   before_action :load_demo_data

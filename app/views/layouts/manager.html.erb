@@ -323,7 +323,7 @@
                 <% end %>
               </nav>
               <div class="profile-dropdown-divider" style="height: 1px; background: rgba(0, 212, 255, 0.2); margin: 0.5rem 0;"></div>
-              <%= link_to logout_path, method: :delete, class: "profile-dropdown-link text-red", style: "display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.25rem; color: #ef4444; text-decoration: none; transition: all 0.2s ease; font-size: 0.95rem;" do %>
+              <%= link_to logout_path, data: { turbo_method: :delete }, class: "profile-dropdown-link text-red", style: "display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.25rem; color: #ef4444; text-decoration: none; transition: all 0.2s ease; font-size: 0.95rem;" do %>
                 <svg class="profile-dropdown-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                 </svg>
@@ -411,7 +411,7 @@
           <%= link_to "Documentation", "#", class: "admin-footer-link", style: "color: #00D4FF; text-decoration: none; font-size: 0.875rem; transition: color 0.3s ease;" %>
           <%= link_to "Support", "#", class: "admin-footer-link", style: "color: #00D4FF; text-decoration: none; font-size: 0.875rem; transition: color 0.3s ease;" %>
           <%= link_to "Politique de Confidentialité", "#", class: "admin-footer-link", style: "color: #00D4FF; text-decoration: none; font-size: 0.875rem; transition: color 0.3s ease;" %>
-          <%= link_to "Déconnexion", logout_path, method: :delete, class: "admin-footer-link", style: "color: #00D4FF; text-decoration: none; font-size: 0.875rem; transition: color 0.3s ease;" %>
+          <%= link_to "Déconnexion", logout_path, data: { turbo_method: :delete }, class: "admin-footer-link", style: "color: #00D4FF; text-decoration: none; font-size: 0.875rem; transition: color 0.3s ease;" %>
         </div>
       </footer>
     </div>

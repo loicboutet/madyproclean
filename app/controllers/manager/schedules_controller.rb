@@ -1,4 +1,6 @@
 class Manager::SchedulesController < ApplicationController
+  before_action :authenticate_user!
+  before_action :authorize_manager!
   layout 'manager'
   before_action :set_schedule, only: [:show]
   before_action :load_demo_data

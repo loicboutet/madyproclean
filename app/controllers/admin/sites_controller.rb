@@ -1,4 +1,6 @@
 class Admin::SitesController < ApplicationController
+  before_action :authenticate_user!
+  before_action :authorize_admin!
   layout 'admin'
   before_action :set_site, only: [:show, :edit, :update, :destroy]
   before_action :load_demo_data
