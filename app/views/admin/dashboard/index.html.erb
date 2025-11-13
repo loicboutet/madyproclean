@@ -1,4 +1,7 @@
 <% content_for :page_title, "Tableau de Bord" %>
+<% content_for :head do %>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<% end %>
 
 <div class="card">
   <h2>Bienvenue au Tableau de Bord Administrateur</h2>
@@ -58,7 +61,7 @@
 </div>
 
 <!-- Charts Section -->
-<div class="charts-grid" id="chartsContainer">
+<div class="charts-grid" data-controller="charts" data-charts-data-value="<%= @chart_data.to_json %>">
   <!-- Time Entries Chart -->
   <div class="glass-card">
     <h3>Pointages de la Semaine</h3>
@@ -165,76 +168,3 @@
     <% end %>
   </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const chartData = <%= raw @chart_data.to_json %>;
-
-    // Common chart options
-    const commonOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          labels: {
-            color: '#FFFFFF',
-            font: { size: 12 }
-          }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          grid: { color: 'rgba(0, 212, 255, 0.1)' },
-          ticks: { color: '#FFFFFF' }
-        },
-        x: {
-          grid: { color: 'rgba(0, 212, 255, 0.1)' },
-          ticks: { color: '#FFFFFF' }
-        }
-      }
-    };
-
-    // Time Entries Chart (Line)
-    new Chart(document.getElementById('timeEntriesChart'), {
-      type: 'line',
-      data: chartData.time_entries,
-      options: commonOptions
-    });
-
-    // Site Occupancy Chart (Bar)
-    new Chart(document.getElementById('siteOccupancyChart'), {
-      type: 'bar',
-      data: chartData.site_occupancy,
-      options: commonOptions
-    });
-
-    // Absence Rate Chart (Line with Area)
-    new Chart(document.getElementById('absenceRateChart'), {
-      type: 'line',
-      data: chartData.absence_rate,
-      options: commonOptions
-    });
-
-    // Anomalies Chart (Doughnut)
-    new Chart(document.getElementById('anomaliesChart'), {
-      type: 'doughnut',
-      data: chartData.anomalies,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-              color: '#FFFFFF',
-              font: { size: 12 },
-              padding: 15
-            }
-          }
-        }
-      }
-    });
-  });
-</script>

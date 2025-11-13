@@ -24,68 +24,14 @@ export default class extends Controller {
 
     const chartData = this.dataValue
 
-    // Time Entries Chart (Line)
-    this.createLineChart('timeEntriesChart', chartData.time_entries)
+    // Team Activity Chart (Bar)
+    this.createBarChart('teamActivityChart', chartData.team_activity)
 
-    // Site Occupancy Chart (Bar)
-    this.createBarChart('siteOccupancyChart', chartData.site_occupancy)
-
-    // Absence Rate Chart (Line with Fill)
-    this.createLineChart('absenceRateChart', chartData.absence_rate, { fill: true })
-
-    // Anomalies Chart (Doughnut)
-    this.createDoughnutChart('anomaliesChart', chartData.anomalies)
+    // Absences Trend Chart (Line)
+    this.createLineChart('absencesTrendChart', chartData.absences_trend)
   }
 
-  createLineChart(canvasId, data, options = {}) {
-    const ctx = document.getElementById(canvasId)
-    if (!ctx) {
-      console.warn(`Canvas element ${canvasId} not found`)
-      return
-    }
-
-    const chart = new Chart(ctx, {
-      type: 'line',
-      data: data,
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: true,
-            labels: {
-              color: '#FFFFFF',
-              font: { size: 12 }
-            }
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            grid: {
-              color: 'rgba(0, 212, 255, 0.1)'
-            },
-            ticks: {
-              color: '#FFFFFF'
-            }
-          },
-          x: {
-            grid: {
-              color: 'rgba(0, 212, 255, 0.1)'
-            },
-            ticks: {
-              color: '#FFFFFF'
-            }
-          }
-        },
-        ...options
-      }
-    })
-
-    this.charts.push(chart)
-  }
-
-  createBarChart(canvasId, data, options = {}) {
+  createBarChart(canvasId, data) {
     const ctx = document.getElementById(canvasId)
     if (!ctx) {
       console.warn(`Canvas element ${canvasId} not found`)
@@ -125,15 +71,14 @@ export default class extends Controller {
               color: '#FFFFFF'
             }
           }
-        },
-        ...options
+        }
       }
     })
 
     this.charts.push(chart)
   }
 
-  createDoughnutChart(canvasId, data, options = {}) {
+  createLineChart(canvasId, data) {
     const ctx = document.getElementById(canvasId)
     if (!ctx) {
       console.warn(`Canvas element ${canvasId} not found`)
@@ -141,7 +86,7 @@ export default class extends Controller {
     }
 
     const chart = new Chart(ctx, {
-      type: 'doughnut',
+      type: 'line',
       data: data,
       options: {
         responsive: true,
@@ -149,15 +94,31 @@ export default class extends Controller {
         plugins: {
           legend: {
             display: true,
-            position: 'bottom',
             labels: {
               color: '#FFFFFF',
-              font: { size: 12 },
-              padding: 15
+              font: { size: 12 }
             }
           }
         },
-        ...options
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: 'rgba(0, 212, 255, 0.1)'
+            },
+            ticks: {
+              color: '#FFFFFF'
+            }
+          },
+          x: {
+            grid: {
+              color: 'rgba(0, 212, 255, 0.1)'
+            },
+            ticks: {
+              color: '#FFFFFF'
+            }
+          }
+        }
       }
     })
 
