@@ -287,18 +287,18 @@
             </button>
             
             <div class="admin-user-info" style="text-align: right;">
-              <p class="admin-user-name" style="font-size: 0.875rem; font-weight: 600; color: #FFFFFF; margin: 0;">Manager Utilisateur</p>
-              <p class="admin-user-role" style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.6); margin: 0;">Superviseur</p>
+              <p class="admin-user-name" style="font-size: 0.875rem; font-weight: 600; color: #FFFFFF; margin: 0;"><%= current_user.first_name %> <%= current_user.last_name %></p>
+              <p class="admin-user-role" style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.6); margin: 0;"><%= current_user.role.capitalize %></p>
             </div>
             <button class="admin-user-avatar" data-action="click->dropdown#toggle" aria-label="User menu" style="width: 2.5rem; height: 2.5rem; border-radius: 50%; background: linear-gradient(135deg, #00D4FF, #00FFE0); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #1a1a2e; font-size: 1rem; cursor: pointer; border: 2px solid transparent; transition: all 0.3s ease; border: none;">
-              MU
+              <%= current_user.first_name[0] %><%= current_user.last_name[0] %>
             </button>
             
             <!-- Dropdown Menu -->
             <div class="profile-dropdown hidden" data-dropdown-target="menu" style="position: absolute; top: calc(100% + 0.75rem); right: 0; min-width: 280px; background: rgba(15, 52, 96, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 0.75rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); z-index: 1000;">
               <div class="profile-dropdown-header" style="padding: 1rem 1.25rem;">
-                <p class="profile-dropdown-name" style="font-size: 1rem; font-weight: 600; color: #FFFFFF; margin: 0 0 0.25rem 0;">Manager Utilisateur</p>
-                <p class="profile-dropdown-email" style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6); margin: 0;">manager@madyproclean.fr</p>
+                <p class="profile-dropdown-name" style="font-size: 1rem; font-weight: 600; color: #FFFFFF; margin: 0 0 0.25rem 0;"><%= current_user.first_name %> <%= current_user.last_name %></p>
+                <p class="profile-dropdown-email" style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6); margin: 0;"><%= current_user.email %></p>
               </div>
               <div class="profile-dropdown-divider" style="height: 1px; background: rgba(0, 212, 255, 0.2); margin: 0.5rem 0;"></div>
               <nav class="profile-dropdown-nav" style="padding: 0.5rem 0;">
