@@ -39,7 +39,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Complets</p>
-      <p class="stat-value"><%= @time_entries.count { |e| e[:status] == 'completed' } %></p>
+      <p class="stat-value"><%= @time_entries.where(status: 'completed').count %></p>
     </div>
   </div>
 
@@ -51,7 +51,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">En Cours</p>
-      <p class="stat-value"><%= @time_entries.count { |e| e[:status] == 'active' } %></p>
+      <p class="stat-value"><%= @time_entries.where(status: 'active').count %></p>
     </div>
   </div>
 
@@ -63,7 +63,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Anomalies</p>
-      <p class="stat-value"><%= @time_entries.count { |e| e[:status] == 'anomaly' } %></p>
+      <p class="stat-value"><%= @time_entries.where(status: 'anomaly').count %></p>
     </div>
   </div>
 </div>
@@ -83,8 +83,8 @@
         <label for="user_id">Agent</label>
         <select name="user_id" id="user_id">
           <option value="">Tous les agents</option>
-          <% @sample_users.each do |user| %>
-            <option value="<%= user[:id] %>" <%= 'selected' if params[:user_id].to_i == user[:id] %>><%= "#{user[:first_name]} #{user[:last_name]}" %></option>
+          <% @users.each do |user| %>
+            <option value="<%= user.id %>" <%= 'selected' if params[:user_id].to_i == user.id %>><%= user.full_name %></option>
           <% end %>
         </select>
       </div>
@@ -93,8 +93,8 @@
         <label for="site_id">Site</label>
         <select name="site_id" id="site_id">
           <option value="">Tous les sites</option>
-          <% @sample_sites.each do |site| %>
-            <option value="<%= site[:id] %>" <%= 'selected' if params[:site_id].to_i == site[:id] %>><%= site[:name] %></option>
+          <% @sites.each do |site| %>
+            <option value="<%= site.id %>" <%= 'selected' if params[:site_id].to_i == site.id %>><%= site.name %></option>
           <% end %>
         </select>
       </div>
@@ -176,54 +176,54 @@
       <tbody>
         <% @time_entries.each do |entry| %>
           <tr>
-            <td><strong>#<%= entry[:id] %></strong></td>
+            <td><strong>#<%= entry.id %></strong></td>
             <td>
               <div>
-                <p class="font-semibold"><%= "#{entry[:user][:first_name]} #{entry[:user][:last_name]}" %></p>
-                <p class="text-sm opacity-70"><%= entry[:user][:employee_number] %></p>
+                <p class="font-semibold"><%= entry.user.full_name %></p>
+                <p class="text-sm opacity-70"><%= entry.user.employee_number %></p>
               </div>
             </td>
             <td>
               <div>
-                <p class="font-semibold"><%= entry[:site][:name] %></p>
-                <p class="text-sm opacity-70"><%= entry[:site][:code] %></p>
+                <p class="font-semibold"><%= entry.site.name %></p>
+                <p class="text-sm opacity-70"><%= entry.site.code %></p>
               </div>
             </td>
             <td>
               <div>
-                <p class="font-semibold"><%= entry[:clocked_in_at].strftime('%d/%m/%Y') %></p>
-                <p class="text-sm opacity-70"><%= entry[:clocked_in_at].strftime('%H:%M') %></p>
+                <p class="font-semibold"><%= entry.clocked_in_at.strftime('%d/%m/%Y') %></p>
+                <p class="text-sm opacity-70"><%= entry.clocked_in_at.strftime('%H:%M') %></p>
               </div>
             </td>
             <td>
-              <% if entry[:clocked_out_at] %>
+              <% if entry.clocked_out_at %>
                 <div>
-                  <p class="font-semibold"><%= entry[:clocked_out_at].strftime('%d/%m/%Y') %></p>
-                  <p class="text-sm opacity-70"><%= entry[:clocked_out_at].strftime('%H:%M') %></p>
+                  <p class="font-semibold"><%= entry.clocked_out_at.strftime('%d/%m/%Y') %></p>
+                  <p class="text-sm opacity-70"><%= entry.clocked_out_at.strftime('%H:%M') %></p>
                 </div>
               <% else %>
                 <span class="text-warning">--</span>
               <% end %>
             </td>
             <td>
-              <% if entry[:duration_minutes] %>
-                <span class="badge-success"><%= "#{entry[:duration_minutes] / 60}h #{entry[:duration_minutes] % 60}m" %></span>
+              <% if entry.duration_minutes %>
+                <span class="badge-success"><%= "#{entry.duration_minutes / 60}h #{entry.duration_minutes % 60}m" %></span>
               <% else %>
                 <span class="text-warning">En cours</span>
               <% end %>
             </td>
             <td>
-              <span class="text-sm opacity-70"><%= entry[:ip_address_in] %></span>
+              <span class="text-sm opacity-70"><%= entry.ip_address_in %></span>
             </td>
             <td>
-              <% if entry[:status] == 'completed' %>
+              <% if entry.status == 'completed' %>
                 <span class="badge-success">✓ Complet</span>
-              <% elsif entry[:status] == 'active' %>
+              <% elsif entry.status == 'active' %>
                 <span class="badge">⏱ En cours</span>
-              <% elsif entry[:status] == 'anomaly' %>
+              <% elsif entry.status == 'anomaly' %>
                 <span class="badge-warning">⚠ Anomalie</span>
               <% end %>
-              <% if entry[:manually_corrected] %>
+              <% if entry.manually_corrected %>
                 <span class="badge mt-1" style="display: block; font-size: 0.75rem;">Corrigé</span>
               <% end %>
             </td>
@@ -236,21 +236,21 @@
                 </button>
                 
                 <div class="dropdown-menu hidden" data-dropdown-target="menu">
-                  <%= link_to admin_time_entry_path(entry[:id]), class: "dropdown-item" do %>
+                  <%= link_to admin_time_entry_path(entry.id), class: "dropdown-item" do %>
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                     </svg>
                     <span>Voir</span>
                   <% end %>
-                  <%= link_to edit_admin_time_entry_path(entry[:id]), class: "dropdown-item" do %>
+                  <%= link_to edit_admin_time_entry_path(entry.id), class: "dropdown-item" do %>
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                     </svg>
                     <span>Modifier</span>
                   <% end %>
                   <div class="dropdown-divider"></div>
-                  <%= button_to admin_time_entry_path(entry[:id]), method: :delete, data: { confirm: 'Êtes-vous sûr ?' }, class: "dropdown-item dropdown-item-danger", form: { style: 'display: inline;' } do %>
+                  <%= button_to admin_time_entry_path(entry.id), method: :delete, data: { confirm: 'Êtes-vous sûr ?' }, class: "dropdown-item dropdown-item-danger", form: { style: 'display: inline;' } do %>
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                     </svg>

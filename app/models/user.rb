@@ -13,8 +13,11 @@ class User < ApplicationRecord
   # Associations
   belongs_to :manager, class_name: 'User', optional: true
   has_many :managed_users, class_name: 'User', foreign_key: 'manager_id'
-  # TODO: Uncomment these when tables are created in Phase 1
-  # has_many :time_entries, dependent: :destroy
+  has_many :time_entries, dependent: :destroy
+  has_many :schedules, dependent: :destroy
+  has_many :created_schedules, class_name: 'Schedule', foreign_key: 'created_by_id', dependent: :nullify
+  has_many :replacement_schedules, class_name: 'Schedule', foreign_key: 'replaced_by_id', dependent: :nullify
+  # TODO: Uncomment these when tables are created in Phase 2
   # has_many :schedules, dependent: :destroy
   # has_many :absences, dependent: :destroy
 

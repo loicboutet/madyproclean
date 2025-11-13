@@ -10,7 +10,73 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_13_043548) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_13_101523) do
+  create_table "schedules", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "site_id", null: false
+    t.date "scheduled_date", null: false
+    t.time "start_time", null: false
+    t.time "end_time", null: false
+    t.text "notes"
+    t.string "status", default: "scheduled", null: false
+    t.integer "created_by_id", null: false
+    t.integer "replaced_by_id"
+    t.text "replacement_reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_schedules_on_created_by_id"
+    t.index ["replaced_by_id"], name: "index_schedules_on_replaced_by_id"
+    t.index ["scheduled_date"], name: "index_schedules_on_scheduled_date"
+    t.index ["site_id", "scheduled_date"], name: "index_schedules_on_site_id_and_scheduled_date"
+    t.index ["site_id"], name: "index_schedules_on_site_id"
+    t.index ["status"], name: "index_schedules_on_status"
+    t.index ["user_id", "scheduled_date"], name: "index_schedules_on_user_id_and_scheduled_date"
+    t.index ["user_id"], name: "index_schedules_on_user_id"
+  end
+
+  create_table "sites", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "code", null: false
+    t.text "address"
+    t.text "description"
+    t.boolean "active", default: true, null: false
+    t.string "qr_code_token", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_sites_on_active"
+    t.index ["code"], name: "index_sites_on_code", unique: true
+    t.index ["name"], name: "index_sites_on_name"
+    t.index ["qr_code_token"], name: "index_sites_on_qr_code_token", unique: true
+  end
+
+  create_table "time_entries", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "site_id", null: false
+    t.datetime "clocked_in_at", null: false
+    t.datetime "clocked_out_at"
+    t.integer "duration_minutes"
+    t.string "status", default: "active", null: false
+    t.string "ip_address_in"
+    t.string "ip_address_out"
+    t.string "user_agent_in"
+    t.string "user_agent_out"
+    t.text "notes"
+    t.boolean "manually_corrected", default: false, null: false
+    t.integer "corrected_by_id"
+    t.datetime "corrected_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["clocked_in_at"], name: "index_time_entries_on_clocked_in_at"
+    t.index ["clocked_out_at"], name: "index_time_entries_on_clocked_out_at"
+    t.index ["corrected_by_id"], name: "index_time_entries_on_corrected_by_id"
+    t.index ["manually_corrected"], name: "index_time_entries_on_manually_corrected"
+    t.index ["site_id", "clocked_in_at"], name: "index_time_entries_on_site_id_and_clocked_in_at"
+    t.index ["site_id"], name: "index_time_entries_on_site_id"
+    t.index ["status"], name: "index_time_entries_on_status"
+    t.index ["user_id", "clocked_in_at"], name: "index_time_entries_on_user_id_and_clocked_in_at"
+    t.index ["user_id"], name: "index_time_entries_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -34,5 +100,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_13_043548) do
     t.index ["role"], name: "index_users_on_role"
   end
 
+  add_foreign_key "schedules", "sites"
+  add_foreign_key "schedules", "users"
+  add_foreign_key "schedules", "users", column: "created_by_id"
+  add_foreign_key "schedules", "users", column: "replaced_by_id"
+  add_foreign_key "time_entries", "sites"
+  add_foreign_key "time_entries", "users"
+  add_foreign_key "time_entries", "users", column: "corrected_by_id"
   add_foreign_key "users", "users", column: "manager_id"
 end
