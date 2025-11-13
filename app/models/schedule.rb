@@ -7,6 +7,7 @@ class Schedule < ApplicationRecord
   belongs_to :site
   belongs_to :created_by, class_name: 'User'
   belongs_to :replaced_by, class_name: 'User', optional: true
+  has_many :anomaly_logs, dependent: :nullify
 
   # Validations
   validates :user_id, presence: true
@@ -69,6 +70,44 @@ class Schedule < ApplicationRecord
   def duration_hours
     return 0 unless start_time && end_time
     ((end_time - start_time) / 3600.0).round(2)
+  end
+
+  # Check for schedule mismatch - agent didn't clock in when scheduled
+  def self.detect_schedule_mismatches
+    # Check schedules from yesterday and earlier that are still in "scheduled" status
+    past_scheduled = scheduled.where('scheduled_date < ?', Date.current)
+    
+    past_scheduled.find_each do |schedule|
+      # Only process if there's no time entry for this schedule
+      unless schedule.time_entry_exists?
+        # Mark schedule as missed
+        schedule.mark_as_missed
+        
+        # Create anomaly log if one doesn't exist
+        unless schedule.anomaly_logs.anomaly_type_schedule_mismatch.exists?
+          AnomalyLog.create_for_schedule_mismatch(schedule)
+        end
+      else
+        # If time entry exists, mark schedule as completed
+        schedule.mark_as_completed
+      end
+    end
+  end
+
+  # Detect missed clock-ins for schedules
+  def self.detect_missed_clock_ins
+    # Check schedules from yesterday that don't have time entries
+    past_scheduled = scheduled.where('scheduled_date < ?', Date.current)
+    
+    past_scheduled.find_each do |schedule|
+      unless schedule.time_entry_exists?
+        # Create anomaly for missed clock-in if one doesn't exist
+        unless schedule.anomaly_logs.anomaly_type_missed_clock_in.exists?
+          AnomalyLog.create_for_missed_clock_in(schedule)
+        end
+        schedule.mark_as_missed
+      end
+    end
   end
 
   private

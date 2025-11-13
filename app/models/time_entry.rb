@@ -3,6 +3,7 @@ class TimeEntry < ApplicationRecord
   belongs_to :user
   belongs_to :site
   belongs_to :corrected_by, class_name: 'User', optional: true
+  has_many :anomaly_logs, dependent: :nullify
 
   # Enums
   enum :status, { active: 'active', completed: 'completed', anomaly: 'anomaly' }, default: 'active'
@@ -45,17 +46,52 @@ class TimeEntry < ApplicationRecord
   end
 
   def detect_anomaly
+    return unless saved_change_to_clocked_in_at? || saved_change_to_clocked_out_at? || saved_change_to_status?
+    
     # Check for entries over 24 hours without clock-out
     if active? && clocked_in_at && clocked_in_at < 24.hours.ago
-      mark_as_anomaly("Entry has been active for more than 24 hours")
+      # Only create anomaly if one doesn't already exist for this entry
+      unless anomaly_logs.anomaly_type_over_24h.exists?
+        AnomalyLog.create_for_over_24h(self)
+        mark_as_anomaly_status
+      end
     end
   end
 
-  def mark_as_anomaly(reason)
-    update_columns(
-      status: 'anomaly',
-      notes: [notes, reason].compact.join('. ')
-    )
+  def mark_as_anomaly_status
+    update_columns(status: 'anomaly') unless anomaly?
+  end
+
+  # Check for missed clock-out (called externally, e.g., from a scheduled job)
+  def self.detect_missed_clock_outs
+    # Find active entries from yesterday that should have been clocked out
+    yesterday_active = active.where('DATE(clocked_in_at) < ?', Date.current)
+    
+    yesterday_active.find_each do |entry|
+      # Only create anomaly if one doesn't already exist
+      unless entry.anomaly_logs.anomaly_type_missed_clock_out.exists?
+        AnomalyLog.create_for_missed_clock_out(entry)
+        entry.mark_as_anomaly_status
+      end
+    end
+  end
+
+  # Detect multiple active entries for the same user (fraud detection)
+  def self.detect_multiple_active_entries
+    User.find_each do |user|
+      active_entries = user.time_entries.active
+      if active_entries.count > 1
+        # Check if they have different IP addresses (fraud indicator)
+        ip_addresses = active_entries.pluck(:ip_address_in).compact.uniq
+        if ip_addresses.count > 1
+          # Only create anomaly if one doesn't already exist
+          unless AnomalyLog.anomaly_type_multiple_active.for_user(user).unresolved.exists?
+            AnomalyLog.create_for_multiple_active(user, active_entries)
+            active_entries.each(&:mark_as_anomaly_status)
+          end
+        end
+      end
+    end
   end
 
   def correct(admin, attributes)

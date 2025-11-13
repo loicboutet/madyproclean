@@ -10,7 +10,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_13_101523) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_13_173812) do
+  create_table "anomaly_logs", force: :cascade do |t|
+    t.string "anomaly_type", null: false
+    t.string "severity", default: "medium", null: false
+    t.integer "user_id"
+    t.integer "time_entry_id"
+    t.integer "schedule_id"
+    t.text "description", null: false
+    t.boolean "resolved", default: false, null: false
+    t.integer "resolved_by_id"
+    t.datetime "resolved_at"
+    t.text "resolution_notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["anomaly_type"], name: "index_anomaly_logs_on_anomaly_type"
+    t.index ["created_at"], name: "index_anomaly_logs_on_created_at"
+    t.index ["resolved"], name: "index_anomaly_logs_on_resolved"
+    t.index ["resolved_by_id"], name: "index_anomaly_logs_on_resolved_by_id"
+    t.index ["schedule_id"], name: "index_anomaly_logs_on_schedule_id"
+    t.index ["severity"], name: "index_anomaly_logs_on_severity"
+    t.index ["time_entry_id"], name: "index_anomaly_logs_on_time_entry_id"
+    t.index ["user_id"], name: "index_anomaly_logs_on_user_id"
+  end
+
   create_table "schedules", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "site_id", null: false
@@ -100,6 +123,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_13_101523) do
     t.index ["role"], name: "index_users_on_role"
   end
 
+  add_foreign_key "anomaly_logs", "schedules"
+  add_foreign_key "anomaly_logs", "time_entries"
+  add_foreign_key "anomaly_logs", "users"
+  add_foreign_key "anomaly_logs", "users", column: "resolved_by_id"
   add_foreign_key "schedules", "sites"
   add_foreign_key "schedules", "users"
   add_foreign_key "schedules", "users", column: "created_by_id"

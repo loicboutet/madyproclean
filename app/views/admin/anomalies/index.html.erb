@@ -31,7 +31,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Non Résolues</p>
-      <p class="stat-value"><%= @all_anomalies.count { |a| !a[:resolved] } %></p>
+      <p class="stat-value"><%= @all_anomalies.unresolved.count %></p>
     </div>
   </div>
 
@@ -43,7 +43,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Résolues</p>
-      <p class="stat-value"><%= @all_anomalies.count { |a| a[:resolved] } %></p>
+      <p class="stat-value"><%= @all_anomalies.resolved.count %></p>
     </div>
   </div>
 
@@ -55,7 +55,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Haute Sévérité</p>
-      <p class="stat-value"><%= @all_anomalies.count { |a| a[:severity] == 'high' } %></p>
+      <p class="stat-value"><%= @all_anomalies.severity_high.count %></p>
     </div>
   </div>
 </div>
@@ -114,8 +114,8 @@
         <label for="user_id">Agent</label>
         <select name="user_id" id="user_id">
           <option value="">Tous les agents</option>
-          <% @demo_users.each do |user| %>
-            <option value="<%= user[:id] %>" <%= 'selected' if params[:user_id] == user[:id].to_s %>><%= user[:name] %></option>
+          <% @users.each do |user| %>
+            <option value="<%= user.id %>" <%= 'selected' if params[:user_id] == user.id.to_s %>><%= user.full_name %></option>
           <% end %>
         </select>
       </div>
@@ -184,51 +184,44 @@
         <% else %>
           <% @anomalies.each do |anomaly| %>
             <tr>
-              <td><strong>#<%= anomaly[:id] %></strong></td>
+              <td><strong>#<%= anomaly.id %></strong></td>
               <td>
-                <% case anomaly[:anomaly_type] %>
-                <% when 'missed_clock_in' %>
-                  <span class="badge-warning">📥 Entrée manquante</span>
-                <% when 'missed_clock_out' %>
-                  <span class="badge-warning">📤 Sortie manquante</span>
-                <% when 'over_24h' %>
-                  <span class="badge-danger">⏱️ Plus de 24h</span>
-                <% when 'multiple_active' %>
-                  <span class="badge-danger">🔄 Pointages multiples</span>
-                <% when 'schedule_mismatch' %>
-                  <span class="badge-info">📅 Désaccord horaire</span>
+                <span class="<%= anomaly.anomaly_type_over_24h? || anomaly.anomaly_type_multiple_active? ? 'badge-danger' : anomaly.anomaly_type_schedule_mismatch? ? 'badge-info' : 'badge-warning' %>">
+                  <%= anomaly.type_label %>
+                </span>
+              </td>
+              <td>
+                <span class="<%= anomaly.severity_low? ? 'badge-info' : anomaly.severity_medium? ? 'badge-warning' : 'badge-danger' %>">
+                  <%= anomaly.severity_label %>
+                </span>
+              </td>
+              <td>
+                <% if anomaly.user %>
+                  <div>
+                    <p class="font-semibold"><%= anomaly.user.full_name %></p>
+                    <p class="text-sm opacity-70"><%= anomaly.user.employee_number %></p>
+                  </div>
+                <% else %>
+                  <span class="text-sm opacity-70">N/A</span>
                 <% end %>
               </td>
               <td>
-                <% if anomaly[:severity] == 'low' %>
-                  <span class="badge-info">🔵 Faible</span>
-                <% elsif anomaly[:severity] == 'medium' %>
-                  <span class="badge-warning">🟡 Moyenne</span>
-                <% elsif anomaly[:severity] == 'high' %>
-                  <span class="badge-danger">🔴 Haute</span>
-                <% end %>
+                <p class="text-sm"><%= anomaly.description %></p>
               </td>
               <td>
                 <div>
-                  <p class="font-semibold"><%= anomaly[:user_name] %></p>
-                  <p class="text-sm opacity-70"><%= anomaly[:employee_number] %></p>
+                  <p class="font-semibold"><%= anomaly.created_at.strftime('%d/%m/%Y') %></p>
+                  <p class="text-sm opacity-70"><%= anomaly.created_at.strftime('%H:%M') %></p>
                 </div>
               </td>
               <td>
-                <p class="text-sm"><%= anomaly[:description] %></p>
-              </td>
-              <td>
-                <div>
-                  <p class="font-semibold"><%= anomaly[:created_at].strftime('%d/%m/%Y') %></p>
-                  <p class="text-sm opacity-70"><%= anomaly[:created_at].strftime('%H:%M') %></p>
-                </div>
-              </td>
-              <td>
-                <% if anomaly[:resolved] %>
+                <% if anomaly.resolved %>
                   <div>
                     <span class="badge-success">✓ Résolue</span>
-                    <p class="text-sm opacity-70 mt-1">Par <%= anomaly[:resolved_by_name] %></p>
-                    <p class="text-sm opacity-70">Le <%= anomaly[:resolved_at].strftime('%d/%m/%Y') %></p>
+                    <% if anomaly.resolved_by %>
+                      <p class="text-sm opacity-70 mt-1">Par <%= anomaly.resolved_by.full_name %></p>
+                      <p class="text-sm opacity-70">Le <%= anomaly.resolved_at.strftime('%d/%m/%Y') %></p>
+                    <% end %>
                   </div>
                 <% else %>
                   <span class="badge-warning">⚠ Non résolue</span>
@@ -243,16 +236,16 @@
                   </button>
                   
                   <div class="dropdown-menu hidden" data-dropdown-target="menu">
-                    <%= link_to admin_anomaly_path(anomaly[:id]), class: "dropdown-item" do %>
+                    <%= link_to admin_anomaly_path(anomaly), class: "dropdown-item" do %>
                       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                       </svg>
                       <span>Voir Détails</span>
                     <% end %>
-                    <% unless anomaly[:resolved] %>
+                    <% unless anomaly.resolved %>
                       <div class="dropdown-divider"></div>
-                      <%= link_to resolve_admin_anomaly_path(anomaly[:id]), method: :post, class: "dropdown-item" do %>
+                      <%= link_to resolve_admin_anomaly_path(anomaly), method: :post, class: "dropdown-item" do %>
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
@@ -270,7 +263,7 @@
   </div>
 
   <!-- Pagination -->
-  <%= render 'shared/pagination' %>
+  <%= paginate @anomalies %>
 </div>
 
 <div class="divider"></div>
