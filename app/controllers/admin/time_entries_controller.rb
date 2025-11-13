@@ -76,13 +76,16 @@ class Admin::TimeEntriesController < ApplicationController
   end
 
   def update
-    update_params = time_entry_params
-    update_params[:manually_corrected] = true
-    update_params[:corrected_by] = current_user
-    update_params[:corrected_at] = Time.current
+    # Set correction tracking before validation
+    @time_entry.manually_corrected = true
+    @time_entry.corrected_by = current_user
+    @time_entry.corrected_at = Time.current
     
-    if @time_entry.update(update_params)
-      redirect_to admin_time_entry_path(@time_entry), notice: 'Pointage mis à jour avec succès.'
+    # Apply the permitted params
+    @time_entry.assign_attributes(time_entry_params)
+    
+    if @time_entry.save
+      redirect_to edit_admin_time_entry_path(@time_entry), notice: 'Pointage mis à jour avec succès.'
     else
       @users = User.agents.active.order(:first_name, :last_name)
       @sites = Site.active.alphabetical

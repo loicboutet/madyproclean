@@ -110,7 +110,7 @@ class TimeEntry < ApplicationRecord
   end
 
   def no_multiple_active_entries
-    if active? && user_id.present?
+    if active? && user_id.present? && !manually_corrected
       existing = TimeEntry.active.where(user_id: user_id).where.not(id: id)
       if existing.exists?
         errors.add(:base, "User already has an active time entry")
