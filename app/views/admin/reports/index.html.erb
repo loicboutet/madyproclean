@@ -292,8 +292,10 @@
     </table>
   </div>
 
-  <!-- Pagination -->
-  <%= render 'shared/pagination' %>
+  <!-- Pagination (disabled for demo data) -->
+  <% if false # @reports.respond_to?(:total_pages) %>
+    <%= render 'shared/pagination' %>
+  <% end %>
 </div>
 
 <div class="divider"></div>
@@ -306,7 +308,7 @@
   </div>
   
   <div class="stats-grid">
-    <div class="stat-card" style="cursor: pointer;">
+    <%= link_to admin_reports_monthly_path, class: "stat-card", style: "cursor: pointer; text-decoration: none;" do %>
       <div class="stat-icon stat-icon-primary">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -316,7 +318,7 @@
         <p class="stat-label">Rapport Mensuel</p>
         <p class="text-sm opacity-70 mt-1">Synthèse complète du mois</p>
       </div>
-    </div>
+    <% end %>
 
     <div class="stat-card" style="cursor: pointer;">
       <div class="stat-icon stat-icon-success">

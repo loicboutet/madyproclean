@@ -45,12 +45,227 @@ class Admin::ReportsController < ApplicationController
   end
 
   def monthly
+    # Redirect to index with monthly filter
+    redirect_to admin_reports_path(report_type: 'monthly')
+  end
+
+  def generate_monthly
+    # Get parameters
+    month = params[:month].to_i
+    year = params[:year].to_i
+    user_id = params[:user_id].presence
+    site_id = params[:site_id].presence
+    format = params[:format] || 'csv'
+    
+    # Validate parameters
+    if month.zero? || year.zero?
+      redirect_to admin_reports_monthly_path, alert: 'Veuillez sélectionner un mois et une année.' and return
+    end
+    
+    # Calculate date range
+    start_date = Date.new(year, month, 1)
+    end_date = start_date.end_of_month
+    
+    # Build query
+    time_entries = TimeEntry.includes(:user, :site)
+                            .for_date_range(start_date, end_date)
+    
+    # Apply filters
+    time_entries = time_entries.for_user(User.find(user_id)) if user_id.present?
+    time_entries = time_entries.for_site(Site.find(site_id)) if site_id.present?
+    
+    # Calculate statistics
+    total_hours = time_entries.sum(:duration_minutes) / 60.0
+    total_agents = time_entries.select(:user_id).distinct.count
+    total_sites = time_entries.select(:site_id).distinct.count
+    total_entries = time_entries.count
+    
+    # Get anomalies if requested
+    anomalies = []
+    if params[:include_anomalies] == '1'
+      anomalies = AnomalyLog.includes(:user)
+                            .where('created_at >= ? AND created_at <= ?', start_date.beginning_of_day, end_date.end_of_day)
+      anomalies = anomalies.where(user_id: user_id) if user_id.present?
+    end
+    
+    # Generate report based on format
+    case format
+    when 'csv'
+      send_csv_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+    when 'xlsx'
+      send_excel_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+    when 'pdf'
+      send_pdf_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+    else
+      redirect_to admin_reports_monthly_path, alert: 'Format non supporté.'
+    end
   end
 
   def hr
   end
 
   private
+
+  def send_csv_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+    require 'csv'
+    
+    filename = "rapport_mensuel_#{start_date.strftime('%Y_%m')}.csv"
+    
+    csv_data = CSV.generate(headers: true, col_sep: ';', encoding: 'UTF-8') do |csv|
+      # Header section with summary
+      csv << ['Rapport Mensuel de Pointage']
+      csv << ['Période', "#{start_date.strftime('%d/%m/%Y')} - #{end_date.strftime('%d/%m/%Y')}"]
+      csv << ['Généré le', Time.current.strftime('%d/%m/%Y à %H:%M')]
+      csv << ['Généré par', current_user.full_name]
+      csv << []
+      csv << ['STATISTIQUES GÉNÉRALES']
+      csv << ['Total heures travaillées', total_hours.round(2)]
+      csv << ['Nombre d\'agents', total_agents]
+      csv << ['Nombre de sites', total_sites]
+      csv << ['Nombre de pointages', time_entries.count]
+      csv << []
+      
+      # Time entries details
+      csv << ['DÉTAIL DES POINTAGES']
+      csv << ['ID', 'Agent', 'N° Employé', 'Site', 'Date', 'Arrivée', 'Départ', 'Durée (h)', 'Statut']
+      
+      time_entries.each do |entry|
+        csv << [
+          entry.id,
+          entry.user.full_name,
+          entry.user.employee_number,
+          entry.site.name,
+          entry.clocked_in_at.strftime('%d/%m/%Y'),
+          entry.clocked_in_at.strftime('%H:%M'),
+          entry.clocked_out_at ? entry.clocked_out_at.strftime('%H:%M') : 'En cours',
+          entry.duration_minutes ? (entry.duration_minutes / 60.0).round(2) : '-',
+          entry.status
+        ]
+      end
+      
+      # Hours by agent
+      csv << []
+      csv << ['HEURES PAR AGENT']
+      csv << ['Agent', 'N° Employé', 'Total heures', 'Nombre de pointages']
+      
+      time_entries.group_by(&:user).each do |user, entries|
+        total_minutes = entries.sum(&:duration_minutes)
+        csv << [
+          user.full_name,
+          user.employee_number,
+          (total_minutes / 60.0).round(2),
+          entries.count
+        ]
+      end
+      
+      # Hours by site
+      csv << []
+      csv << ['HEURES PAR SITE']
+      csv << ['Site', 'Code', 'Total heures', 'Nombre de pointages']
+      
+      time_entries.group_by(&:site).each do |site, entries|
+        total_minutes = entries.sum(&:duration_minutes)
+        csv << [
+          site.name,
+          site.code,
+          (total_minutes / 60.0).round(2),
+          entries.count
+        ]
+      end
+      
+      # Anomalies if included
+      if anomalies.any?
+        csv << []
+        csv << ['ANOMALIES DÉTECTÉES']
+        csv << ['Type', 'Agent', 'Description', 'Sévérité', 'Date', 'Résolu']
+        
+        anomalies.each do |anomaly|
+          csv << [
+            anomaly.anomaly_type,
+            anomaly.user ? anomaly.user.full_name : '-',
+            anomaly.description,
+            anomaly.severity,
+            anomaly.created_at.strftime('%d/%m/%Y %H:%M'),
+            anomaly.resolved? ? 'Oui' : 'Non'
+          ]
+        end
+      end
+    end
+    
+    send_data csv_data, 
+              filename: filename,
+              type: 'text/csv; charset=utf-8',
+              disposition: 'attachment'
+  end
+
+  def send_excel_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+    # For now, send CSV with Excel MIME type (can be enhanced with a gem like 'caxlsx' for native Excel)
+    require 'csv'
+    
+    filename = "rapport_mensuel_#{start_date.strftime('%Y_%m')}.csv"
+    
+    csv_data = CSV.generate(headers: true, col_sep: ';', encoding: 'UTF-8') do |csv|
+      # Same structure as CSV
+      csv << ['Rapport Mensuel de Pointage']
+      csv << ['Période', "#{start_date.strftime('%d/%m/%Y')} - #{end_date.strftime('%d/%m/%Y')}"]
+      csv << ['Généré le', Time.current.strftime('%d/%m/%Y à %H:%M')]
+      csv << ['Généré par', current_user.full_name]
+      csv << []
+      csv << ['STATISTIQUES GÉNÉRALES']
+      csv << ['Total heures travaillées', total_hours.round(2)]
+      csv << ['Nombre d\'agents', total_agents]
+      csv << ['Nombre de sites', total_sites]
+      csv << []
+      
+      csv << ['DÉTAIL DES POINTAGES']
+      csv << ['ID', 'Agent', 'N° Employé', 'Site', 'Date', 'Arrivée', 'Départ', 'Durée (h)', 'Statut']
+      
+      time_entries.each do |entry|
+        csv << [
+          entry.id,
+          entry.user.full_name,
+          entry.user.employee_number,
+          entry.site.name,
+          entry.clocked_in_at.strftime('%d/%m/%Y'),
+          entry.clocked_in_at.strftime('%H:%M'),
+          entry.clocked_out_at ? entry.clocked_out_at.strftime('%H:%M') : 'En cours',
+          entry.duration_minutes ? (entry.duration_minutes / 60.0).round(2) : '-',
+          entry.status
+        ]
+      end
+    end
+    
+    send_data csv_data, 
+              filename: filename,
+              type: 'application/vnd.ms-excel',
+              disposition: 'attachment'
+  end
+
+  def send_pdf_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+    # Render HTML and convert to PDF (can be enhanced with a gem like 'wicked_pdf')
+    html_content = render_to_string(
+      template: 'admin/reports/monthly_pdf',
+      layout: false,
+      locals: {
+        time_entries: time_entries,
+        start_date: start_date,
+        end_date: end_date,
+        total_hours: total_hours,
+        total_agents: total_agents,
+        total_sites: total_sites,
+        anomalies: anomalies,
+        generated_by: current_user.full_name,
+        generated_at: Time.current
+      }
+    )
+    
+    filename = "rapport_mensuel_#{start_date.strftime('%Y_%m')}.html"
+    
+    send_data html_content,
+              filename: filename,
+              type: 'text/html',
+              disposition: 'attachment'
+  end
 
   def set_report
     load_demo_data

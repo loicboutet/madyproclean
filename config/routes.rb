@@ -65,9 +65,10 @@ Rails.application.routes.draw do
       end
     end
     
-    resources :reports, only: [:index, :show]
     get 'reports/monthly', to: 'reports#monthly', as: 'reports_monthly'
+    post 'reports/monthly/generate', to: 'reports#generate_monthly', as: 'generate_monthly_reports'
     get 'reports/hr', to: 'reports#hr', as: 'reports_hr'
+    resources :reports, only: [:index, :show]
   end
   
   # Manager namespace
