@@ -31,6 +31,11 @@ class Admin::SitesController < ApplicationController
     # @site is set by before_action
     # Load current agents for this site
     @current_time_entries = @site.current_time_entries
+    
+    # Load statistics
+    @total_time_entries = @site.time_entries.count
+    @current_agents_count = @site.current_agent_count
+    @schedules_count = @site.schedules.count
   end
 
   def new
