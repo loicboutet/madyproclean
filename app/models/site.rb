@@ -17,9 +17,9 @@ class Site < ApplicationRecord
 
   # Methods
   def qr_code_url
-    # This would generate the full URL for QR code scanning
-    # For now, return a placeholder
-    "#{Rails.application.routes.url_helpers.root_url}clock/#{qr_code_token}"
+    # Generate URL for QR code scanning
+    # In production, this would use the actual clock subdomain
+    "https://clock.example.com/c/#{qr_code_token}"
   end
 
   def current_agents

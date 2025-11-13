@@ -63,8 +63,8 @@
       </svg>
     </div>
     <div class="stat-content">
-      <p class="stat-label">Agents Actifs</p>
-      <p class="stat-value"><%= TimeEntry.active.count %></p>
+      <p class="stat-label">Résultats</p>
+      <p class="stat-value"><%= @sites.total_count %></p>
     </div>
   </div>
 </div>
@@ -138,27 +138,28 @@
     <table>
       <thead>
         <tr>
+          <th>SL</th>
           <th>Nom du Site</th>
           <th>Code</th>
-          <th style="text-align: center;">Agents Actifs</th>
           <th>Adresse</th>
           <th>Statut</th>
+          <th>QR Code Token</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         <% if @sites.empty? %>
           <tr>
-            <td colspan="6" style="text-align: center; padding: 2rem;">
+            <td colspan="7" style="text-align: center; padding: 2rem;">
               <div class="alert alert-warning" style="display: inline-block;">
                 <strong>Aucun site trouvé</strong> avec les filtres actuels
               </div>
             </td>
           </tr>
         <% else %>
-          <% @sites.each do |site| %>
-            <% current_time_entries = site.current_time_entries %>
+          <% @sites.each.with_index(@sites.offset_value + 1) do |site, index| %>
             <tr>
+              <td><strong><%= index %></strong></td>
               <td>
                 <div>
                   <p class="font-semibold"><%= site.name %></p>
@@ -170,25 +171,6 @@
               <td>
                 <span class="badge"><%= site.code %></span>
               </td>
-              <td style="text-align: center;">
-                <% if current_time_entries.any? %>
-                  <%= link_to admin_site_path(site), style: "text-decoration: none;" do %>
-                    <span class="badge" style="background-color: #00D4FF; color: #000; font-size: 1rem; padding: 0.5rem 1rem; cursor: pointer;" title="Cliquez pour voir les détails">
-                      <%= current_time_entries.count %>
-                    </span>
-                  <% end %>
-                  <div style="margin-top: 0.25rem; font-size: 0.75rem; color: #00FFE0;">
-                    <%= current_time_entries.map { |e| e.user.first_name }.first(2).join(', ') %>
-                    <% if current_time_entries.count > 2 %>
-                      + <%= current_time_entries.count - 2 %> autres
-                    <% end %>
-                  </div>
-                <% else %>
-                  <span class="badge" style="background-color: #444; color: #888;">
-                    0
-                  </span>
-                <% end %>
-              </td>
               <td>
                 <p class="text-sm"><%= site.address.presence || '-' %></p>
               </td>
@@ -198,6 +180,9 @@
                 <% else %>
                   <span class="badge-warning">✗ Inactif</span>
                 <% end %>
+              </td>
+              <td>
+                <span class="text-sm opacity-70 font-mono"><%= truncate(site.qr_code_token, length: 20) %></span>
               </td>
               <td>
                 <div class="dropdown-wrapper" data-controller="dropdown">
@@ -245,7 +230,7 @@
   </div>
 
   <!-- Pagination -->
-  <%= render 'shared/pagination', collection: @sites %>
+  <%= paginate @sites %>
 </div>
 
 <div class="divider"></div>

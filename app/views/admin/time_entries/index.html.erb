@@ -162,7 +162,7 @@
     <table>
       <thead>
         <tr>
-          <th>ID</th>
+          <th>SL</th>
           <th>Agent</th>
           <th>Site</th>
           <th>Arrivée</th>
@@ -174,9 +174,9 @@
         </tr>
       </thead>
       <tbody>
-        <% @time_entries.each do |entry| %>
+        <% @time_entries.each.with_index(@time_entries.offset_value + 1) do |entry, index| %>
           <tr>
-            <td><strong>#<%= entry.id %></strong></td>
+            <td><strong><%= index %></strong></td>
             <td>
               <div>
                 <p class="font-semibold"><%= entry.user.full_name %></p>
