@@ -178,8 +178,16 @@ class Admin::ReportsController < ApplicationController
     when 'pdf' then 'pdf'
     end
     
-    # Generate filename
-    filename = "rapport_mensuel_#{start_date.strftime('%Y_%m')}.#{file_extension}"
+    # Create Report record in database first to generate proper filename
+    report = Report.new(
+      title: title,
+      report_type: report_type,
+      period_type: period_type,
+      file_format: format.upcase == 'XLSX' ? 'Excel' : format.upcase
+    )
+    
+    # Generate filename using the report's filename method
+    filename = report.filename
     
     # Save file to storage
     storage_path = Rails.root.join('storage', 'reports')
@@ -249,27 +257,16 @@ class Admin::ReportsController < ApplicationController
       anomalies = anomalies.where(user_id: filters['user_id']) if filters['user_id'].present?
     end
     
-    # Generate filename
-    file_extension = case @report[:file_format]
-    when 'CSV' then 'csv'
-    when 'Excel' then 'csv'
-    when 'PDF' then 'pdf'
-    when 'HTML' then 'html'
-    else 'csv'
-    end
-    
-    filename = "rapport_mensuel_#{start_date.strftime('%Y_%m')}.#{file_extension}"
-    
     # Generate and send the file based on format
     case @report[:file_format]
     when 'CSV'
-      send_csv_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+      send_csv_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies, @report_record)
     when 'Excel'
-      send_excel_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+      send_excel_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies, @report_record)
     when 'PDF'
-      send_pdf_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+      send_pdf_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies, @report_record)
     when 'HTML'
-      send_html_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+      send_html_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies, @report_record)
     else
       redirect_to admin_reports_path, alert: 'Format de rapport non supporté.'
     end
@@ -277,10 +274,10 @@ class Admin::ReportsController < ApplicationController
 
   private
 
-  def send_csv_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+  def send_csv_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies, report)
     require 'csv'
     
-    filename = "rapport_mensuel_#{start_date.strftime('%Y_%m')}.csv"
+    filename = report.filename
     
     csv_data = CSV.generate(headers: true, col_sep: ';', encoding: 'UTF-8') do |csv|
       # Header section with summary
@@ -369,11 +366,11 @@ class Admin::ReportsController < ApplicationController
               disposition: 'attachment'
   end
 
-  def send_excel_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+  def send_excel_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies, report)
     # For now, send CSV with Excel MIME type (can be enhanced with a gem like 'caxlsx' for native Excel)
     require 'csv'
     
-    filename = "rapport_mensuel_#{start_date.strftime('%Y_%m')}.csv"
+    filename = report.filename
     
     csv_data = CSV.generate(headers: true, col_sep: ';', encoding: 'UTF-8') do |csv|
       # Same structure as CSV
@@ -412,7 +409,7 @@ class Admin::ReportsController < ApplicationController
               disposition: 'attachment'
   end
 
-  def send_pdf_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+  def send_pdf_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies, report)
     # Generate real PDF using WickedPDF
     html_string = render_to_string(
       template: 'admin/reports/monthly_pdf',
@@ -443,7 +440,7 @@ class Admin::ReportsController < ApplicationController
       encoding: 'UTF-8'
     )
     
-    filename = "rapport_mensuel_#{start_date.strftime('%Y_%m')}.pdf"
+    filename = report.filename
     
     send_data pdf_content,
               filename: filename,
@@ -451,7 +448,7 @@ class Admin::ReportsController < ApplicationController
               disposition: 'attachment'
   end
 
-  def send_html_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+  def send_html_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies, report)
     # Send HTML report
     html_content = render_to_string(
       template: 'admin/reports/monthly_pdf',
@@ -469,7 +466,7 @@ class Admin::ReportsController < ApplicationController
       }
     )
     
-    filename = "rapport_mensuel_#{start_date.strftime('%Y_%m')}.html"
+    filename = report.filename
     
     send_data html_content,
               filename: filename,
@@ -478,56 +475,56 @@ class Admin::ReportsController < ApplicationController
   end
 
   def set_report
-    report_record = Report.find_by(id: params[:id])
+    @report_record = Report.find_by(id: params[:id])
     
-    unless report_record
+    unless @report_record
       redirect_to admin_reports_path, alert: 'Rapport non trouvé.'
       return
     end
     
     # Convert ActiveRecord object to hash with all calculated metrics
     @report = {
-      id: report_record.id,
-      title: report_record.title,
-      report_type: report_record.report_type,
-      period_type: report_record.period_type,
-      period_start: report_record.period_start,
-      period_end: report_record.period_end,
-      generated_at: report_record.generated_at,
-      generated_by_id: report_record.generated_by_id,
-      generated_by_name: report_record.generated_by&.full_name || 'Unknown',
-      status: report_record.status,
-      description: report_record.description,
-      filters_applied: report_record.filters_applied,
-      file_format: report_record.file_format,
-      file_size: report_record.file_size
+      id: @report_record.id,
+      title: @report_record.title,
+      report_type: @report_record.report_type,
+      period_type: @report_record.period_type,
+      period_start: @report_record.period_start,
+      period_end: @report_record.period_end,
+      generated_at: @report_record.generated_at,
+      generated_by_id: @report_record.generated_by_id,
+      generated_by_name: @report_record.generated_by&.full_name || 'Unknown',
+      status: @report_record.status,
+      description: @report_record.description,
+      filters_applied: @report_record.filters_applied,
+      file_format: @report_record.file_format,
+      file_size: @report_record.file_size
     }
     
     # Add calculated metrics based on report type and REPORT_DATA_SOURCES
-    case report_record.report_type
+    case @report_record.report_type
     when 'time_tracking', 'monthly', 'payroll_export'
-      @report[:total_hours] = report_record.total_hours
-      @report[:total_agents] = report_record.total_agents
-      @report[:total_sites] = report_record.total_sites if ['time_tracking', 'monthly'].include?(report_record.report_type)
+      @report[:total_hours] = @report_record.total_hours
+      @report[:total_agents] = @report_record.total_agents
+      @report[:total_sites] = @report_record.total_sites if ['time_tracking', 'monthly'].include?(@report_record.report_type)
     when 'site_performance'
-      @report[:total_hours] = report_record.total_hours
-      @report[:total_sites] = report_record.total_sites
-      @report[:site_name] = report_record.site_name
-      @report[:site_code] = report_record.site_code
+      @report[:total_hours] = @report_record.total_hours
+      @report[:total_sites] = @report_record.total_sites
+      @report[:site_name] = @report_record.site_name
+      @report[:site_code] = @report_record.site_code
     when 'anomalies'
-      @report[:total_anomalies] = report_record.total_anomalies
-      @report[:resolved_anomalies] = report_record.resolved_anomalies
-      @report[:unresolved_anomalies] = report_record.unresolved_anomalies
+      @report[:total_anomalies] = @report_record.total_anomalies
+      @report[:resolved_anomalies] = @report_record.resolved_anomalies
+      @report[:unresolved_anomalies] = @report_record.unresolved_anomalies
     when 'hr'
-      @report[:total_absences] = report_record.total_absences
-      @report[:absence_rate] = report_record.absence_rate
-      @report[:coverage_rate] = report_record.coverage_rate
-      @report[:total_agents] = report_record.total_agents
+      @report[:total_absences] = @report_record.total_absences
+      @report[:absence_rate] = @report_record.absence_rate
+      @report[:coverage_rate] = @report_record.coverage_rate
+      @report[:total_agents] = @report_record.total_agents
     when 'scheduling'
-      @report[:total_schedules] = report_record.total_schedules
-      @report[:scheduled_count] = report_record.scheduled_count
-      @report[:completed_count] = report_record.completed_count
-      @report[:missed_count] = report_record.missed_count
+      @report[:total_schedules] = @report_record.total_schedules
+      @report[:scheduled_count] = @report_record.scheduled_count
+      @report[:completed_count] = @report_record.completed_count
+      @report[:missed_count] = @report_record.missed_count
     end
   end
 

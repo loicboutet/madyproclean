@@ -236,6 +236,26 @@ class Report < ApplicationRecord
     Site.find_by(id: filters_applied['site_id'])&.code
   end
   
+  # Filename generation methods
+  def filename_base
+    sanitized_title = title.parameterize
+    "#{sanitized_title}-#{report_type}-#{period_type}"
+  end
+  
+  def file_extension
+    case file_format&.downcase
+    when 'csv' then 'csv'
+    when 'excel' then 'csv'
+    when 'pdf' then 'pdf'
+    when 'html' then 'html'
+    else 'csv'
+    end
+  end
+  
+  def filename
+    "#{filename_base}.#{file_extension}"
+  end
+  
   private
   
   # Generic metric calculation using configuration
