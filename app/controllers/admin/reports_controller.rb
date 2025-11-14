@@ -7,7 +7,10 @@ class Admin::ReportsController < ApplicationController
   
   def index
     # Use Report model from database
-    @reports = Report.includes(:generated_by).all.recent
+    @reports = Report.includes(:generated_by)
+                 .order(created_at: :desc)
+                 .recent
+
     
     # Filter by report type
     if params[:report_type].present?
