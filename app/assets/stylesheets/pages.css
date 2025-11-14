@@ -963,6 +963,25 @@ tr:hover {
     flex-shrink: 0;
 }
 
+/* Navigation Dropdown Menu */
+.nav-dropdown-menu {
+    position: absolute;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.nav-dropdown-menu.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+}
+
+.nav-dropdown-menu.hidden {
+    display: none;
+}
+
 /* Responsive Admin Layout */
 @media (max-width: 1024px) {
     .admin-sidebar {

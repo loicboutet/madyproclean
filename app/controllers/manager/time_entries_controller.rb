@@ -30,6 +30,18 @@ class Manager::TimeEntriesController < ApplicationController
     # @time_entry is set by before_action
   end
 
+  def export
+    # Get base scope and apply same filters as index
+    @time_entries = base_time_entries_scope
+    @time_entries = apply_filters(@time_entries)
+    
+    respond_to do |format|
+      format.csv do
+        send_data generate_csv(@time_entries), filename: "pointages-#{Date.today}.csv"
+      end
+    end
+  end
+
   private
 
   def set_time_entry
@@ -37,6 +49,30 @@ class Manager::TimeEntriesController < ApplicationController
     
     unless @time_entry
       redirect_to manager_time_entries_path, alert: 'Pointage non trouvé.'
+    end
+  end
+
+  def generate_csv(time_entries)
+    require 'csv'
+    
+    CSV.generate(headers: true) do |csv|
+      csv << ['ID', 'Agent', 'Numéro Employé', 'Site', 'Arrivée', 'Départ', 'Durée (minutes)', 'Statut', 'IP Arrivée', 'Corrigé Manuellement', 'Notes']
+      
+      time_entries.each do |entry|
+        csv << [
+          entry.id,
+          entry.user.full_name,
+          entry.user.employee_number,
+          entry.site.name,
+          entry.clocked_in_at&.strftime('%d/%m/%Y %H:%M'),
+          entry.clocked_out_at&.strftime('%d/%m/%Y %H:%M'),
+          entry.duration_minutes,
+          entry.status,
+          entry.ip_address_in,
+          entry.manually_corrected ? 'Oui' : 'Non',
+          entry.notes
+        ]
+      end
     end
   end
 end

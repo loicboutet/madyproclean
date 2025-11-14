@@ -2,7 +2,7 @@ class Manager::SitesController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_manager_or_admin!
   layout 'manager'
-  before_action :set_site, only: [:show]
+  before_action :set_site, only: [:show, :qr_code]
   
   def index
     # Show all sites - managers can view all sites (read-only)
@@ -41,6 +41,11 @@ class Manager::SitesController < ApplicationController
     @recent_time_entries = @site.time_entries.includes(:user)
                                 .order(created_at: :desc)
                                 .limit(10)
+  end
+
+  def qr_code
+    # @site is set by before_action
+    # Render QR code view
   end
 
   private

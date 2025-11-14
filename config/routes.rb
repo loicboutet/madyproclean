@@ -82,8 +82,14 @@ Rails.application.routes.draw do
     root 'dashboard#index'
     get 'dashboard', to: 'dashboard#index'
     
-    resources :time_entries, only: [:index, :show]
-    resources :sites, only: [:index, :show]
+    resources :time_entries, only: [:index, :show] do
+      get 'export', on: :collection
+    end
+    resources :sites, only: [:index, :show] do
+      member do
+        get 'qr_code'
+      end
+    end
     resources :schedules, only: [:index, :show]
     resources :absences
     resources :team, only: [:index, :show]
