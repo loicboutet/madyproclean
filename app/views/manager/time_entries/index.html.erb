@@ -19,7 +19,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Total Pointages</p>
-      <p class="stat-value"><%= @all_time_entries.length %></p>
+      <p class="stat-value"><%= @total_count %></p>
     </div>
   </div>
 
@@ -31,7 +31,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Complétés</p>
-      <p class="stat-value"><%= @all_time_entries.count { |t| t[:status] == 'completed' } %></p>
+      <p class="stat-value"><%= @completed_count %></p>
     </div>
   </div>
 
@@ -43,7 +43,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">En Cours</p>
-      <p class="stat-value"><%= @all_time_entries.count { |t| t[:status] == 'active' } %></p>
+      <p class="stat-value"><%= @active_count %></p>
     </div>
   </div>
 
@@ -55,7 +55,7 @@
     </div>
     <div class="stat-content">
       <p class="stat-label">Anomalies</p>
-      <p class="stat-value"><%= @all_time_entries.count { |t| t[:status] == 'anomaly' } %></p>
+      <p class="stat-value"><%= @anomaly_count %></p>
     </div>
   </div>
 </div>
@@ -92,8 +92,8 @@
         <label for="site_id">Site</label>
         <select name="site_id" id="site_id">
           <option value="">Tous les sites</option>
-          <% @demo_sites.each do |site| %>
-            <option value="<%= site[:id] %>" <%= 'selected' if params[:site_id] == site[:id].to_s %>><%= site[:name] %></option>
+          <% @sites.each do |site| %>
+            <option value="<%= site.id %>" <%= 'selected' if params[:site_id] == site.id.to_s %>><%= site.name %></option>
           <% end %>
         </select>
       </div>
@@ -102,8 +102,8 @@
         <label for="user_id">Agent</label>
         <select name="user_id" id="user_id">
           <option value="">Tous les agents</option>
-          <% @demo_users.each do |user| %>
-            <option value="<%= user[:id] %>" <%= 'selected' if params[:user_id] == user[:id].to_s %>><%= user[:name] %></option>
+          <% @users.each do |user| %>
+            <option value="<%= user.id %>" <%= 'selected' if params[:user_id] == user.id.to_s %>><%= user.full_name %></option>
           <% end %>
         </select>
       </div>
@@ -183,35 +183,35 @@
         <% else %>
           <% @time_entries.each do |entry| %>
             <tr>
-              <td><strong>#<%= entry[:id] %></strong></td>
+              <td><strong>#<%= entry.id %></strong></td>
               <td>
                 <div>
-                  <p class="font-semibold"><%= entry[:clocked_in_at].strftime('%d/%m/%Y') %></p>
-                  <p class="text-sm opacity-70"><%= l(entry[:clocked_in_at].to_date, format: '%A') %></p>
+                  <p class="font-semibold"><%= entry.clocked_in_at.strftime('%d/%m/%Y') %></p>
+                  <p class="text-sm opacity-70"><%= l(entry.clocked_in_at.to_date, format: '%A') %></p>
                 </div>
               </td>
               <td>
                 <div>
-                  <p class="font-semibold"><%= entry[:user_name] %></p>
-                  <p class="text-sm opacity-70"><%= entry[:employee_number] %></p>
+                  <p class="font-semibold"><%= entry.user.full_name %></p>
+                  <p class="text-sm opacity-70"><%= entry.user.employee_number %></p>
                 </div>
               </td>
               <td>
                 <div>
-                  <p class="font-semibold"><%= entry[:site_name] %></p>
-                  <span class="badge"><%= entry[:site_code] %></span>
+                  <p class="font-semibold"><%= entry.site.name %></p>
+                  <span class="badge"><%= entry.site.code %></span>
                 </div>
               </td>
               <td>
                 <div>
-                  <p class="font-semibold"><%= entry[:clocked_in_at].strftime('%H:%M') %></p>
+                  <p class="font-semibold"><%= entry.clocked_in_at.strftime('%H:%M') %></p>
                   <p class="text-sm opacity-70">Entrée</p>
                 </div>
               </td>
               <td>
-                <% if entry[:clocked_out_at] %>
+                <% if entry.clocked_out_at %>
                   <div>
-                    <p class="font-semibold"><%= entry[:clocked_out_at].strftime('%H:%M') %></p>
+                    <p class="font-semibold"><%= entry.clocked_out_at.strftime('%H:%M') %></p>
                     <p class="text-sm opacity-70">Sortie</p>
                   </div>
                 <% else %>
@@ -219,24 +219,24 @@
                 <% end %>
               </td>
               <td>
-                <% if entry[:duration_minutes] %>
+                <% if entry.duration_minutes %>
                   <div>
-                    <p class="font-semibold"><%= (entry[:duration_minutes] / 60.0).round(1) %>h</p>
-                    <p class="text-sm opacity-70"><%= entry[:duration_minutes] %> min</p>
+                    <p class="font-semibold"><%= (entry.duration_minutes / 60.0).round(1) %>h</p>
+                    <p class="text-sm opacity-70"><%= entry.duration_minutes %> min</p>
                   </div>
                 <% else %>
                   <span class="text-sm opacity-50">—</span>
                 <% end %>
               </td>
               <td>
-                <% if entry[:status] == 'active' %>
+                <% if entry.status == 'active' %>
                   <span class="badge-info">⚡ En cours</span>
-                <% elsif entry[:status] == 'completed' %>
+                <% elsif entry.status == 'completed' %>
                   <span class="badge-success">✓ Complété</span>
-                <% elsif entry[:status] == 'anomaly' %>
+                <% elsif entry.status == 'anomaly' %>
                   <span class="badge-warning">⚠ Anomalie</span>
                 <% end %>
-                <% if entry[:manually_corrected] %>
+                <% if entry.manually_corrected %>
                   <p class="text-sm text-orange-600 mt-1">🔧 Corrigé</p>
                 <% end %>
               </td>
@@ -249,7 +249,7 @@
                   </button>
                   
                   <div class="dropdown-menu hidden" data-dropdown-target="menu">
-                    <%= link_to manager_time_entry_path(entry[:id]), class: "dropdown-item" do %>
+                    <%= link_to manager_time_entry_path(entry.id), class: "dropdown-item" do %>
                       <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>

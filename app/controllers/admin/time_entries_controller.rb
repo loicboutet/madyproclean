@@ -1,48 +1,26 @@
 class Admin::TimeEntriesController < ApplicationController
+  include TimeEntriesFilterable
+  
   before_action :authenticate_user!
   before_action :authorize_admin!
   layout 'admin'
   before_action :set_time_entry, only: [:show, :edit, :update, :destroy]
   
   def index
-    @time_entries = TimeEntry.includes(:user, :site, :corrected_by).order(clocked_in_at: :desc)
+    # Get base scope
+    @time_entries = base_time_entries_scope
     
     # Apply filters
-    if params[:user_id].present?
-      @time_entries = @time_entries.where(user_id: params[:user_id])
-    end
-    
-    if params[:site_id].present?
-      @time_entries = @time_entries.where(site_id: params[:site_id])
-    end
-    
-    if params[:status].present?
-      @time_entries = @time_entries.where(status: params[:status])
-    end
-    
-    # Date range filter
-    if params[:start_date].present?
-      start_date = Date.parse(params[:start_date])
-      @time_entries = @time_entries.where('clocked_in_at >= ?', start_date.beginning_of_day)
-    end
-    
-    if params[:end_date].present?
-      end_date = Date.parse(params[:end_date])
-      @time_entries = @time_entries.where('clocked_in_at <= ?', end_date.end_of_day)
-    end
+    @time_entries = apply_filters(@time_entries)
     
     # Calculate statistics before pagination
-    @total_count = @time_entries.count
-    @completed_count = @time_entries.where(status: 'completed').count
-    @active_count = @time_entries.where(status: 'active').count
-    @anomaly_count = @time_entries.where(status: 'anomaly').count
+    calculate_statistics(@time_entries)
     
     # Paginate results (20 per page)
     @time_entries = @time_entries.page(params[:page]).per(20)
     
     # Load users and sites for filters
-    @users = User.agents.active.order(:first_name, :last_name)
-    @sites = Site.active.alphabetical
+    load_filter_data
   end
 
   def show
@@ -99,30 +77,9 @@ class Admin::TimeEntriesController < ApplicationController
   end
 
   def export
-    # Apply same filters as index
-    @time_entries = TimeEntry.includes(:user, :site).order(clocked_in_at: :desc)
-    
-    if params[:user_id].present?
-      @time_entries = @time_entries.where(user_id: params[:user_id])
-    end
-    
-    if params[:site_id].present?
-      @time_entries = @time_entries.where(site_id: params[:site_id])
-    end
-    
-    if params[:status].present?
-      @time_entries = @time_entries.where(status: params[:status])
-    end
-    
-    if params[:start_date].present?
-      start_date = Date.parse(params[:start_date])
-      @time_entries = @time_entries.where('clocked_in_at >= ?', start_date.beginning_of_day)
-    end
-    
-    if params[:end_date].present?
-      end_date = Date.parse(params[:end_date])
-      @time_entries = @time_entries.where('clocked_in_at <= ?', end_date.end_of_day)
-    end
+    # Get base scope and apply same filters as index
+    @time_entries = base_time_entries_scope
+    @time_entries = apply_filters(@time_entries)
     
     respond_to do |format|
       format.csv do

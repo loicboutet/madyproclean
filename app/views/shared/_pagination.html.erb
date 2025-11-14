@@ -1,7 +1,10 @@
-<%# Dynamic pagination partial using Kaminari
-    Usage: <%= render 'shared/pagination' %>
-    Works with any Kaminari paginated collection
--%>
+
+<%
+  # Auto-detect the current controller path and construct the appropriate route helper
+  # Example: "admin/time_entries" -> :admin_time_entries_path
+  # Example: "manager/time_entries" -> :manager_time_entries_path
+  path_method = "#{controller_path.gsub('/', '_')}_path".to_sym
+%>
 
 <% if @time_entries.present? %>
   <div class="pagination-wrapper">
@@ -19,7 +22,7 @@
           <!-- Previous Page -->
           <% if @time_entries.prev_page %>
             <li class="pagination-item pagination-prev">
-              <%= link_to admin_time_entries_path(params.permit(:user_id, :site_id, :status, :start_date, :end_date).merge(page: @time_entries.prev_page)) do %>
+              <%= link_to send(path_method, params.permit(:user_id, :site_id, :status, :start_date, :end_date, :search).merge(page: @time_entries.prev_page)) do %>
                 <svg class="pagination-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
@@ -65,7 +68,7 @@
             <% else %>
               <!-- Other Pages -->
               <li class="pagination-item pagination-page">
-                <%= link_to page_num, admin_time_entries_path(params.permit(:user_id, :site_id, :status, :start_date, :end_date).merge(page: page_num)) %>
+                <%= link_to page_num, send(path_method, params.permit(:user_id, :site_id, :status, :start_date, :end_date, :search).merge(page: page_num)) %>
               </li>
             <% end %>
           <% end %>
@@ -73,7 +76,7 @@
           <!-- Next Page -->
           <% if @time_entries.next_page %>
             <li class="pagination-item pagination-next">
-              <%= link_to admin_time_entries_path(params.permit(:user_id, :site_id, :status, :start_date, :end_date).merge(page: @time_entries.next_page)) do %>
+              <%= link_to send(path_method, params.permit(:user_id, :site_id, :status, :start_date, :end_date, :search).merge(page: @time_entries.next_page)) do %>
                 <span>Suivant</span>
                 <svg class="pagination-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
