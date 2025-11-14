@@ -77,7 +77,7 @@
     <strong>Filtres de Recherche:</strong> Utilisez les filtres ci-dessous pour affiner la liste des pointages
   </div>
 
-  <form>
+  <form method="get" action="<%= admin_time_entries_path %>">
     <div class="form-grid form-grid-3">
       <div class="form-group">
         <label for="user_id">Agent</label>
@@ -266,7 +266,7 @@
   </div>
 
   <!-- Pagination -->
-  <%= paginate @time_entries %>
+  <%= paginate @time_entries, params: { user_id: params[:user_id], site_id: params[:site_id], status: params[:status], start_date: params[:start_date], end_date: params[:end_date] } %>
 </div>
 
 <div class="divider"></div>

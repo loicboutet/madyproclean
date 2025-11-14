@@ -75,7 +75,7 @@
     <strong>Filtres de Recherche:</strong> Utilisez les filtres ci-dessous pour affiner la liste des sites
   </div>
 
-  <form>
+  <form method="get" action="<%= admin_sites_path %>">
     <div class="form-grid">
       <div class="form-group">
         <label for="search">Rechercher</label>
@@ -230,7 +230,7 @@
   </div>
 
   <!-- Pagination -->
-  <%= paginate @sites %>
+  <%= paginate @sites, params: { search: params[:search], status: params[:status] } %>
 </div>
 
 <div class="divider"></div>
