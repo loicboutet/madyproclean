@@ -70,7 +70,8 @@ class Admin::ReportsController < ApplicationController
   def generate_monthly
     # Get parameters
     title = params[:title].presence || "Rapport #{Date.current.strftime('%B %Y')}"
-    report_type = params[:report_type] || 'monthly'
+    report_type = params[:report_type] || 'time_tracking'
+    period_type = params[:period_type] || 'monthly'
     month = params[:month].to_i
     year = params[:year].to_i
     user_id = params[:user_id].presence
@@ -155,15 +156,13 @@ class Admin::ReportsController < ApplicationController
     report = Report.create!(
       title: title,
       report_type: report_type,
+      period_type: period_type,
       period_start: start_date,
       period_end: end_date,
       generated_at: Time.current,
       generated_by_id: current_user.id,
       status: 'completed',
       description: description,
-      total_hours: total_hours.round(2),
-      total_agents: total_agents,
-      total_sites: total_sites,
       filters_applied: {
         all_agents: user_id.blank?,
         all_sites: site_id.blank?,

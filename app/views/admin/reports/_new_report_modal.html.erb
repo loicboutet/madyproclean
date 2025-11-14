@@ -41,12 +41,29 @@
               <label for="report_type">Type de Rapport <span class="text-red-500">*</span></label>
               <%= select_tag :report_type, 
                   options_for_select([
-                    ['Rapport Mensuel', 'monthly'],
-                    ['Rapport RH / Absences', 'hr'],
+                    ['RH / Absences', 'hr'],
                     ['Temps Travaillé', 'time_tracking'],
                     ['Anomalies', 'anomalies'],
                     ['Planification', 'scheduling'],
-                    ['Export Paie', 'payroll_export']
+                    ['Export Paie', 'payroll_export'],
+                    ['Performance Sites', 'site_performance'],
+                    ['Performance Agents', 'agent_performance']
+                  ], 'time_tracking'),
+                  required: true,
+                  class: 'form-control'
+              %>
+            </div>
+
+            <!-- Period Type -->
+            <div class="form-group">
+              <label for="period_type">Période <span class="text-red-500">*</span></label>
+              <%= select_tag :period_type, 
+                  options_for_select([
+                    ['Mensuel', 'monthly'],
+                    ['Hebdomadaire', 'weekly'],
+                    ['Trimestriel', 'quarterly'],
+                    ['Annuel', 'yearly'],
+                    ['Personnalisé', 'custom']
                   ], 'monthly'),
                   required: true,
                   class: 'form-control'
