@@ -175,7 +175,7 @@ class Admin::ReportsController < ApplicationController
     file_extension = case format
     when 'csv' then 'csv'
     when 'xlsx' then 'csv' # Currently using CSV for Excel
-    when 'pdf' then 'html' # Currently using HTML for PDF
+    when 'pdf' then 'pdf'
     end
     
     # Generate filename
@@ -222,24 +222,56 @@ class Admin::ReportsController < ApplicationController
   end
 
   def download
-    # Reconstruct filename from report data
+    # Generate report on-the-fly based on stored metadata
+    start_date = @report[:period_start]
+    end_date = @report[:period_end]
+    filters = @report[:filters_applied] || {}
+    
+    # Build query based on stored filters
+    time_entries = TimeEntry.includes(:user, :site)
+                            .for_date_range(start_date, end_date)
+    
+    # Apply filters
+    time_entries = time_entries.for_user(User.find(filters['user_id'])) if filters['user_id'].present?
+    time_entries = time_entries.for_site(Site.find(filters['site_id'])) if filters['site_id'].present?
+    
+    # Calculate statistics
+    total_minutes = time_entries.where.not(duration_minutes: nil).sum(:duration_minutes)
+    total_hours = total_minutes / 60.0
+    total_agents = time_entries.select(:user_id).distinct.count
+    total_sites = time_entries.select(:site_id).distinct.count
+    
+    # Get anomalies if they were included
+    anomalies = []
+    if filters['include_anomalies']
+      anomalies = AnomalyLog.includes(:user)
+                            .where('created_at >= ? AND created_at <= ?', start_date.beginning_of_day, end_date.end_of_day)
+      anomalies = anomalies.where(user_id: filters['user_id']) if filters['user_id'].present?
+    end
+    
+    # Generate filename
     file_extension = case @report[:file_format]
     when 'CSV' then 'csv'
     when 'Excel' then 'csv'
-    when 'PDF', 'HTML' then 'html'
+    when 'PDF' then 'pdf'
+    when 'HTML' then 'html'
     else 'csv'
     end
     
-    filename = "rapport_mensuel_#{@report[:period_start].strftime('%Y_%m')}.#{file_extension}"
-    file_path = Rails.root.join('storage', 'reports', filename)
+    filename = "rapport_mensuel_#{start_date.strftime('%Y_%m')}.#{file_extension}"
     
-    if File.exist?(file_path)
-      send_file file_path,
-                filename: filename,
-                type: get_content_type_from_format(@report[:file_format]),
-                disposition: 'attachment'
+    # Generate and send the file based on format
+    case @report[:file_format]
+    when 'CSV'
+      send_csv_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+    when 'Excel'
+      send_excel_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+    when 'PDF'
+      send_pdf_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+    when 'HTML'
+      send_html_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
     else
-      redirect_to admin_reports_path, alert: 'Le fichier du rapport est introuvable.'
+      redirect_to admin_reports_path, alert: 'Format de rapport non supporté.'
     end
   end
 
@@ -381,7 +413,46 @@ class Admin::ReportsController < ApplicationController
   end
 
   def send_pdf_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
-    # Render HTML and convert to PDF (can be enhanced with a gem like 'wicked_pdf')
+    # Generate real PDF using WickedPDF
+    html_string = render_to_string(
+      template: 'admin/reports/monthly_pdf',
+      layout: false,
+      formats: [:html],
+      locals: {
+        time_entries: time_entries,
+        start_date: start_date,
+        end_date: end_date,
+        total_hours: total_hours,
+        total_agents: total_agents,
+        total_sites: total_sites,
+        anomalies: anomalies,
+        generated_by: current_user.full_name,
+        generated_at: Time.current
+      }
+    )
+    
+    pdf_content = WickedPdf.new.pdf_from_string(
+      html_string,
+      page_size: 'A4',
+      margin: {
+        top: 15,
+        bottom: 15,
+        left: 10,
+        right: 10
+      },
+      encoding: 'UTF-8'
+    )
+    
+    filename = "rapport_mensuel_#{start_date.strftime('%Y_%m')}.pdf"
+    
+    send_data pdf_content,
+              filename: filename,
+              type: 'application/pdf',
+              disposition: 'attachment'
+  end
+
+  def send_html_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+    # Send HTML report
     html_content = render_to_string(
       template: 'admin/reports/monthly_pdf',
       layout: false,
@@ -551,8 +622,8 @@ class Admin::ReportsController < ApplicationController
   end
 
   def generate_pdf_content(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
-    # Render HTML (can be enhanced with a gem like 'wicked_pdf' for real PDF)
-    render_to_string(
+    # Generate real PDF using WickedPDF
+    html_string = render_to_string(
       template: 'admin/reports/monthly_pdf',
       layout: false,
       formats: [:html],
@@ -567,6 +638,18 @@ class Admin::ReportsController < ApplicationController
         generated_by: current_user.full_name,
         generated_at: Time.current
       }
+    )
+    
+    WickedPdf.new.pdf_from_string(
+      html_string,
+      page_size: 'A4',
+      margin: {
+        top: 15,
+        bottom: 15,
+        left: 10,
+        right: 10
+      },
+      encoding: 'UTF-8'
     )
   end
 
@@ -589,7 +672,9 @@ class Admin::ReportsController < ApplicationController
       'text/csv; charset=utf-8'
     when 'Excel'
       'application/vnd.ms-excel'
-    when 'PDF', 'HTML'
+    when 'PDF'
+      'application/pdf'
+    when 'HTML'
       'text/html'
     else
       'application/octet-stream'

@@ -67,3 +67,5 @@ end
 gem "devise", "~> 4.9"
 gem "kaminari", "~> 1.2"
 gem "rqrcode", "~> 2.0"
+gem "wicked_pdf"
+gem "wkhtmltopdf-binary"
