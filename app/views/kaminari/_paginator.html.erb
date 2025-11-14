@@ -6,6 +6,27 @@
     remote:        data-remote
     paginator:     the paginator that renders the pagination tags inside
 -%>
+<%
+  # Permit filter parameters based on the current controller
+  permitted_params = case controller_name
+  when 'anomalies'
+    params.permit(:search, :anomaly_type, :severity, :user_id, :date, :resolved, :page)
+  when 'time_entries'
+    params.permit(:user_id, :site_id, :status, :start_date, :end_date, :search, :page)
+  when 'sites'
+    params.permit(:search, :active, :page)
+  when 'users'
+    params.permit(:search, :role, :active, :page)
+  when 'absences'
+    params.permit(:search, :user_id, :start_date, :end_date, :absence_type, :page)
+  when 'schedules'
+    params.permit(:search, :user_id, :site_id, :start_date, :end_date, :page)
+  when 'reports'
+    params.permit(:search, :report_type, :start_date, :end_date, :page)
+  else
+    params.permit(:search, :page)
+  end
+%>
 <% if total_pages > 0 %>
   <div class="pagination-wrapper">
     <!-- Pagination Info -->
@@ -19,15 +40,15 @@
     <% if total_pages > 1 %>
       <nav class="pagination-nav" role="navigation" aria-label="Pagination">
         <ul class="pagination-list">
-          <%= render 'kaminari/prev_page', current_page: current_page, total_pages: total_pages, per_page: per_page, remote: remote, url: (current_page.first? ? '#' : url_for(params.merge(page: current_page.number - 1))) %>
+          <%= render 'kaminari/prev_page', current_page: current_page, total_pages: total_pages, per_page: per_page, remote: remote, url: (current_page.first? ? '#' : url_for(permitted_params.merge(page: current_page.number - 1))) %>
           <% paginator.each_relevant_page do |page| %>
             <% if page.left_outer? || page.right_outer? || page.inside_window? %>
-              <%= render 'kaminari/page', page: page, current_page: current_page, total_pages: total_pages, per_page: per_page, remote: remote, url: url_for(params.merge(page: page.number)) %>
+              <%= render 'kaminari/page', page: page, current_page: current_page, total_pages: total_pages, per_page: per_page, remote: remote, url: url_for(permitted_params.merge(page: page.number)) %>
             <% elsif !page.was_truncated? -%>
               <%= render 'kaminari/gap' %>
             <% end %>
           <% end %>
-          <%= render 'kaminari/next_page', current_page: current_page, total_pages: total_pages, per_page: per_page, remote: remote, url: (current_page.last? ? '#' : url_for(params.merge(page: current_page.number + 1))) %>
+          <%= render 'kaminari/next_page', current_page: current_page, total_pages: total_pages, per_page: per_page, remote: remote, url: (current_page.last? ? '#' : url_for(permitted_params.merge(page: current_page.number + 1))) %>
         </ul>
       </nav>
     <% end %>

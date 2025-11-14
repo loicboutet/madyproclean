@@ -263,16 +263,9 @@
               <span>Plannings</span>
             <% end %>
             
-            <%= link_to manager_absences_path, class: "admin-nav-link", style: "display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; border-radius: 0.5rem; transition: all 0.3s ease; font-size: 0.875rem; font-weight: 500; white-space: nowrap; #{request.path.include?('absences') ? 'background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 224, 0.2)); color: #FFFFFF;' : ''}" do %>
-              <svg style="width: 1.125rem; height: 1.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
-              </svg>
-              <span>Absences</span>
-            <% end %>
-            
             <!-- Team Dropdown -->
             <div class="nav-dropdown" style="position: relative;" data-controller="dropdown">
-              <button class="admin-nav-link nav-dropdown-trigger" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; border-radius: 0.5rem; transition: all 0.3s ease; font-size: 0.875rem; font-weight: 500; white-space: nowrap; background: transparent; border: none; cursor: pointer; #{request.path.include?('team') || request.path.include?('replacements') ? 'background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 224, 0.2)); color: #FFFFFF;' : ''}" data-action="click->dropdown#toggle">
+              <button class="admin-nav-link nav-dropdown-trigger" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; border-radius: 0.5rem; transition: all 0.3s ease; font-size: 0.875rem; font-weight: 500; white-space: nowrap; background: transparent; border: none; cursor: pointer; #{request.path.include?('team') || request.path.include?('replacements') || request.path.include?('absences') || request.path.include?('anomalies') ? 'background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 224, 0.2)); color: #FFFFFF;' : ''}" data-action="click->dropdown#toggle">
                 <svg style="width: 1.125rem; height: 1.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                 </svg>
@@ -293,6 +286,18 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
                   </svg>
                   <span>Remplacements</span>
+                <% end %>
+                <%= link_to manager_absences_path, style: "display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: all 0.2s ease; #{request.path.include?('absences') ? 'background: rgba(0, 212, 255, 0.1); color: #FFFFFF;' : ''}", data: { action: "mouseenter->dropdown#mouseEnter mouseleave->dropdown#mouseLeave" } do %>
+                  <svg style="width: 1.125rem; height: 1.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                  </svg>
+                  <span>Absences</span>
+                <% end %>
+                <%= link_to manager_anomalies_path, style: "display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: all 0.2s ease; #{request.path.include?('anomalies') ? 'background: rgba(0, 212, 255, 0.1); color: #FFFFFF;' : ''}", data: { action: "mouseenter->dropdown#mouseEnter mouseleave->dropdown#mouseLeave" } do %>
+                  <svg style="width: 1.125rem; height: 1.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                  </svg>
+                  <span>Anomalies</span>
                 <% end %>
               </div>
             </div>
@@ -374,6 +379,13 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
             </svg>
             <span>Remplacements</span>
+          <% end %>
+          
+          <%= link_to manager_anomalies_path, style: "display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; border-radius: 0.5rem; transition: all 0.3s ease; #{request.path.include?('anomalies') ? 'background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 224, 0.2)); color: #FFFFFF;' : ''}" do %>
+            <svg style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <span>Anomalies</span>
           <% end %>
         </nav>
       </div>

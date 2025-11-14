@@ -82,7 +82,7 @@ Rails.application.routes.draw do
     root 'dashboard#index'
     get 'dashboard', to: 'dashboard#index'
     
-    resources :time_entries, only: [:index, :show] do
+    resources :time_entries, only: [:index, :show, :edit, :update] do
       get 'export', on: :collection
     end
     resources :sites, only: [:index, :show] do
@@ -93,6 +93,12 @@ Rails.application.routes.draw do
     resources :schedules, only: [:index, :show]
     resources :absences
     resources :team, only: [:index, :show]
+    
+    resources :anomalies, only: [:index, :show] do
+      member do
+        post 'resolve'
+      end
+    end
     
     get 'replacements', to: 'replacements#index'
     post 'replacements/assign', to: 'replacements#assign'
