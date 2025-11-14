@@ -223,20 +223,20 @@ class Admin::ReportsController < ApplicationController
 
   def download
     # Reconstruct filename from report data
-    file_extension = case @report.file_format
+    file_extension = case @report[:file_format]
     when 'CSV' then 'csv'
     when 'Excel' then 'csv'
     when 'PDF', 'HTML' then 'html'
     else 'csv'
     end
     
-    filename = "rapport_mensuel_#{@report.period_start.strftime('%Y_%m')}.#{file_extension}"
+    filename = "rapport_mensuel_#{@report[:period_start].strftime('%Y_%m')}.#{file_extension}"
     file_path = Rails.root.join('storage', 'reports', filename)
     
     if File.exist?(file_path)
       send_file file_path,
                 filename: filename,
-                type: get_content_type_from_format(@report.file_format),
+                type: get_content_type_from_format(@report[:file_format]),
                 disposition: 'attachment'
     else
       redirect_to admin_reports_path, alert: 'Le fichier du rapport est introuvable.'
@@ -407,10 +407,56 @@ class Admin::ReportsController < ApplicationController
   end
 
   def set_report
-    @report = Report.find_by(id: params[:id])
+    report_record = Report.find_by(id: params[:id])
     
-    unless @report
+    unless report_record
       redirect_to admin_reports_path, alert: 'Rapport non trouvé.'
+      return
+    end
+    
+    # Convert ActiveRecord object to hash with all calculated metrics
+    @report = {
+      id: report_record.id,
+      title: report_record.title,
+      report_type: report_record.report_type,
+      period_type: report_record.period_type,
+      period_start: report_record.period_start,
+      period_end: report_record.period_end,
+      generated_at: report_record.generated_at,
+      generated_by_id: report_record.generated_by_id,
+      generated_by_name: report_record.generated_by&.full_name || 'Unknown',
+      status: report_record.status,
+      description: report_record.description,
+      filters_applied: report_record.filters_applied,
+      file_format: report_record.file_format,
+      file_size: report_record.file_size
+    }
+    
+    # Add calculated metrics based on report type and REPORT_DATA_SOURCES
+    case report_record.report_type
+    when 'time_tracking', 'monthly', 'payroll_export'
+      @report[:total_hours] = report_record.total_hours
+      @report[:total_agents] = report_record.total_agents
+      @report[:total_sites] = report_record.total_sites if ['time_tracking', 'monthly'].include?(report_record.report_type)
+    when 'site_performance'
+      @report[:total_hours] = report_record.total_hours
+      @report[:total_sites] = report_record.total_sites
+      @report[:site_name] = report_record.site_name
+      @report[:site_code] = report_record.site_code
+    when 'anomalies'
+      @report[:total_anomalies] = report_record.total_anomalies
+      @report[:resolved_anomalies] = report_record.resolved_anomalies
+      @report[:unresolved_anomalies] = report_record.unresolved_anomalies
+    when 'hr'
+      @report[:total_absences] = report_record.total_absences
+      @report[:absence_rate] = report_record.absence_rate
+      @report[:coverage_rate] = report_record.coverage_rate
+      @report[:total_agents] = report_record.total_agents
+    when 'scheduling'
+      @report[:total_schedules] = report_record.total_schedules
+      @report[:scheduled_count] = report_record.scheduled_count
+      @report[:completed_count] = report_record.completed_count
+      @report[:missed_count] = report_record.missed_count
     end
   end
 
