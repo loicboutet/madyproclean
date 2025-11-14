@@ -10,7 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_14_084320) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_14_164302) do
+  create_table "absences", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "absence_type", null: false
+    t.date "start_date", null: false
+    t.date "end_date", null: false
+    t.string "status", default: "pending", null: false
+    t.text "reason"
+    t.integer "created_by_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["absence_type"], name: "index_absences_on_absence_type"
+    t.index ["created_at"], name: "index_absences_on_created_at"
+    t.index ["created_by_id"], name: "index_absences_on_created_by_id"
+    t.index ["start_date", "end_date"], name: "index_absences_on_start_date_and_end_date"
+    t.index ["status"], name: "index_absences_on_status"
+    t.index ["user_id"], name: "index_absences_on_user_id"
+  end
+
   create_table "anomaly_logs", force: :cascade do |t|
     t.string "anomaly_type", null: false
     t.string "severity", default: "medium", null: false
@@ -146,6 +164,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_14_084320) do
     t.index ["role"], name: "index_users_on_role"
   end
 
+  add_foreign_key "absences", "users"
+  add_foreign_key "absences", "users", column: "created_by_id"
   add_foreign_key "anomaly_logs", "schedules"
   add_foreign_key "anomaly_logs", "time_entries"
   add_foreign_key "anomaly_logs", "users"

@@ -17,9 +17,8 @@ class User < ApplicationRecord
   has_many :schedules, dependent: :destroy
   has_many :created_schedules, class_name: 'Schedule', foreign_key: 'created_by_id', dependent: :nullify
   has_many :replacement_schedules, class_name: 'Schedule', foreign_key: 'replaced_by_id', dependent: :nullify
-  # TODO: Uncomment these when tables are created in Phase 2
-  # has_many :schedules, dependent: :destroy
-  # has_many :absences, dependent: :destroy
+  has_many :absences, dependent: :destroy
+  has_many :created_absences, class_name: 'Absence', foreign_key: 'created_by_id', dependent: :nullify
 
   # Validations
   validates :first_name, presence: true

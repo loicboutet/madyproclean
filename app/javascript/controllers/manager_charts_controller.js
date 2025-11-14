@@ -6,6 +6,7 @@ export default class extends Controller {
   }
 
   connect() {
+    console.log("Manager Charts Controller connected")
     this.charts = []
     this.initializeCharts()
   }
@@ -23,6 +24,9 @@ export default class extends Controller {
     }
 
     const chartData = this.dataValue
+    console.log("Chart data received:", chartData)
+    console.log("Team activity data:", chartData.team_activity)
+    console.log("Absences trend data:", chartData.absences_trend)
 
     // Team Activity Chart (Bar)
     this.createBarChart('teamActivityChart', chartData.team_activity)
@@ -32,11 +36,15 @@ export default class extends Controller {
   }
 
   createBarChart(canvasId, data) {
+    console.log(`Creating bar chart for ${canvasId}`)
+    console.log("Bar chart data:", data)
+    
     const ctx = document.getElementById(canvasId)
     if (!ctx) {
       console.warn(`Canvas element ${canvasId} not found`)
       return
     }
+    console.log(`Canvas element ${canvasId} found`)
 
     const chart = new Chart(ctx, {
       type: 'bar',
