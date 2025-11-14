@@ -1,0 +1,208 @@
+<% content_for :page_title, "Rapport Mensuel" %>
+
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Générer un Rapport Mensuel</h1>
+      <p class="text-large mt-2">Créez un rapport détaillé des heures travaillées pour un mois spécifique</p>
+    </div>
+    <div class="button-group">
+      <%= link_to admin_reports_path, class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Retour aux rapports
+      <% end %>
+    </div>
+  </div>
+
+  <div class="alert alert-info mb-6">
+    <strong>Information:</strong> Sélectionnez le mois et les filtres souhaités, puis choisissez le format d'export.
+  </div>
+
+  <%= form_with url: admin_generate_monthly_reports_path, method: :post, local: true do |f| %>
+    <div class="form-grid">
+      <!-- Month Selection -->
+      <div class="form-group">
+        <label for="month">Mois <span class="text-red-500">*</span></label>
+        <%= select_tag :month, 
+            options_for_select([
+              ['Janvier', 1],
+              ['Février', 2],
+              ['Mars', 3],
+              ['Avril', 4],
+              ['Mai', 5],
+              ['Juin', 6],
+              ['Juillet', 7],
+              ['Août', 8],
+              ['Septembre', 9],
+              ['Octobre', 10],
+              ['Novembre', 11],
+              ['Décembre', 12]
+            ], Date.current.month),
+            { required: true, class: 'form-control' }
+        %>
+      </div>
+
+      <!-- Year Selection -->
+      <div class="form-group">
+        <label for="year">Année <span class="text-red-500">*</span></label>
+        <%= select_tag :year,
+            options_for_select((Date.current.year - 2..Date.current.year + 1).to_a.reverse, Date.current.year),
+            { required: true, class: 'form-control' }
+        %>
+      </div>
+
+      <!-- Agent Filter -->
+      <div class="form-group">
+        <label for="user_id">Filtrer par Agent (optionnel)</label>
+        <%= select_tag :user_id,
+            options_for_select([['Tous les agents', '']] + User.agents.active.order(:last_name, :first_name).map { |u| [u.full_name, u.id] }),
+            { class: 'form-control' }
+        %>
+        <p class="text-sm opacity-70 mt-1">Laissez vide pour inclure tous les agents</p>
+      </div>
+
+      <!-- Site Filter -->
+      <div class="form-group">
+        <label for="site_id">Filtrer par Site (optionnel)</label>
+        <%= select_tag :site_id,
+            options_for_select([['Tous les sites', '']] + Site.active.order(:name).map { |s| ["#{s.name} (#{s.code})", s.id] }),
+            { class: 'form-control' }
+        %>
+        <p class="text-sm opacity-70 mt-1">Laissez vide pour inclure tous les sites</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Export Format Selection -->
+    <div class="form-group">
+      <label class="mb-3">Format d'Export <span class="text-red-500">*</span></label>
+      <div class="space-y-3">
+        <div class="flex items-center">
+          <%= radio_button_tag :format, 'csv', true, id: 'format_csv', class: 'mr-2' %>
+          <%= label_tag :format_csv, class: 'cursor-pointer' do %>
+            <span class="font-semibold">CSV</span>
+            <span class="text-sm opacity-70 ml-2">Format texte compatible Excel (recommandé)</span>
+          <% end %>
+        </div>
+        <div class="flex items-center">
+          <%= radio_button_tag :format, 'xlsx', false, id: 'format_xlsx', class: 'mr-2' %>
+          <%= label_tag :format_xlsx, class: 'cursor-pointer' do %>
+            <span class="font-semibold">Excel (.xlsx)</span>
+            <span class="text-sm opacity-70 ml-2">Format Microsoft Excel natif</span>
+          <% end %>
+        </div>
+        <div class="flex items-center">
+          <%= radio_button_tag :format, 'pdf', false, id: 'format_pdf', class: 'mr-2' %>
+          <%= label_tag :format_pdf, class: 'cursor-pointer' do %>
+            <span class="font-semibold">PDF</span>
+            <span class="text-sm opacity-70 ml-2">Document imprimable</span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Additional Options -->
+    <div class="form-group">
+      <label class="mb-3">Options Additionnelles</label>
+      <div class="space-y-3">
+        <div class="flex items-center">
+          <%= check_box_tag :include_anomalies, '1', true, id: 'include_anomalies', class: 'mr-2' %>
+          <%= label_tag :include_anomalies, class: 'cursor-pointer' do %>
+            <span class="font-semibold">Inclure les anomalies détectées</span>
+            <p class="text-sm opacity-70 mt-1">Ajoute une section avec les pointages manquants, >24h, etc.</p>
+          <% end %>
+        </div>
+        <div class="flex items-center">
+          <%= check_box_tag :include_schedules, '1', false, id: 'include_schedules', class: 'mr-2' %>
+          <%= label_tag :include_schedules, class: 'cursor-pointer' do %>
+            <span class="font-semibold">Comparer avec la planification</span>
+            <p class="text-sm opacity-70 mt-1">Compare les pointages réels avec les horaires prévus</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Submit Buttons -->
+    <div class="button-group">
+      <%= button_tag type: 'submit', class: 'btn-primary' do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+        </svg>
+        Générer le Rapport
+      <% end %>
+      <%= link_to admin_reports_path, class: 'btn-secondary' do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+        Annuler
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<!-- Preview Section -->
+<div class="glass-card mt-6">
+  <h2 class="mb-4" style="font-size: 1.875rem;">Contenu du Rapport</h2>
+  <div class="alert alert-info">
+    <strong>Le rapport généré contiendra :</strong>
+  </div>
+  
+  <div class="space-y-4 mt-4">
+    <div class="flex items-start">
+      <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <div>
+        <p class="font-semibold">Statistiques Générales</p>
+        <p class="text-sm opacity-70">Total heures travaillées, nombre d'agents, nombre de sites, nombre de pointages</p>
+      </div>
+    </div>
+
+    <div class="flex items-start">
+      <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <div>
+        <p class="font-semibold">Détail des Pointages</p>
+        <p class="text-sm opacity-70">Liste complète avec agent, site, date, heures d'arrivée/départ, durée et statut</p>
+      </div>
+    </div>
+
+    <div class="flex items-start">
+      <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <div>
+        <p class="font-semibold">Heures par Agent</p>
+        <p class="text-sm opacity-70">Total et nombre de pointages pour chaque agent</p>
+      </div>
+    </div>
+
+    <div class="flex items-start">
+      <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <div>
+        <p class="font-semibold">Heures par Site</p>
+        <p class="text-sm opacity-70">Total et nombre de pointages pour chaque site</p>
+      </div>
+    </div>
+
+    <div class="flex items-start">
+      <svg class="w-6 h-6 text-blue-500 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <div>
+        <p class="font-semibold">Anomalies (si sélectionné)</p>
+        <p class="text-sm opacity-70">Liste des incidents : pointages manquants, >24h, etc.</p>
+      </div>
+    </div>
+  </div>
+</div>

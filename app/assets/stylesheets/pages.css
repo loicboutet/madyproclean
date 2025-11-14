@@ -1714,6 +1714,20 @@ input[type="radio"] {
     flex-shrink: 0;
 }
 
+/* Modal Styles */
+[data-modal-target="container"] {
+    pointer-events: none;
+}
+
+[data-modal-target="container"].active {
+    pointer-events: auto;
+}
+
+[data-modal-target="container"].active > div > div > div {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+}
+
 /* Responsive Pagination */
 @media (max-width: 768px) {
     .pagination-list {

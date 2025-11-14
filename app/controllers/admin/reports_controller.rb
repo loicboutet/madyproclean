@@ -2,7 +2,7 @@ class Admin::ReportsController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_admin!
   layout 'admin'
-  before_action :set_report, only: [:show]
+  before_action :set_report, only: [:show, :download]
   before_action :load_demo_data
   
   def index
@@ -51,12 +51,23 @@ class Admin::ReportsController < ApplicationController
   end
 
   def monthly
-    # Redirect to index with monthly filter
-    redirect_to admin_reports_path(report_type: 'monthly')
+    # Render monthly report generation form
+    @users = User.agents.active.order(:last_name, :first_name)
+    @sites = Site.active.order(:name)
+  end
+
+  def time_tracking
+    # Render time tracking report form (placeholder)
+  end
+
+  def anomalies
+    # Render anomalies report form (placeholder)
   end
 
   def generate_monthly
     # Get parameters
+    title = params[:title].presence || "Rapport #{Date.current.strftime('%B %Y')}"
+    report_type = params[:report_type] || 'monthly'
     month = params[:month].to_i
     year = params[:year].to_i
     user_id = params[:user_id].presence
@@ -65,7 +76,7 @@ class Admin::ReportsController < ApplicationController
     
     # Validate parameters
     if month.zero? || year.zero?
-      redirect_to admin_reports_monthly_path, alert: 'Veuillez sélectionner un mois et une année.' and return
+      redirect_to admin_reports_path, alert: 'Veuillez sélectionner un mois et une année.' and return
     end
     
     # Calculate date range
@@ -80,8 +91,9 @@ class Admin::ReportsController < ApplicationController
     time_entries = time_entries.for_user(User.find(user_id)) if user_id.present?
     time_entries = time_entries.for_site(Site.find(site_id)) if site_id.present?
     
-    # Calculate statistics
-    total_hours = time_entries.sum(:duration_minutes) / 60.0
+    # Calculate statistics (handle nil duration_minutes for active entries)
+    total_minutes = time_entries.where.not(duration_minutes: nil).sum(:duration_minutes)
+    total_hours = total_minutes / 60.0
     total_agents = time_entries.select(:user_id).distinct.count
     total_sites = time_entries.select(:site_id).distinct.count
     total_entries = time_entries.count
@@ -94,20 +106,99 @@ class Admin::ReportsController < ApplicationController
       anomalies = anomalies.where(user_id: user_id) if user_id.present?
     end
     
-    # Generate report based on format
-    case format
-    when 'csv'
-      send_csv_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
-    when 'xlsx'
-      send_excel_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
-    when 'pdf'
-      send_pdf_report(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+    # Generate description based on filters
+    description = if user_id.present?
+      user = User.find(user_id)
+      "Rapport mensuel pour #{user.full_name}"
+    elsif site_id.present?
+      site = Site.find(site_id)
+      "Rapport mensuel pour #{site.name}"
     else
-      redirect_to admin_reports_monthly_path, alert: 'Format non supporté.'
+      "Rapport mensuel des présences et heures travaillées pour tous les agents"
     end
+    
+    # Generate file content first
+    file_content = case format
+    when 'csv'
+      generate_csv_content(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+    when 'xlsx'
+      generate_excel_content(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+    when 'pdf'
+      generate_pdf_content(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+    end
+    
+    # Determine file extension and MIME type
+    file_extension = case format
+    when 'csv' then 'csv'
+    when 'xlsx' then 'csv' # Currently using CSV for Excel
+    when 'pdf' then 'html' # Currently using HTML for PDF
+    end
+    
+    # Generate filename
+    filename = "rapport_mensuel_#{start_date.strftime('%Y_%m')}.#{file_extension}"
+    
+    # Save file to storage
+    storage_path = Rails.root.join('storage', 'reports')
+    FileUtils.mkdir_p(storage_path) unless Dir.exist?(storage_path)
+    
+    file_path = storage_path.join(filename)
+    File.write(file_path, file_content)
+    
+    # Calculate file size
+    file_size_bytes = File.size(file_path)
+    file_size = format_file_size(file_size_bytes)
+    
+    # Create Report record in database
+    report = Report.create!(
+      title: title,
+      report_type: report_type,
+      period_start: start_date,
+      period_end: end_date,
+      generated_at: Time.current,
+      generated_by_id: current_user.id,
+      status: 'completed',
+      description: description,
+      total_hours: total_hours.round(2),
+      total_agents: total_agents,
+      total_sites: total_sites,
+      filters_applied: {
+        all_agents: user_id.blank?,
+        all_sites: site_id.blank?,
+        user_id: user_id,
+        site_id: site_id,
+        include_anomalies: params[:include_anomalies] == '1'
+      },
+      file_format: format.upcase == 'XLSX' ? 'Excel' : format.upcase,
+      file_size: file_size
+    )
+    
+    # Redirect to reports index with success message
+    redirect_to admin_reports_path, notice: "Rapport '#{report.title}' généré avec succès! Vous pouvez le télécharger ci-dessous."
   end
 
   def hr
+  end
+
+  def download
+    # Reconstruct filename from report data
+    file_extension = case @report.file_format
+    when 'CSV' then 'csv'
+    when 'Excel' then 'csv'
+    when 'PDF', 'HTML' then 'html'
+    else 'csv'
+    end
+    
+    filename = "rapport_mensuel_#{@report.period_start.strftime('%Y_%m')}.#{file_extension}"
+    file_path = Rails.root.join('storage', 'reports', filename)
+    
+    if File.exist?(file_path)
+      send_file file_path,
+                filename: filename,
+                type: get_content_type_from_format(@report.file_format),
+                disposition: 'attachment'
+    else
+      redirect_to admin_reports_path, alert: 'Le fichier du rapport est introuvable.'
+    end
   end
 
   private
@@ -155,7 +246,7 @@ class Admin::ReportsController < ApplicationController
       csv << ['Agent', 'N° Employé', 'Total heures', 'Nombre de pointages']
       
       time_entries.group_by(&:user).each do |user, entries|
-        total_minutes = entries.sum(&:duration_minutes)
+        total_minutes = entries.map(&:duration_minutes).compact.sum
         csv << [
           user.full_name,
           user.employee_number,
@@ -170,7 +261,7 @@ class Admin::ReportsController < ApplicationController
       csv << ['Site', 'Code', 'Total heures', 'Nombre de pointages']
       
       time_entries.group_by(&:site).each do |site, entries|
-        total_minutes = entries.sum(&:duration_minutes)
+        total_minutes = entries.map(&:duration_minutes).compact.sum
         csv << [
           site.name,
           site.code,
@@ -279,6 +370,151 @@ class Admin::ReportsController < ApplicationController
     unless @report
       redirect_to admin_reports_path, alert: 'Rapport non trouvé.'
     end
+  end
+
+  def generate_csv_content(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+    require 'csv'
+    
+    CSV.generate(headers: true, col_sep: ';', encoding: 'UTF-8') do |csv|
+      # Header section with summary
+      csv << ['Rapport Mensuel de Pointage']
+      csv << ['Période', "#{start_date.strftime('%d/%m/%Y')} - #{end_date.strftime('%d/%m/%Y')}"]
+      csv << ['Généré le', Time.current.strftime('%d/%m/%Y à %H:%M')]
+      csv << ['Généré par', current_user.full_name]
+      csv << []
+      csv << ['STATISTIQUES GÉNÉRALES']
+      csv << ['Total heures travaillées', total_hours.round(2)]
+      csv << ['Nombre d\'agents', total_agents]
+      csv << ['Nombre de sites', total_sites]
+      csv << ['Nombre de pointages', time_entries.count]
+      csv << []
+      
+      # Time entries details
+      csv << ['DÉTAIL DES POINTAGES']
+      csv << ['ID', 'Agent', 'N° Employé', 'Site', 'Date', 'Arrivée', 'Départ', 'Durée (h)', 'Statut']
+      
+      time_entries.each do |entry|
+        csv << [
+          entry.id,
+          entry.user.full_name,
+          entry.user.employee_number,
+          entry.site.name,
+          entry.clocked_in_at.strftime('%d/%m/%Y'),
+          entry.clocked_in_at.strftime('%H:%M'),
+          entry.clocked_out_at ? entry.clocked_out_at.strftime('%H:%M') : 'En cours',
+          entry.duration_minutes ? (entry.duration_minutes / 60.0).round(2) : '-',
+          entry.status
+        ]
+      end
+      
+      # Hours by agent
+      csv << []
+      csv << ['HEURES PAR AGENT']
+      csv << ['Agent', 'N° Employé', 'Total heures', 'Nombre de pointages']
+      
+      time_entries.group_by(&:user).each do |user, entries|
+        total_minutes = entries.map(&:duration_minutes).compact.sum
+        csv << [
+          user.full_name,
+          user.employee_number,
+          (total_minutes / 60.0).round(2),
+          entries.count
+        ]
+      end
+      
+      # Hours by site
+      csv << []
+      csv << ['HEURES PAR SITE']
+      csv << ['Site', 'Code', 'Total heures', 'Nombre de pointages']
+      
+      time_entries.group_by(&:site).each do |site, entries|
+        total_minutes = entries.map(&:duration_minutes).compact.sum
+        csv << [
+          site.name,
+          site.code,
+          (total_minutes / 60.0).round(2),
+          entries.count
+        ]
+      end
+      
+      # Anomalies if included
+      if anomalies.any?
+        csv << []
+        csv << ['ANOMALIES DÉTECTÉES']
+        csv << ['Type', 'Agent', 'Description', 'Sévérité', 'Date', 'Résolu']
+        
+        anomalies.each do |anomaly|
+          csv << [
+            anomaly.anomaly_type,
+            anomaly.user ? anomaly.user.full_name : '-',
+            anomaly.description,
+            anomaly.severity,
+            anomaly.created_at.strftime('%d/%m/%Y %H:%M'),
+            anomaly.resolved? ? 'Oui' : 'Non'
+          ]
+        end
+      end
+    end
+  end
+
+  def generate_excel_content(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+    # For now, Excel format uses CSV (can be enhanced with a gem like 'caxlsx' for native Excel)
+    generate_csv_content(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+  end
+
+  def generate_pdf_content(time_entries, start_date, end_date, total_hours, total_agents, total_sites, anomalies)
+    # Render HTML (can be enhanced with a gem like 'wicked_pdf' for real PDF)
+    render_to_string(
+      template: 'admin/reports/monthly_pdf',
+      layout: false,
+      locals: {
+        time_entries: time_entries,
+        start_date: start_date,
+        end_date: end_date,
+        total_hours: total_hours,
+        total_agents: total_agents,
+        total_sites: total_sites,
+        anomalies: anomalies,
+        generated_by: current_user.full_name,
+        generated_at: Time.current
+      }
+    )
+  end
+
+  def get_content_type(format)
+    case format
+    when 'csv'
+      'text/csv; charset=utf-8'
+    when 'xlsx'
+      'application/vnd.ms-excel'
+    when 'pdf'
+      'text/html' # Will be application/pdf when using real PDF generation
+    else
+      'application/octet-stream'
+    end
+  end
+
+  def get_content_type_from_format(file_format)
+    case file_format
+    when 'CSV'
+      'text/csv; charset=utf-8'
+    when 'Excel'
+      'application/vnd.ms-excel'
+    when 'PDF', 'HTML'
+      'text/html'
+    else
+      'application/octet-stream'
+    end
+  end
+
+  def format_file_size(bytes)
+    return '0 B' if bytes.zero?
+    
+    units = ['B', 'KB', 'MB', 'GB']
+    exponent = (Math.log(bytes) / Math.log(1024)).floor
+    size = (bytes / (1024.0 ** exponent)).round(2)
+    
+    "#{size} #{units[exponent]}"
   end
 
   def load_demo_data

@@ -68,7 +68,13 @@ Rails.application.routes.draw do
     get 'reports/monthly', to: 'reports#monthly', as: 'reports_monthly'
     post 'reports/monthly/generate', to: 'reports#generate_monthly', as: 'generate_monthly_reports'
     get 'reports/hr', to: 'reports#hr', as: 'reports_hr'
-    resources :reports, only: [:index, :show]
+    get 'reports/time_tracking', to: 'reports#time_tracking', as: 'reports_time_tracking'
+    get 'reports/anomalies', to: 'reports#anomalies', as: 'reports_anomalies'
+    resources :reports, only: [:index, :show] do
+      member do
+        get 'download'
+      end
+    end
   end
   
   # Manager namespace

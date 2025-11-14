@@ -1,358 +1,369 @@
 <% content_for :page_title, "Gestion des Rapports" %>
 
-<!-- Page Header -->
-<div class="glass-card">
-  <div class="flex items-center justify-between mb-6">
-    <div>
-      <h1 class="gradient-heading">Gestion des Rapports</h1>
-      <p class="text-large mt-2">Générez et consultez les rapports du système</p>
+<div data-controller="modal">
+  <!-- Page Header -->
+  <div class="glass-card">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="gradient-heading">Gestion des Rapports</h1>
+        <p class="text-large mt-2">Générez et consultez les rapports du système</p>
+      </div>
+      <div class="button-group">
+        <button class="btn-primary" data-action="click->modal#open">
+          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Générer un rapport
+        </button>
+      </div>
     </div>
-    <div class="button-group">
-      <%= link_to "#", class: "btn-primary" do %>
-        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        Générer un rapport
-      <% end %>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-primary">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">Total Rapports</p>
+          <p class="stat-value"><%= @all_reports_count %></p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-success">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">Complétés</p>
+          <p class="stat-value"><%= @completed_count %></p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-info">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">En Cours</p>
+          <p class="stat-value"><%= @generating_count %></p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon stat-icon-warning">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">En Attente</p>
+          <p class="stat-value"><%= @pending_count %></p>
+        </div>
+      </div>
     </div>
   </div>
 
-<!-- Statistics Cards -->
-<div class="stats-grid">
-  <div class="stat-card">
-    <div class="stat-icon stat-icon-primary">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-      </svg>
-    </div>
-    <div class="stat-content">
-      <p class="stat-label">Total Rapports</p>
-      <p class="stat-value"><%= @all_reports_count %></p>
-    </div>
-  </div>
+  <!-- New Report Modal -->
+  <%= render 'admin/reports/new_report_modal' %>
 
-  <div class="stat-card">
-    <div class="stat-icon stat-icon-success">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-      </svg>
-    </div>
-    <div class="stat-content">
-      <p class="stat-label">Complétés</p>
-      <p class="stat-value"><%= @completed_count %></p>
-    </div>
-  </div>
+  <div class="divider"></div>
 
-  <div class="stat-card">
-    <div class="stat-icon stat-icon-info">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-      </svg>
-    </div>
-    <div class="stat-content">
-      <p class="stat-label">En Cours</p>
-      <p class="stat-value"><%= @generating_count %></p>
-    </div>
-  </div>
-
-  <div class="stat-card">
-    <div class="stat-icon stat-icon-warning">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-      </svg>
-    </div>
-    <div class="stat-content">
-      <p class="stat-label">En Attente</p>
-      <p class="stat-value"><%= @pending_count %></p>
-    </div>
-  </div>
-</div>
-
-<div class="divider"></div>
   <!-- Filters Section -->
-  <div class="alert alert-info mb-6">
-    <strong>Filtres de Recherche:</strong> Utilisez les filtres ci-dessous pour affiner la liste des rapports
+  <div class="glass-card">
+    <div class="alert alert-info mb-6">
+      <strong>Filtres de Recherche:</strong> Utilisez les filtres ci-dessous pour affiner la liste des rapports
+    </div>
+
+    <form>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="search">Rechercher</label>
+          <input 
+            type="text" 
+            name="search" 
+            id="search" 
+            placeholder="Titre, description..."
+            value="<%= params[:search] %>">
+        </div>
+
+        <div class="form-group">
+          <label for="report_type">Type de Rapport</label>
+          <select name="report_type" id="report_type">
+            <option value="">Tous les types</option>
+            <option value="monthly" <%= 'selected' if params[:report_type] == 'monthly' %>>Mensuel</option>
+            <option value="hr" <%= 'selected' if params[:report_type] == 'hr' %>>RH / Absences</option>
+            <option value="time_tracking" <%= 'selected' if params[:report_type] == 'time_tracking' %>>Temps Travaillé</option>
+            <option value="scheduling" <%= 'selected' if params[:report_type] == 'scheduling' %>>Planification</option>
+            <option value="anomalies" <%= 'selected' if params[:report_type] == 'anomalies' %>>Anomalies</option>
+            <option value="payroll_export" <%= 'selected' if params[:report_type] == 'payroll_export' %>>Export Paie</option>
+            <option value="site_performance" <%= 'selected' if params[:report_type] == 'site_performance' %>>Performance Sites</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="status">Statut</label>
+          <select name="status" id="status">
+            <option value="">Tous les statuts</option>
+            <option value="completed" <%= 'selected' if params[:status] == 'completed' %>>Complété</option>
+            <option value="generating" <%= 'selected' if params[:status] == 'generating' %>>En Cours</option>
+            <option value="pending" <%= 'selected' if params[:status] == 'pending' %>>En Attente</option>
+            <option value="failed" <%= 'selected' if params[:status] == 'failed' %>>Échoué</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="start_date">Date de début</label>
+          <input 
+            type="date" 
+            name="start_date" 
+            id="start_date" 
+            value="<%= params[:start_date] %>">
+        </div>
+
+        <div class="form-group">
+          <label for="end_date">Date de fin</label>
+          <input 
+            type="date" 
+            name="end_date" 
+            id="end_date" 
+            value="<%= params[:end_date] %>">
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="btn-primary">
+          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+          </svg>
+          Appliquer les filtres
+        </button>
+        <a href="<%= admin_reports_path %>" class="btn-secondary">
+          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          Réinitialiser
+        </a>
+      </div>
+    </form>
   </div>
 
-  <form>
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="search">Rechercher</label>
-        <input 
-          type="text" 
-          name="search" 
-          id="search" 
-          placeholder="Titre, description..."
-          value="<%= params[:search] %>">
-      </div>
+  <div class="divider"></div>
 
-      <div class="form-group">
-        <label for="report_type">Type de Rapport</label>
-        <select name="report_type" id="report_type">
-          <option value="">Tous les types</option>
-          <option value="monthly" <%= 'selected' if params[:report_type] == 'monthly' %>>Mensuel</option>
-          <option value="hr" <%= 'selected' if params[:report_type] == 'hr' %>>RH / Absences</option>
-          <option value="time_tracking" <%= 'selected' if params[:report_type] == 'time_tracking' %>>Temps Travaillé</option>
-          <option value="scheduling" <%= 'selected' if params[:report_type] == 'scheduling' %>>Planification</option>
-          <option value="anomalies" <%= 'selected' if params[:report_type] == 'anomalies' %>>Anomalies</option>
-          <option value="payroll_export" <%= 'selected' if params[:report_type] == 'payroll_export' %>>Export Paie</option>
-          <option value="site_performance" <%= 'selected' if params[:report_type] == 'site_performance' %>>Performance Sites</option>
-        </select>
+  <!-- Reports Table -->
+  <div class="card">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="mb-2" style="font-size: 1.875rem;">Liste des Rapports</h2>
+        <p class="text-large">Visualisez tous les rapports générés avec leurs détails</p>
       </div>
-
-      <div class="form-group">
-        <label for="status">Statut</label>
-        <select name="status" id="status">
-          <option value="">Tous les statuts</option>
-          <option value="completed" <%= 'selected' if params[:status] == 'completed' %>>Complété</option>
-          <option value="generating" <%= 'selected' if params[:status] == 'generating' %>>En Cours</option>
-          <option value="pending" <%= 'selected' if params[:status] == 'pending' %>>En Attente</option>
-          <option value="failed" <%= 'selected' if params[:status] == 'failed' %>>Échoué</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="start_date">Date de début</label>
-        <input 
-          type="date" 
-          name="start_date" 
-          id="start_date" 
-          value="<%= params[:start_date] %>">
-      </div>
-
-      <div class="form-group">
-        <label for="end_date">Date de fin</label>
-        <input 
-          type="date" 
-          name="end_date" 
-          id="end_date" 
-          value="<%= params[:end_date] %>">
+      <div class="button-group">
+        <button class="btn-primary" data-action="click->modal#open">
+          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Nouveau rapport
+        </button>
       </div>
     </div>
 
-    <div class="button-group">
-      <button type="submit" class="btn-primary">
-        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
-        </svg>
-        Appliquer les filtres
-      </button>
-      <a href="<%= admin_reports_path %>" class="btn-secondary">
-        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-        </svg>
-        Réinitialiser
-      </a>
-    </div>
-  </form>
-</div>
-
-
-<div class="divider"></div>
-
-<!-- Reports Table -->
-<div class="card">
-  <div class="flex items-center justify-between mb-6">
-    <div>
-      <h2 class="mb-2" style="font-size: 1.875rem;">Liste des Rapports</h2>
-      <p class="text-large">Visualisez tous les rapports générés avec leurs détails</p>
-    </div>
-    <div class="button-group">
-      <%= link_to "#", class: "btn-primary" do %>
-        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        Nouveau rapport
-      <% end %>
-    </div>
-  </div>
-
-  <div class="table-responsive">
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Titre</th>
-          <th>Type</th>
-          <th>Période</th>
-          <th>Statut</th>
-          <th>Généré par</th>
-          <th>Format</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if @reports.empty? %>
+    <div class="table-responsive">
+      <table>
+        <thead>
           <tr>
-            <td colspan="8" style="text-align: center; padding: 2rem;">
-              <div class="alert alert-warning" style="display: inline-block;">
-                <strong>Aucun rapport trouvé</strong> avec les filtres actuels
-              </div>
-            </td>
+            <th>#</th>
+            <th>Titre</th>
+            <th>Type</th>
+            <th>Période</th>
+            <th>Statut</th>
+            <th>Généré par</th>
+            <th>Format</th>
+            <th>Actions</th>
           </tr>
-        <% else %>
-          <% @reports.each do |report| %>
+        </thead>
+        <tbody>
+          <% if @reports.empty? %>
             <tr>
-              <td><strong>#<%= report.id %></strong></td>
-              <td>
-                <div>
-                  <p class="font-semibold"><%= report.title %></p>
-                  <% if report.description %>
-                    <p class="text-sm opacity-70"><%= report.description.truncate(50) %></p>
-                  <% end %>
-                </div>
-              </td>
-              <td>
-                <% case report.report_type %>
-                <% when 'monthly' %>
-                  <span class="badge-info">📅 Mensuel</span>
-                <% when 'hr' %>
-                  <span class="badge" style="background: #8b5cf6; color: white;">👥 RH</span>
-                <% when 'time_tracking' %>
-                  <span class="badge-success">⏱️ Temps</span>
-                <% when 'scheduling' %>
-                  <span class="badge-info">📆 Planning</span>
-                <% when 'anomalies' %>
-                  <span class="badge-warning">⚠️ Anomalies</span>
-                <% when 'payroll_export' %>
-                  <span class="badge" style="background: #10b981; color: white;">💰 Paie</span>
-                <% when 'site_performance' %>
-                  <span class="badge" style="background: #f59e0b; color: white;">📊 Sites</span>
-                <% end %>
-              </td>
-              <td>
-                <div>
-                  <p class="font-semibold"><%= report.period_start&.strftime('%d/%m/%Y') || 'N/A' %></p>
-                  <p class="text-sm opacity-70">au <%= report.period_end&.strftime('%d/%m/%Y') || 'N/A' %></p>
-                </div>
-              </td>
-              <td>
-                <% if report.status == 'completed' %>
-                  <span class="badge-success">✓ Complété</span>
-                <% elsif report.status == 'generating' %>
-                  <span class="badge-info">⏳ En cours</span>
-                <% elsif report.status == 'pending' %>
-                  <span class="badge-warning">⏸️ En attente</span>
-                <% elsif report.status == 'failed' %>
-                  <span class="badge-danger">✗ Échoué</span>
-                <% end %>
-              </td>
-              <td>
-                <div>
-                  <p class="font-semibold"><%= report.generated_by&.full_name || 'Système' %></p>
-                  <% if report.generated_at %>
-                    <p class="text-sm opacity-70"><%= report.generated_at.strftime('%d/%m/%Y %H:%M') %></p>
-                  <% end %>
-                </div>
-              </td>
-              <td>
-                <div>
-                  <span class="badge"><%= report.file_format %></span>
-                  <% if report.file_size %>
-                    <p class="text-sm opacity-70 mt-1"><%= report.file_size %></p>
-                  <% end %>
-                </div>
-              </td>
-              <td>
-                <div class="dropdown-wrapper" data-controller="dropdown">
-                  <button class="dropdown-trigger" data-action="click->dropdown#toggle" title="Actions">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
-                    </svg>
-                  </button>
-                  
-                  <div class="dropdown-menu hidden" data-dropdown-target="menu">
-                    <%= link_to admin_report_path(report.id), class: "dropdown-item" do %>
-                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                      </svg>
-                      <span>Voir</span>
-                    <% end %>
-                    <% if report.status == 'completed' %>
-                      <%= link_to "#", class: "dropdown-item" do %>
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                        </svg>
-                        <span>Télécharger</span>
-                      <% end %>
-                    <% end %>
-                    <div class="dropdown-divider"></div>
-                    <%= button_to "#", method: :delete, data: { confirm: 'Êtes-vous sûr de vouloir supprimer ce rapport ?' }, class: "dropdown-item dropdown-item-danger", form: { style: 'display: inline;' } do %>
-                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                      </svg>
-                      <span>Supprimer</span>
-                    <% end %>
-                  </div>
+              <td colspan="8" style="text-align: center; padding: 2rem;">
+                <div class="alert alert-warning" style="display: inline-block;">
+                  <strong>Aucun rapport trouvé</strong> avec les filtres actuels
                 </div>
               </td>
             </tr>
+          <% else %>
+            <% @reports.each_with_index do |report, index| %>
+              <% 
+                # Calculate serial number: total - ((page - 1) * per_page + index)
+                serial_number = @all_reports_count - ((params[:page].to_i > 0 ? params[:page].to_i - 1 : 0) * 10 + index)
+              %>
+              <tr>
+                <td><strong>#<%= serial_number %></strong></td>
+                <td>
+                  <div>
+                    <p class="font-semibold"><%= report.title %></p>
+                    <% if report.description %>
+                      <p class="text-sm opacity-70"><%= report.description.truncate(50) %></p>
+                    <% end %>
+                  </div>
+                </td>
+                <td>
+                  <% case report.report_type %>
+                  <% when 'monthly' %>
+                    <span class="badge-info">📅 Mensuel</span>
+                  <% when 'hr' %>
+                    <span class="badge" style="background: #8b5cf6; color: white;">👥 RH</span>
+                  <% when 'time_tracking' %>
+                    <span class="badge-success">⏱️ Temps</span>
+                  <% when 'scheduling' %>
+                    <span class="badge-info">📆 Planning</span>
+                  <% when 'anomalies' %>
+                    <span class="badge-warning">⚠️ Anomalies</span>
+                  <% when 'payroll_export' %>
+                    <span class="badge" style="background: #10b981; color: white;">💰 Paie</span>
+                  <% when 'site_performance' %>
+                    <span class="badge" style="background: #f59e0b; color: white;">📊 Sites</span>
+                  <% end %>
+                </td>
+                <td>
+                  <div>
+                    <p class="font-semibold"><%= report.period_start&.strftime('%d/%m/%Y') || 'N/A' %></p>
+                    <p class="text-sm opacity-70">au <%= report.period_end&.strftime('%d/%m/%Y') || 'N/A' %></p>
+                  </div>
+                </td>
+                <td>
+                  <% if report.status == 'completed' %>
+                    <span class="badge-success">✓ Complété</span>
+                  <% elsif report.status == 'generating' %>
+                    <span class="badge-info">⏳ En cours</span>
+                  <% elsif report.status == 'pending' %>
+                    <span class="badge-warning">⏸️ En attente</span>
+                  <% elsif report.status == 'failed' %>
+                    <span class="badge-danger">✗ Échoué</span>
+                  <% end %>
+                </td>
+                <td>
+                  <div>
+                    <p class="font-semibold"><%= report.generated_by&.full_name || 'Système' %></p>
+                    <% if report.generated_at %>
+                      <p class="text-sm opacity-70"><%= report.generated_at.strftime('%d/%m/%Y %H:%M') %></p>
+                    <% end %>
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <span class="badge"><%= report.file_format %></span>
+                    <% if report.file_size %>
+                      <p class="text-sm opacity-70 mt-1"><%= report.file_size %></p>
+                    <% end %>
+                  </div>
+                </td>
+                <td>
+                  <div class="dropdown-wrapper" data-controller="dropdown">
+                    <button class="dropdown-trigger" data-action="click->dropdown#toggle" title="Actions">
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                      </svg>
+                    </button>
+                    
+                    <div class="dropdown-menu hidden" data-dropdown-target="menu">
+                      <%= link_to admin_report_path(report.id), class: "dropdown-item" do %>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                        <span>Voir</span>
+                      <% end %>
+                      <% if report.status == 'completed' %>
+                        <%= link_to download_admin_report_path(report.id), class: "dropdown-item" do %>
+                          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                          </svg>
+                          <span>Télécharger</span>
+                        <% end %>
+                      <% end %>
+                      <div class="dropdown-divider"></div>
+                      <%= button_to "#", method: :delete, data: { confirm: 'Êtes-vous sûr de vouloir supprimer ce rapport ?' }, class: "dropdown-item dropdown-item-danger", form: { style: 'display: inline;' } do %>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                        <span>Supprimer</span>
+                      <% end %>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
           <% end %>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Pagination -->
-  <%= paginate @reports, params: params.permit(:report_type, :status, :start_date, :end_date, :search).to_h %>
-</div>
-
-<div class="divider"></div>
-
-<!-- Generate New Report -->
-<div class="glass-card">
-  <h2 class="mb-4" style="font-size: 1.875rem;">Générer un Nouveau Rapport</h2>
-  <div class="alert alert-info mb-6">
-    <strong>Information:</strong> Créez des rapports personnalisés pour analyser les données du système selon vos besoins.
-  </div>
-  
-  <div class="stats-grid">
-    <%= link_to admin_reports_monthly_path, class: "stat-card", style: "cursor: pointer; text-decoration: none;" do %>
-      <div class="stat-icon stat-icon-primary">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-        </svg>
-      </div>
-      <div class="stat-content">
-        <p class="stat-label">Rapport Mensuel</p>
-        <p class="text-sm opacity-70 mt-1">Synthèse complète du mois</p>
-      </div>
-    <% end %>
-
-    <div class="stat-card" style="cursor: pointer;">
-      <div class="stat-icon stat-icon-success">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-        </svg>
-      </div>
-      <div class="stat-content">
-        <p class="stat-label">Rapport RH</p>
-        <p class="text-sm opacity-70 mt-1">Absences et couverture</p>
-      </div>
+        </tbody>
+      </table>
     </div>
 
-    <div class="stat-card" style="cursor: pointer;">
-      <div class="stat-icon stat-icon-info">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-      </div>
-      <div class="stat-content">
-        <p class="stat-label">Temps Travaillé</p>
-        <p class="text-sm opacity-70 mt-1">Heures par agent/site</p>
-      </div>
-    </div>
+    <!-- Pagination -->
+    <%= paginate @reports, params: params.permit(:report_type, :status, :start_date, :end_date, :search).to_h %>
+  </div>
 
-    <div class="stat-card" style="cursor: pointer;">
-      <div class="stat-icon stat-icon-warning">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-        </svg>
+  <div class="divider"></div>
+
+  <!-- Generate New Report -->
+  <div class="glass-card">
+    <h2 class="mb-4" style="font-size: 1.875rem;">Générer un Nouveau Rapport</h2>
+    <div class="alert alert-info mb-6">
+      <strong>Information:</strong> Créez des rapports personnalisés pour analyser les données du système selon vos besoins.
+    </div>
+    
+    <div class="stats-grid">
+      <%= link_to admin_reports_monthly_path, class: "stat-card", style: "cursor: pointer; text-decoration: none;" do %>
+        <div class="stat-icon stat-icon-primary">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">Rapport Mensuel</p>
+          <p class="text-sm opacity-70 mt-1">Synthèse complète du mois</p>
+        </div>
+      <% end %>
+
+      <div class="stat-card" style="cursor: pointer;">
+        <div class="stat-icon stat-icon-success">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">Rapport RH</p>
+          <p class="text-sm opacity-70 mt-1">Absences et couverture</p>
+        </div>
       </div>
-      <div class="stat-content">
-        <p class="stat-label">Anomalies</p>
-        <p class="text-sm opacity-70 mt-1">Incidents détectés</p>
+
+      <div class="stat-card" style="cursor: pointer;">
+        <div class="stat-icon stat-icon-info">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">Temps Travaillé</p>
+          <p class="text-sm opacity-70 mt-1">Heures par agent/site</p>
+        </div>
+      </div>
+
+      <div class="stat-card" style="cursor: pointer;">
+        <div class="stat-icon stat-icon-warning">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">Anomalies</p>
+          <p class="text-sm opacity-70 mt-1">Incidents détectés</p>
+        </div>
       </div>
     </div>
   </div>

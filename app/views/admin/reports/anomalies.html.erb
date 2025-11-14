@@ -1,0 +1,41 @@
+<% content_for :page_title, "Rapport Anomalies" %>
+
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Générer un Rapport Anomalies</h1>
+      <p class="text-large mt-2">Créez un rapport sur les incidents et anomalies détectés</p>
+    </div>
+    <div class="button-group">
+      <%= link_to admin_reports_path, class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Retour aux rapports
+      <% end %>
+    </div>
+  </div>
+
+  <div class="alert alert-warning">
+    <strong>Fonctionnalité en cours de développement</strong>
+    <p class="mt-2">Ce type de rapport sera disponible prochainement. Il permettra de générer des analyses détaillées sur :</p>
+    <ul class="list-disc list-inside mt-2 space-y-1">
+      <li>Pointages manquants (clock-in ou clock-out)</li>
+      <li>Pointages de plus de 24 heures</li>
+      <li>Multiples pointages actifs simultanés</li>
+      <li>Désaccords entre planning et pointages réels</li>
+      <li>Taux de résolution des anomalies</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="button-group">
+    <%= link_to admin_reports_path, class: "btn-primary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Retour à la liste des rapports
+    <% end %>
+  </div>
+</div>
