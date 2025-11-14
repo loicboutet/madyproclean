@@ -39,6 +39,109 @@ class Report < ApplicationRecord
   
   FILE_FORMATS = %w[PDF Excel CSV HTML].freeze
   
+  # Configuration for report data sources and field mappings
+  REPORT_DATA_SOURCES = {
+    'time_tracking' => {
+      model: TimeEntry,
+      date_field: :clocked_in_at,
+      metrics: {
+        total_hours: {
+          field: :duration_minutes,
+          aggregate: :sum,
+          transform: ->(value) { (value / 60.0).round(2) },
+          condition: ->(relation) { relation.where.not(duration_minutes: nil) }
+        },
+        total_agents: {
+          field: :user_id,
+          aggregate: :count,
+          distinct: true
+        },
+        total_sites: {
+          field: :site_id,
+          aggregate: :count,
+          distinct: true
+        }
+      },
+      filters: {
+        user_id: ->(relation, value) { relation.where(user_id: value) },
+        site_id: ->(relation, value) { relation.where(site_id: value) }
+      }
+    },
+    'anomalies' => {
+      model: AnomalyLog,
+      date_field: :created_at,
+      metrics: {
+        total_anomalies: {
+          aggregate: :count
+        },
+        resolved_anomalies: {
+          aggregate: :count,
+          condition: ->(relation) { relation.where(resolved: true) }
+        }
+      },
+      filters: {
+        user_id: ->(relation, value) { relation.where(user_id: value) },
+        severity: ->(relation, value) { relation.where(severity: value) }
+      }
+    },
+    'hr' => {
+      model: User,
+      date_field: nil, # HR reports may use different date logic
+      metrics: {
+        # Placeholder - to be implemented
+      },
+      filters: {}
+    },
+    'scheduling' => {
+      model: Schedule,
+      date_field: :date,
+      metrics: {
+        # Placeholder - to be implemented
+      },
+      filters: {}
+    },
+    'site_performance' => {
+      model: TimeEntry,
+      date_field: :clocked_in_at,
+      metrics: {
+        total_hours: {
+          field: :duration_minutes,
+          aggregate: :sum,
+          transform: ->(value) { (value / 60.0).round(2) },
+          condition: ->(relation) { relation.where.not(duration_minutes: nil) }
+        },
+        total_sites: {
+          field: :site_id,
+          aggregate: :count,
+          distinct: true
+        }
+      },
+      filters: {
+        site_id: ->(relation, value) { relation.where(site_id: value) }
+      }
+    },
+    'payroll_export' => {
+      model: TimeEntry,
+      date_field: :clocked_in_at,
+      metrics: {
+        total_hours: {
+          field: :duration_minutes,
+          aggregate: :sum,
+          transform: ->(value) { (value / 60.0).round(2) },
+          condition: ->(relation) { relation.where.not(duration_minutes: nil) }
+        },
+        total_agents: {
+          field: :user_id,
+          aggregate: :count,
+          distinct: true
+        }
+      },
+      filters: {
+        user_id: ->(relation, value) { relation.where(user_id: value) }
+      }
+    }
+  }.freeze
+  
   # Serialize filters_applied as JSON
   serialize :filters_applied, coder: JSON
   
@@ -135,80 +238,102 @@ class Report < ApplicationRecord
   
   private
   
+  # Generic metric calculation using configuration
+  def calculate_metric(metric_name)
+    config = REPORT_DATA_SOURCES[report_type]
+    return 0 unless config && period_start && period_end
+    
+    metric_config = config[:metrics][metric_name]
+    return 0 unless metric_config
+    
+    # Get base relation from model
+    relation = config[:model].all
+    
+    # Apply date range filter if date_field is specified
+    if config[:date_field]
+      date_field = config[:date_field]
+      relation = relation.where(
+        "#{date_field} >= ? AND #{date_field} <= ?",
+        period_start.beginning_of_day,
+        period_end.end_of_day
+      )
+    end
+    
+    # Apply configured filters from filters_applied
+    relation = apply_configured_filters(relation, config[:filters])
+    
+    # Apply metric-specific condition
+    if metric_config[:condition]
+      relation = metric_config[:condition].call(relation)
+    end
+    
+    # Perform aggregation
+    result = if metric_config[:field]
+      if metric_config[:distinct]
+        relation.select(metric_config[:field]).distinct.count
+      elsif metric_config[:aggregate] == :sum
+        relation.sum(metric_config[:field])
+      elsif metric_config[:aggregate] == :count
+        relation.count
+      else
+        0
+      end
+    else
+      relation.count
+    end
+    
+    # Apply transformation if specified
+    if metric_config[:transform]
+      metric_config[:transform].call(result)
+    else
+      result
+    end
+  end
+  
   def calculate_total_hours
-    return 0.0 unless period_start && period_end
-    
-    time_entries = TimeEntry.for_date_range(period_start, period_end)
-    time_entries = apply_filters(time_entries)
-    
-    total_minutes = time_entries.where.not(duration_minutes: nil).sum(:duration_minutes)
-    (total_minutes / 60.0).round(2)
+    calculate_metric(:total_hours)
   end
   
   def calculate_total_agents
-    return 0 unless period_start && period_end
-    
-    time_entries = TimeEntry.for_date_range(period_start, period_end)
-    time_entries = apply_filters(time_entries)
-    
-    time_entries.select(:user_id).distinct.count
+    calculate_metric(:total_agents)
   end
   
   def calculate_total_sites
-    return 0 unless period_start && period_end
-    
-    time_entries = TimeEntry.for_date_range(period_start, period_end)
-    time_entries = apply_filters(time_entries)
-    
-    time_entries.select(:site_id).distinct.count
+    calculate_metric(:total_sites)
   end
   
   def calculate_total_anomalies
-    return 0 unless period_start && period_end
-    
-    anomalies = AnomalyLog.where('created_at >= ? AND created_at <= ?', 
-                                  period_start.beginning_of_day, 
-                                  period_end.end_of_day)
-    anomalies = apply_anomaly_filters(anomalies)
-    anomalies.count
+    calculate_metric(:total_anomalies)
   end
   
   def calculate_resolved_anomalies
-    return 0 unless period_start && period_end
-    
-    anomalies = AnomalyLog.where('created_at >= ? AND created_at <= ?', 
-                                  period_start.beginning_of_day, 
-                                  period_end.end_of_day)
-                          .where(resolved: true)
-    anomalies = apply_anomaly_filters(anomalies)
-    anomalies.count
+    calculate_metric(:resolved_anomalies)
   end
   
-  def apply_filters(relation)
-    return relation unless filters_applied
+  # Apply filters using configuration
+  def apply_configured_filters(relation, filter_config)
+    return relation unless filters_applied && filter_config
     
-    if filters_applied['user_id'].present?
-      relation = relation.where(user_id: filters_applied['user_id'])
-    end
-    
-    if filters_applied['site_id'].present?
-      relation = relation.where(site_id: filters_applied['site_id'])
+    filter_config.each do |filter_name, filter_lambda|
+      filter_value = filters_applied[filter_name.to_s]
+      if filter_value.present?
+        relation = filter_lambda.call(relation, filter_value)
+      end
     end
     
     relation
+  end
+  
+  # Legacy methods kept for backward compatibility
+  def apply_filters(relation)
+    config = REPORT_DATA_SOURCES[report_type]
+    return relation unless config
+    apply_configured_filters(relation, config[:filters])
   end
   
   def apply_anomaly_filters(relation)
-    return relation unless filters_applied
-    
-    if filters_applied['user_id'].present?
-      relation = relation.where(user_id: filters_applied['user_id'])
-    end
-    
-    if filters_applied['severity'].present?
-      relation = relation.where(severity: filters_applied['severity'])
-    end
-    
-    relation
+    config = REPORT_DATA_SOURCES['anomalies']
+    return relation unless config
+    apply_configured_filters(relation, config[:filters])
   end
 end
