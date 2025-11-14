@@ -1,0 +1,215 @@
+<% content_for :title, @site.name %>
+
+<!-- Breadcrumb -->
+<div style="margin-bottom: 1.5rem;">
+  <%= link_to manager_sites_path, style: "color: var(--cyan-electric); text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;" do %>
+    <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+    </svg>
+    <span>Retour aux sites</span>
+  <% end %>
+</div>
+
+<!-- Site Header Card -->
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h1 style="font-size: 2.25rem; font-weight: 700; background: linear-gradient(135deg, #00D4FF, #00FFE0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.5rem;">
+        <%= @site.name %>
+      </h1>
+      <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.125rem; margin-bottom: 0.5rem;">
+        Code: <span class="badge"><%= @site.code %></span>
+      </p>
+      <% if @site.description.present? %>
+        <p style="color: rgba(255, 255, 255, 0.6); margin-top: 1rem;"><%= @site.description %></p>
+      <% end %>
+    </div>
+    <div>
+      <% if @site.active %>
+        <span class="badge-success" style="font-size: 1rem; padding: 0.5rem 1rem;">✓ Actif</span>
+      <% else %>
+        <span class="badge-warning" style="font-size: 1rem; padding: 0.5rem 1rem;">✗ Inactif</span>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Site Statistics -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-card-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+      </svg>
+    </div>
+    <div class="stat-card-content">
+      <div class="stat-value"><%= @current_agents_count %></div>
+      <div class="stat-label">Agents Actifs</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-card-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+    </div>
+    <div class="stat-card-content">
+      <div class="stat-value"><%= @total_time_entries %></div>
+      <div class="stat-label">Total Pointages</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-card-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+      </svg>
+    </div>
+    <div class="stat-card-content">
+      <div class="stat-value"><%= @schedules_count %></div>
+      <div class="stat-label">Plannings</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-card-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+    </div>
+    <div class="stat-card-content">
+      <div class="stat-value"><%= @site.address.present? ? '✓' : '-' %></div>
+      <div class="stat-label">Adresse</div>
+    </div>
+  </div>
+</div>
+
+<!-- Site Details -->
+<div class="glass-card">
+  <h3>Informations du Site</h3>
+  <div style="display: grid; gap: 1rem; margin-top: 1.5rem;">
+    <div>
+      <label style="display: block; font-weight: 600; color: var(--cyan-electric); margin-bottom: 0.5rem;">Code du Site</label>
+      <p style="color: rgba(255, 255, 255, 0.9);"><%= @site.code %></p>
+    </div>
+    
+    <% if @site.address.present? %>
+      <div>
+        <label style="display: block; font-weight: 600; color: var(--cyan-electric); margin-bottom: 0.5rem;">Adresse</label>
+        <p style="color: rgba(255, 255, 255, 0.9);"><%= @site.address %></p>
+      </div>
+    <% end %>
+    
+    <% if @site.description.present? %>
+      <div>
+        <label style="display: block; font-weight: 600; color: var(--cyan-electric); margin-bottom: 0.5rem;">Description</label>
+        <p style="color: rgba(255, 255, 255, 0.9);"><%= @site.description %></p>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<!-- Current Agents on Site -->
+<div class="glass-card">
+  <h3>Agents Actuellement sur le Site</h3>
+  
+  <% if @current_time_entries.any? %>
+    <div class="table-responsive" style="margin-top: 1.5rem;">
+      <table>
+        <thead>
+          <tr>
+            <th>Agent</th>
+            <th>Heure d'Arrivée</th>
+            <th>Durée sur Site</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @current_time_entries.each do |entry| %>
+            <tr>
+              <td><%= entry.user.full_name %></td>
+              <td><%= entry.clocked_in_at.strftime('%d/%m/%Y %H:%M') %></td>
+              <td>
+                <% duration = Time.current - entry.clocked_in_at %>
+                <% hours = (duration / 3600).floor %>
+                <% minutes = ((duration % 3600) / 60).floor %>
+                <%= "#{hours}h #{minutes}m" %>
+              </td>
+              <td><span class="badge">En cours</span></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p style="text-align: center; color: rgba(255, 255, 255, 0.6); padding: 2rem;">
+      Aucun agent actuellement sur ce site
+    </p>
+  <% end %>
+</div>
+
+<!-- Recent Time Entries -->
+<div class="glass-card">
+  <h3>Pointages Récents</h3>
+  
+  <% if @recent_time_entries.any? %>
+    <div class="table-responsive" style="margin-top: 1.5rem;">
+      <table>
+        <thead>
+          <tr>
+            <th>Agent</th>
+            <th>Arrivée</th>
+            <th>Départ</th>
+            <th>Durée</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @recent_time_entries.each do |entry| %>
+            <tr>
+              <td><%= entry.user.full_name %></td>
+              <td><%= entry.clocked_in_at&.strftime('%d/%m/%Y %H:%M') || '-' %></td>
+              <td><%= entry.clocked_out_at&.strftime('%d/%m/%Y %H:%M') || '-' %></td>
+              <td>
+                <% if entry.clocked_in_at && entry.clocked_out_at %>
+                  <% duration = entry.clocked_out_at - entry.clocked_in_at %>
+                  <% hours = (duration / 3600).floor %>
+                  <% minutes = ((duration % 3600) / 60).floor %>
+                  <%= "#{hours}h #{minutes}m" %>
+                <% else %>
+                  -
+                <% end %>
+              </td>
+              <td>
+                <% case entry.status %>
+                <% when 'completed' %>
+                  <span class="badge-success">Complet</span>
+                <% when 'active' %>
+                  <span class="badge">En cours</span>
+                <% when 'anomaly' %>
+                  <span class="badge-warning">Anomalie</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p style="text-align: center; color: rgba(255, 255, 255, 0.6); padding: 2rem;">
+      Aucun pointage récent pour ce site
+    </p>
+  <% end %>
+</div>
+
+<!-- Back Button -->
+<div style="margin-top: 2rem;">
+  <%= link_to manager_sites_path, class: "btn-secondary" do %>
+    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+    </svg>
+    <span>Retour à la liste des sites</span>
+  <% end %>
+</div>

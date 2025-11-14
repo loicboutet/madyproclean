@@ -83,6 +83,7 @@ Rails.application.routes.draw do
     get 'dashboard', to: 'dashboard#index'
     
     resources :time_entries, only: [:index, :show]
+    resources :sites, only: [:index, :show]
     resources :schedules, only: [:index, :show]
     resources :absences
     resources :team, only: [:index, :show]

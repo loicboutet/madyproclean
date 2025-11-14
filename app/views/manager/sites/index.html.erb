@@ -1,0 +1,180 @@
+<% content_for :title, "Sites" %>
+
+<!-- Welcome Card -->
+<div class="card">
+  <h2>Gestion des Sites</h2>
+  <p>Visualisez tous les sites de travail et leur activité en temps réel.</p>
+</div>
+
+<!-- Statistics Cards -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-card-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+    </div>
+    <div class="stat-card-content">
+      <div class="stat-value"><%= Site.count %></div>
+      <div class="stat-label">Total Sites</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-card-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+    </div>
+    <div class="stat-card-content">
+      <div class="stat-value"><%= Site.active.count %></div>
+      <div class="stat-label">Sites Actifs</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-card-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+      </svg>
+    </div>
+    <div class="stat-card-content">
+      <div class="stat-value"><%= Site.where(active: false).count %></div>
+      <div class="stat-label">Sites Inactifs</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-card-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+    </div>
+    <div class="stat-card-content">
+      <div class="stat-value"><%= @sites.total_count %></div>
+      <div class="stat-label">Résultats</div>
+    </div>
+  </div>
+</div>
+
+<!-- Filters Section -->
+<div class="glass-card">
+  <h3>Filtres de Recherche</h3>
+  <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 1.5rem;">Utilisez les filtres ci-dessous pour affiner la liste des sites</p>
+
+  <form method="get" action="<%= manager_sites_path %>">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="search">Rechercher</label>
+        <input 
+          type="text" 
+          name="search" 
+          id="search" 
+          placeholder="Nom du site ou code..."
+          value="<%= params[:search] %>"
+          style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.3); color: white; padding: 0.75rem; border-radius: 0.5rem; width: 100%;">
+      </div>
+
+      <div class="form-group">
+        <label for="status">Statut</label>
+        <select 
+          name="status" 
+          id="status"
+          style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.3); color: white; padding: 0.75rem; border-radius: 0.5rem; width: 100%;">
+          <option value="">Tous les sites</option>
+          <option value="active" <%= 'selected' if params[:status] == 'active' %>>Actifs</option>
+          <option value="inactive" <%= 'selected' if params[:status] == 'inactive' %>>Inactifs</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="button-group" style="margin-top: 1.5rem;">
+      <button type="submit" class="btn-primary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+        </svg>
+        <span>Appliquer les filtres</span>
+      </button>
+      <a href="<%= manager_sites_path %>" class="btn-secondary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        <span>Réinitialiser</span>
+      </a>
+    </div>
+  </form>
+</div>
+
+<!-- Sites Table -->
+<div class="glass-card">
+  <h3>Liste des Sites</h3>
+  <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 1.5rem;">Visualisez tous les sites avec leurs détails et activité</p>
+
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Nom du Site</th>
+          <th>Code</th>
+          <th>Adresse</th>
+          <th>Statut</th>
+          <th>Agents Actifs</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @sites.empty? %>
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 2rem; color: rgba(255, 255, 255, 0.6);">
+              <strong>Aucun site trouvé</strong> avec les filtres actuels
+            </td>
+          </tr>
+        <% else %>
+          <% @sites.each do |site| %>
+            <tr>
+              <td>
+                <div>
+                  <p style="font-weight: 600;"><%= site.name %></p>
+                  <% if site.description.present? %>
+                    <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6); margin-top: 0.25rem;"><%= truncate(site.description, length: 50) %></p>
+                  <% end %>
+                </div>
+              </td>
+              <td>
+                <span class="badge"><%= site.code %></span>
+              </td>
+              <td>
+                <p style="font-size: 0.875rem;"><%= site.address.presence || '-' %></p>
+              </td>
+              <td>
+                <% if site.active %>
+                  <span class="badge-success">✓ Actif</span>
+                <% else %>
+                  <span class="badge-warning">✗ Inactif</span>
+                <% end %>
+              </td>
+              <td>
+                <span style="font-weight: 600; color: var(--cyan-electric);"><%= site.current_agent_count %></span>
+              </td>
+              <td>
+                <%= link_to manager_site_path(site), class: "btn-secondary", style: "display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; font-size: 0.875rem;" do %>
+                  <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                  <span>Voir Détails</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div style="margin-top: 1.5rem;">
+    <%= paginate @sites, params: { search: params[:search], status: params[:status] } %>
+  </div>
+</div>

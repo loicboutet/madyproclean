@@ -248,6 +248,14 @@
               <span>Pointages</span>
             <% end %>
             
+            <%= link_to manager_sites_path, class: "admin-nav-link", style: "display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; border-radius: 0.5rem; transition: all 0.3s ease; font-size: 0.875rem; font-weight: 500; white-space: nowrap; #{request.path.include?('manager/sites') ? 'background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 224, 0.2)); color: #FFFFFF;' : ''}" do %>
+              <svg style="width: 1.125rem; height: 1.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              <span>Sites</span>
+            <% end %>
+            
             <%= link_to manager_schedules_path, class: "admin-nav-link", style: "display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; border-radius: 0.5rem; transition: all 0.3s ease; font-size: 0.875rem; font-weight: 500; white-space: nowrap; #{request.path.include?('schedules') ? 'background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 224, 0.2)); color: #FFFFFF;' : ''}" do %>
               <svg style="width: 1.125rem; height: 1.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -262,19 +270,32 @@
               <span>Absences</span>
             <% end %>
             
-            <%= link_to manager_team_index_path, class: "admin-nav-link", style: "display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; border-radius: 0.5rem; transition: all 0.3s ease; font-size: 0.875rem; font-weight: 500; white-space: nowrap; #{request.path.include?('team') ? 'background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 224, 0.2)); color: #FFFFFF;' : ''}" do %>
-              <svg style="width: 1.125rem; height: 1.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-              </svg>
-              <span>Équipe</span>
-            <% end %>
-            
-            <%= link_to manager_replacements_path, class: "admin-nav-link", style: "display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; border-radius: 0.5rem; transition: all 0.3s ease; font-size: 0.875rem; font-weight: 500; white-space: nowrap; #{request.path.include?('replacements') ? 'background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 224, 0.2)); color: #FFFFFF;' : ''}" do %>
-              <svg style="width: 1.125rem; height: 1.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
-              </svg>
-              <span>Remplacements</span>
-            <% end %>
+            <!-- Team Dropdown -->
+            <div class="nav-dropdown" style="position: relative;">
+              <button class="admin-nav-link nav-dropdown-trigger" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; border-radius: 0.5rem; transition: all 0.3s ease; font-size: 0.875rem; font-weight: 500; white-space: nowrap; background: transparent; border: none; cursor: pointer; #{request.path.include?('team') || request.path.include?('replacements') ? 'background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 224, 0.2)); color: #FFFFFF;' : ''}">
+                <svg style="width: 1.125rem; height: 1.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                <span>Gestion Équipe</span>
+                <svg style="width: 1rem; height: 1rem; flex-shrink: 0; transition: transform 0.2s;" class="dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+              <div class="nav-dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 0.5rem; background: rgba(15, 52, 96, 0.98); backdrop-filter: blur(10px); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 0.5rem; min-width: 200px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); z-index: 100;">
+                <%= link_to manager_team_index_path, style: "display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: all 0.2s ease; #{request.path.include?('team') ? 'background: rgba(0, 212, 255, 0.1); color: #FFFFFF;' : ''}" do %>
+                  <svg style="width: 1.125rem; height: 1.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                  </svg>
+                  <span>Mon Équipe</span>
+                <% end %>
+                <%= link_to manager_replacements_path, style: "display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: all 0.2s ease; #{request.path.include?('replacements') ? 'background: rgba(0, 212, 255, 0.1); color: #FFFFFF;' : ''}" do %>
+                  <svg style="width: 1.125rem; height: 1.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                  </svg>
+                  <span>Remplacements</span>
+                <% end %>
+              </div>
+            </div>
           </nav>
           
           <!-- Burger Menu Button (Mobile Only) -->
@@ -317,6 +338,14 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
             <span>Pointages</span>
+          <% end %>
+          
+          <%= link_to manager_sites_path, style: "display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; border-radius: 0.5rem; transition: all 0.3s ease; #{request.path.include?('manager/sites') ? 'background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 224, 0.2)); color: #FFFFFF;' : ''}" do %>
+            <svg style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <span>Sites</span>
           <% end %>
           
           <%= link_to manager_schedules_path, style: "display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; border-radius: 0.5rem; transition: all 0.3s ease; #{request.path.include?('schedules') ? 'background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 224, 0.2)); color: #FFFFFF;' : ''}" do %>
@@ -407,6 +436,66 @@
         const mobileNavLinks = mobileNav.querySelectorAll('a');
         mobileNavLinks.forEach(link => {
           link.addEventListener('click', closeMobileMenu);
+        });
+        
+        // Dropdown menu functionality
+        const dropdownTriggers = document.querySelectorAll('.nav-dropdown-trigger');
+        
+        dropdownTriggers.forEach(trigger => {
+          trigger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const dropdown = this.closest('.nav-dropdown');
+            const menu = dropdown.querySelector('.nav-dropdown-menu');
+            const arrow = this.querySelector('.dropdown-arrow');
+            
+            // Close all other dropdowns
+            document.querySelectorAll('.nav-dropdown-menu').forEach(otherMenu => {
+              if (otherMenu !== menu) {
+                otherMenu.style.display = 'none';
+                const otherArrow = otherMenu.closest('.nav-dropdown').querySelector('.dropdown-arrow');
+                if (otherArrow) {
+                  otherArrow.style.transform = 'rotate(0deg)';
+                }
+              }
+            });
+            
+            // Toggle current dropdown
+            if (menu.style.display === 'none' || menu.style.display === '') {
+              menu.style.display = 'block';
+              if (arrow) arrow.style.transform = 'rotate(180deg)';
+            } else {
+              menu.style.display = 'none';
+              if (arrow) arrow.style.transform = 'rotate(0deg)';
+            }
+          });
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+          if (!e.target.closest('.nav-dropdown')) {
+            document.querySelectorAll('.nav-dropdown-menu').forEach(menu => {
+              menu.style.display = 'none';
+              const arrow = menu.closest('.nav-dropdown').querySelector('.dropdown-arrow');
+              if (arrow) {
+                arrow.style.transform = 'rotate(0deg)';
+              }
+            });
+          }
+        });
+        
+        // Hover effects for dropdown menu items
+        document.querySelectorAll('.nav-dropdown-menu a').forEach(link => {
+          link.addEventListener('mouseenter', function() {
+            this.style.background = 'rgba(0, 212, 255, 0.2)';
+            this.style.color = '#FFFFFF';
+          });
+          
+          link.addEventListener('mouseleave', function() {
+            if (!this.style.background.includes('0.1')) {
+              this.style.background = 'transparent';
+              this.style.color = 'rgba(255, 255, 255, 0.8)';
+            }
+          });
         });
       });
     </script>
