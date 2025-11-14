@@ -555,6 +555,7 @@ class Admin::ReportsController < ApplicationController
     render_to_string(
       template: 'admin/reports/monthly_pdf',
       layout: false,
+      formats: [:html],
       locals: {
         time_entries: time_entries,
         start_date: start_date,
