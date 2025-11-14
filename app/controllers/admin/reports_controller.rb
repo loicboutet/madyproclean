@@ -54,7 +54,47 @@ class Admin::ReportsController < ApplicationController
   end
 
   def monthly
-    # Render monthly report generation form
+    # Fetch monthly reports from database
+    @reports = Report.includes(:generated_by)
+                     .where(period_type: 'monthly')
+                     .order(created_at: :desc)
+    
+    # Filter by month and year
+    if params[:month].present? && params[:year].present?
+      month = params[:month].to_i
+      year = params[:year].to_i
+      start_date = Date.new(year, month, 1)
+      end_date = start_date.end_of_month
+      
+      @reports = @reports.where('period_start >= ? AND period_start <= ?', start_date, end_date)
+    end
+    
+    # Filter by user
+    if params[:user_id].present?
+      @reports = @reports.where("filters_applied LIKE ?", "%user_id\":#{params[:user_id]}%")
+    end
+    
+    # Filter by site
+    if params[:site_id].present?
+      @reports = @reports.where("filters_applied LIKE ?", "%site_id\":#{params[:site_id]}%")
+    end
+    
+    # Filter by status
+    if params[:status].present?
+      @reports = @reports.by_status(params[:status])
+    end
+    
+    # Paginate results (10 per page)
+    @reports = @reports.page(params[:page]).per(10)
+    
+    # Calculate statistics
+    all_monthly_reports = Report.where(period_type: 'monthly')
+    @total_monthly_reports = all_monthly_reports.count
+    @reports_this_month = all_monthly_reports.where('period_start >= ?', Date.current.beginning_of_month).count
+    @reports_this_year = all_monthly_reports.where('period_start >= ?', Date.current.beginning_of_year).count
+    @pending_reports = all_monthly_reports.where(status: 'pending').count
+    
+    # Load users and sites for dropdowns
     @users = User.agents.active.order(:last_name, :first_name)
     @sites = Site.active.order(:name)
   end
