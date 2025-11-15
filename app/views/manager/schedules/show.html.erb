@@ -24,15 +24,9 @@
 <div class="card">
   <div class="flex items-center justify-between mb-6">
     <h2 style="font-size: 1.875rem;">Statut du Planning</h2>
-    <% if @schedule[:status] == 'scheduled' %>
-      <span class="badge-info" style="font-size: 1.125rem; padding: 0.75rem 1.5rem;">📅 Planifié</span>
-    <% elsif @schedule[:status] == 'completed' %>
-      <span class="badge-success" style="font-size: 1.125rem; padding: 0.75rem 1.5rem;">✓ Complété</span>
-    <% elsif @schedule[:status] == 'missed' %>
-      <span class="badge-warning" style="font-size: 1.125rem; padding: 0.75rem 1.5rem;">⚠ Manqué</span>
-    <% elsif @schedule[:status] == 'cancelled' %>
-      <span class="badge" style="font-size: 1.125rem; padding: 0.75rem 1.5rem; background-color: #6b7280; color: white;">✕ Annulé</span>
-    <% end %>
+    <span style="font-size: 1.125rem; padding: 0.75rem 1.5rem;">
+      <%= render 'shared/schedules/status_badge', status: @schedule[:status], namespace: 'manager' %>
+    </span>
   </div>
 
   <div class="stats-grid">
@@ -57,8 +51,12 @@
       </div>
       <div class="stat-content">
         <p class="stat-label">Durée Prévue</p>
-        <% duration_hours = ((@schedule[:end_time] - @schedule[:start_time]) / 3600.0).round(1) %>
-        <p class="stat-value" style="font-size: 1.5rem;"><%= duration_hours %> heures</p>
+        <% 
+          start_parts = @schedule[:start_time].split(':')
+          end_parts = @schedule[:end_time].split(':')
+          duration_hours = (end_parts[0].to_i - start_parts[0].to_i) + ((end_parts[1].to_i - start_parts[1].to_i) / 60.0)
+        %>
+        <p class="stat-value" style="font-size: 1.5rem;"><%= '%.1f' % duration_hours %> heures</p>
         <p class="text-sm opacity-70 mt-1"><%= (duration_hours * 60).to_i %> minutes</p>
       </div>
     </div>
@@ -114,15 +112,7 @@
     <div class="form-group">
       <label>Statut</label>
       <div class="">
-        <% if @schedule[:status] == 'scheduled' %>
-          <span class="badge-info">📅 Planifié</span>
-        <% elsif @schedule[:status] == 'completed' %>
-          <span class="badge-success">✓ Complété</span>
-        <% elsif @schedule[:status] == 'missed' %>
-          <span class="badge-warning">⚠ Manqué</span>
-        <% elsif @schedule[:status] == 'cancelled' %>
-          <span class="badge" style="background-color: #6b7280; color: white;">✕ Annulé</span>
-        <% end %>
+        <%= render 'shared/schedules/status_badge', status: @schedule[:status], namespace: 'manager' %>
       </div>
     </div>
 
@@ -153,7 +143,7 @@
     <div class="form-group">
       <label>Heure de Début</label>
       <div class="">
-        <p class="font-semibold"><%= @schedule[:start_time].strftime('%H:%M') %></p>
+        <p class="font-semibold"><%= @schedule[:start_time] %></p>
         <p class="text-sm opacity-70">Début de mission</p>
       </div>
     </div>
@@ -161,7 +151,7 @@
     <div class="form-group">
       <label>Heure de Fin</label>
       <div class="">
-        <p class="font-semibold"><%= @schedule[:end_time].strftime('%H:%M') %></p>
+        <p class="font-semibold"><%= @schedule[:end_time] %></p>
         <p class="text-sm opacity-70">Fin de mission</p>
       </div>
     </div>
@@ -169,8 +159,12 @@
     <div class="form-group">
       <label>Durée Totale</label>
       <div class="">
-        <% duration_hours = ((@schedule[:end_time] - @schedule[:start_time]) / 3600.0).round(1) %>
-        <p class="font-semibold"><%= duration_hours %> heures</p>
+        <% 
+          start_parts = @schedule[:start_time].split(':')
+          end_parts = @schedule[:end_time].split(':')
+          duration_hours = (end_parts[0].to_i - start_parts[0].to_i) + ((end_parts[1].to_i - start_parts[1].to_i) / 60.0)
+        %>
+        <p class="font-semibold"><%= '%.1f' % duration_hours %> heures</p>
         <p class="text-sm opacity-70"><%= (duration_hours * 60).to_i %> minutes de mission planifiée</p>
       </div>
     </div>
@@ -199,42 +193,12 @@
   </div>
 </div>
 
-<% if @schedule[:replaced_by_id] %>
-  <div class="divider"></div>
+<div class="divider"></div>
 
-  <!-- Replacement Information -->
-  <div class="card" style="border-left: 4px solid #f59e0b;">
-    <h2 class="mb-6" style="font-size: 1.875rem;">
-      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
-      </svg>
-      Informations de Remplacement
-    </h2>
-
-    <div class="alert alert-warning mb-6">
-      <strong>🔄 Remplacement:</strong> Un agent de remplacement a été assigné à ce planning
-    </div>
-
-    <div class="form-grid">
-      <div class="form-group">
-        <label>Agent Remplaçant</label>
-        <div class="">
-          <p class="font-semibold text-orange-600"><%= @schedule[:replaced_by_name] %></p>
-          <p class="text-sm opacity-70">Assigné en remplacement</p>
-        </div>
-      </div>
-
-      <% if @schedule[:replacement_reason].present? %>
-        <div class="form-group" style="grid-column: 1 / -1;">
-          <label>Raison du Remplacement</label>
-          <div class="p-4 bg-orange-50 rounded-lg border border-orange-200">
-            <p class="text-base"><%= @schedule[:replacement_reason] %></p>
-          </div>
-        </div>
-      <% end %>
-    </div>
-  </div>
-<% end %>
+<%= render 'shared/schedules/replacement_info', 
+           warning_text: '🔄 Remplacement: Un agent de remplacement a été assigné à ce planning',
+           replacement_label: 'Assigné en remplacement',
+           show_original_agent: false %>
 
 <% if @schedule[:notes].present? %>
   <div class="divider"></div>
@@ -248,7 +212,7 @@
       Notes / Observations
     </h2>
     
-    <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+    <div class="p-4 rounded-lg border border-blue-200">
       <p class="text-base"><%= @schedule[:notes] %></p>
     </div>
   </div>
@@ -297,7 +261,7 @@
       <div class="flex-1">
         <p class="font-semibold text-lg">Date de Mission Prévue</p>
         <p class="text-sm opacity-70"><%= @schedule[:scheduled_date].strftime('%d/%m/%Y') %> (<%= l(@schedule[:scheduled_date], format: '%A') %>)</p>
-        <p class="text-sm mt-1">De <span class="font-semibold"><%= @schedule[:start_time].strftime('%H:%M') %></span> à <span class="font-semibold"><%= @schedule[:end_time].strftime('%H:%M') %></span></p>
+        <p class="text-sm mt-1">De <span class="font-semibold"><%= @schedule[:start_time] %></span> à <span class="font-semibold"><%= @schedule[:end_time] %></span></p>
       </div>
     </div>
 
