@@ -38,4 +38,12 @@ class Manager::AnomaliesController < ApplicationController
     # This can be refined later to scope to specific teams
     @managed_users ||= User.agents.active
   end
+
+  def time_entries_for_filter
+    TimeEntry.where(user: managed_users).includes(:user, :site).order(created_at: :desc).limit(100)
+  end
+
+  def schedules_for_filter
+    Schedule.where(user: managed_users).includes(:user, :site).order(scheduled_date: :desc).limit(100)
+  end
 end

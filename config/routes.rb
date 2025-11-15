@@ -59,7 +59,7 @@ Rails.application.routes.draw do
     
     resources :absences
     
-    resources :anomalies, only: [:index, :show] do
+    resources :anomalies, only: [:index, :show, :edit, :update] do
       member do
         post 'resolve'
       end
@@ -94,7 +94,7 @@ Rails.application.routes.draw do
     resources :absences
     resources :team, only: [:index, :show]
     
-    resources :anomalies, only: [:index, :show] do
+    resources :anomalies, only: [:index, :show, :edit, :update] do
       member do
         post 'resolve'
       end

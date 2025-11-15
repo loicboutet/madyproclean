@@ -198,6 +198,13 @@
       Retour à la Liste
     <% end %>
     
+    <%= link_to edit_manager_anomaly_path(@anomaly), class: "btn-secondary", style: "padding: 0.75rem 1.5rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 0.5rem; color: #FFFFFF; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;" do %>
+      <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+      </svg>
+      Modifier l'Anomalie
+    <% end %>
+    
     <% if @anomaly.time_entry.present? %>
       <%= link_to "Voir le Pointage", manager_time_entry_path(@anomaly.time_entry), class: "btn-primary", style: "padding: 0.75rem 1.5rem; background: linear-gradient(135deg, var(--cyan-electric), var(--turquoise)); border: none; border-radius: 0.5rem; color: #FFFFFF; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;" %>
     <% end %>

@@ -14,7 +14,7 @@ module AnomaliesManagement
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_anomaly, only: [:show]
+    before_action :set_anomaly, only: [:show, :edit, :update]
   end
 
   # GET /anomalies
@@ -36,6 +36,30 @@ module AnomaliesManagement
   # GET /anomalies/:id
   def show
     # @anomaly is set by before_action
+  end
+
+  # GET /anomalies/:id/edit
+  def edit
+    # @anomaly is set by before_action
+    @users = users_for_filter
+    @time_entries = time_entries_for_filter
+    @schedules = schedules_for_filter
+  end
+
+  # PATCH/PUT /anomalies/:id
+  def update
+    @anomaly = anomalies_scope.find(params[:id])
+    
+    if @anomaly.update(anomaly_params)
+      redirect_to anomaly_path(@anomaly), notice: 'Anomalie mise à jour avec succès'
+    else
+      @users = users_for_filter
+      @time_entries = time_entries_for_filter
+      @schedules = schedules_for_filter
+      render :edit, status: :unprocessable_entity
+    end
+  rescue ActiveRecord::RecordNotFound
+    redirect_to anomalies_index_path, alert: 'Anomalie non trouvée'
   end
 
   # POST /anomalies/:id/resolve
@@ -100,5 +124,25 @@ module AnomaliesManagement
 
   def users_for_filter
     raise NotImplementedError, "#{self.class} must implement #users_for_filter"
+  end
+
+  def time_entries_for_filter
+    raise NotImplementedError, "#{self.class} must implement #time_entries_for_filter"
+  end
+
+  def schedules_for_filter
+    raise NotImplementedError, "#{self.class} must implement #schedules_for_filter"
+  end
+
+  # Strong parameters for anomaly updates
+  def anomaly_params
+    params.require(:anomaly_log).permit(
+      :anomaly_type,
+      :severity,
+      :description,
+      :user_id,
+      :time_entry_id,
+      :schedule_id
+    )
   end
 end
