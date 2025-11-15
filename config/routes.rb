@@ -131,11 +131,9 @@ Rails.application.routes.draw do
     end
   end
   
-  # Common dashboard
-  namespace :dashboard do
-    resource :profile, only: [:show, :edit, :update]
-    resource :password, only: [:edit, :update]
-  end
+  # Profile and Password (non-namespaced, role-based layouts)
+  resource :profile, only: [:show, :edit, :update]
+  resource :password, only: [:edit, :update]
   
   # Mockups routes (kept for reference)
   get 'mockups/index'

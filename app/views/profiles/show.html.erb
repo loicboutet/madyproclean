@@ -1,0 +1,311 @@
+<% content_for :page_title, "Mon Profil" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Mon Profil</h1>
+      <p class="text-large mt-2">Consultez et gérez vos informations personnelles</p>
+    </div>
+    <div>
+      <%= link_to edit_profile_path, class: "btn-primary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+        </svg>
+        Modifier
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-primary">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Total Pointages</p>
+        <p class="stat-value"><%= @stats[:total_time_entries] %></p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-success">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Heures Totales</p>
+        <p class="stat-value"><%= @stats[:total_hours_worked] %>h</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-info">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Mois en cours</p>
+        <p class="stat-value"><%= @stats[:current_month_hours] %>h</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon stat-icon-warning">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Agents Gérés</p>
+        <p class="stat-value"><%= @stats[:managed_agents_count] %></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Profile Information -->
+<div class="card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h2 class="mb-2" style="font-size: 1.875rem;">Informations Personnelles</h2>
+      <p class="text-large">Vos données de profil utilisateur</p>
+    </div>
+  </div>
+
+  <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+    <div class="glass-card" style="padding: 1.5rem;">
+      <div class="flex items-center mb-4">
+        <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; font-weight: bold; margin-right: 1rem;">
+          <%= @user[:first_name][0] %><%= @user[:last_name][0] %>
+        </div>
+        <div>
+          <h3 style="font-size: 1.5rem; font-weight: bold; margin: 0;"><%= @user[:first_name] %> <%= @user[:last_name] %></h3>
+          <p class="text-large" style="opacity: 0.7; margin: 0.25rem 0 0 0;">
+            <% if @user[:role] == 'admin' %>
+              <span class="badge" style="background-color: #dc2626; color: white;">👑 Administrateur</span>
+            <% elsif @user[:role] == 'manager' %>
+              <span class="badge-info">👔 Responsable</span>
+            <% else %>
+              <span class="badge-success">👷 Agent</span>
+            <% end %>
+          </p>
+        </div>
+      </div>
+      
+      <div style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 1rem; margin-top: 1rem;">
+        <p class="text-sm" style="opacity: 0.6; margin-bottom: 0.5rem;">Numéro d'employé</p>
+        <p style="font-weight: 600; font-size: 1.125rem;"><%= @user[:employee_number] %></p>
+      </div>
+
+      <div style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 1rem; margin-top: 1rem;">
+        <p class="text-sm" style="opacity: 0.6; margin-bottom: 0.5rem;">Statut</p>
+        <p>
+          <% if @user[:active] %>
+            <span class="badge-success">✓ Actif</span>
+          <% else %>
+            <span class="badge" style="background-color: #6b7280; color: white;">Inactif</span>
+          <% end %>
+        </p>
+      </div>
+
+      <div style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 1rem; margin-top: 1rem;">
+        <p class="text-sm" style="opacity: 0.6; margin-bottom: 0.5rem;">Membre depuis</p>
+        <p style="font-weight: 600;"><%= l(@user[:created_at].to_date, format: :long) %></p>
+      </div>
+    </div>
+
+    <div class="glass-card" style="padding: 1.5rem;">
+      <h3 style="font-size: 1.25rem; font-weight: bold; margin: 0 0 1.5rem 0;">Coordonnées</h3>
+      
+      <div style="margin-bottom: 1.5rem;">
+        <div class="flex items-center mb-2">
+          <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem; opacity: 0.6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          <p class="text-sm" style="opacity: 0.6; margin: 0;">Email</p>
+        </div>
+        <p style="font-weight: 600; padding-left: 2rem;"><%= @user[:email] %></p>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <div class="flex items-center mb-2">
+          <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem; opacity: 0.6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+          </svg>
+          <p class="text-sm" style="opacity: 0.6; margin: 0;">Téléphone</p>
+        </div>
+        <p style="font-weight: 600; padding-left: 2rem;"><%= @user[:phone_number] %></p>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <div class="flex items-center mb-2">
+          <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem; opacity: 0.6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/>
+          </svg>
+          <p class="text-sm" style="opacity: 0.6; margin: 0;">ID Utilisateur</p>
+        </div>
+        <p style="font-weight: 600; padding-left: 2rem;">#<%= @user[:id] %></p>
+      </div>
+
+      <div class="button-group" style="margin-top: 2rem;">
+        <%= link_to edit_password_path, class: "btn-secondary" do %>
+          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+          </svg>
+          Changer le mot de passe
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Recent Activity -->
+<div class="card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h2 class="mb-2" style="font-size: 1.875rem;">Activité Récente</h2>
+      <p class="text-large">Vos dernières actions dans le système</p>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Date & Heure</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @recent_activities.each do |activity| %>
+          <tr>
+            <td>
+              <% case activity[:type] %>
+              <% when 'time_entry' %>
+                <span class="badge-info">⏰ Pointage</span>
+              <% when 'absence' %>
+                <span class="badge-warning">📅 Absence</span>
+              <% when 'replacement' %>
+                <span class="badge" style="background-color: #8b5cf6; color: white;">🔄 Remplacement</span>
+              <% when 'schedule' %>
+                <span class="badge-success">📋 Planning</span>
+              <% end %>
+            </td>
+            <td>
+              <p class="font-semibold"><%= activity[:description] %></p>
+            </td>
+            <td>
+              <div>
+                <p class="font-semibold"><%= activity[:date].strftime('%d/%m/%Y à %H:%M') %></p>
+                <p class="text-sm opacity-70">
+                  <% time_diff = Time.current - activity[:date] %>
+                  <% if time_diff < 1.hour %>
+                    Il y a <%= (time_diff / 60).to_i %> minutes
+                  <% elsif time_diff < 24.hours %>
+                    Il y a <%= (time_diff / 3600).to_i %> heures
+                  <% else %>
+                    Il y a <%= (time_diff / 86400).to_i %> jours
+                  <% end %>
+                </p>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Team Members (for managers) -->
+<% if @user[:role] == 'manager' %>
+<div class="card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h2 class="mb-2" style="font-size: 1.875rem;">Mon Équipe</h2>
+      <p class="text-large">Agents sous votre responsabilité</p>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nom</th>
+          <th>Numéro d'employé</th>
+          <th>Statut</th>
+          <th>Absences</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @team_members.each do |member| %>
+          <tr>
+            <td><strong>#<%= member[:id] %></strong></td>
+            <td>
+              <div class="flex items-center">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin-right: 0.75rem; font-size: 0.875rem;">
+                  <%= member[:name].split(' ').map(&:first).join %>
+                </div>
+                <p class="font-semibold"><%= member[:name] %></p>
+              </div>
+            </td>
+            <td>
+              <span class="badge"><%= member[:employee_number] %></span>
+            </td>
+            <td>
+              <% if member[:status] == 'active' %>
+                <span class="badge-success">✓ Actif</span>
+              <% else %>
+                <span class="badge" style="background-color: #6b7280; color: white;">Inactif</span>
+              <% end %>
+            </td>
+            <td>
+              <div>
+                <p class="font-semibold"><%= member[:absences] %></p>
+                <p class="text-sm opacity-70">absences</p>
+              </div>
+            </td>
+            <td>
+              <%= link_to "#", class: "btn-secondary", style: "font-size: 0.875rem; padding: 0.5rem 1rem;" do %>
+                <svg class="btn-icon" style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+                Voir
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="divider"></div>
+<% end %>
+
+<!-- Information Card -->
+<div class="glass-card">
+  <h2 class="mb-4" style="font-size: 1.875rem;">Informations</h2>
+  <div class="alert alert-info mb-6">
+    <strong>À propos:</strong> Cette page affiche vos informations de profil et vos statistiques d'activité. Les données présentées sont à titre de démonstration.
+  </div>
+  
+  <div class="alert alert-warning">
+    <strong>⚠ Note:</strong> Cette version de démonstration n'utilise pas de données réelles ni de relations avec les modèles de base de données. Pour modifier vos informations, cliquez sur le bouton "Modifier" en haut de la page.
+  </div>
+</div>
