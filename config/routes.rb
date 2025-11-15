@@ -102,6 +102,15 @@ Rails.application.routes.draw do
     
     get 'replacements', to: 'replacements#index'
     post 'replacements/assign', to: 'replacements#assign'
+    
+    # Reports
+    get 'reports/monthly', to: 'reports#monthly', as: 'reports_monthly'
+    post 'reports/monthly/generate', to: 'reports#generate_monthly', as: 'generate_monthly_reports'
+    resources :reports, only: [:index, :show] do
+      member do
+        get 'download'
+      end
+    end
   end
   
   # Common dashboard

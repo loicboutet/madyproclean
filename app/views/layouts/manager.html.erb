@@ -263,18 +263,24 @@
               <span>Plannings</span>
             <% end %>
             
-            <!-- Team Dropdown -->
+            <!-- Gestion & Rapports Dropdown -->
             <div class="nav-dropdown" style="position: relative;" data-controller="dropdown">
-              <button class="admin-nav-link nav-dropdown-trigger" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; border-radius: 0.5rem; transition: all 0.3s ease; font-size: 0.875rem; font-weight: 500; white-space: nowrap; background: transparent; border: none; cursor: pointer; #{request.path.include?('team') || request.path.include?('replacements') || request.path.include?('absences') || request.path.include?('anomalies') ? 'background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 224, 0.2)); color: #FFFFFF;' : ''}" data-action="click->dropdown#toggle">
+              <button class="admin-nav-link nav-dropdown-trigger" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; border-radius: 0.5rem; transition: all 0.3s ease; font-size: 0.875rem; font-weight: 500; white-space: nowrap; background: transparent; border: none; cursor: pointer; #{request.path.include?('team') || request.path.include?('replacements') || request.path.include?('absences') || request.path.include?('anomalies') || request.path.include?('reports') ? 'background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 224, 0.2)); color: #FFFFFF;' : ''}" data-action="click->dropdown#toggle">
                 <svg style="width: 1.125rem; height: 1.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                 </svg>
-                <span>Gestion Équipe</span>
+                <span>Gestion & Rapports</span>
                 <svg style="width: 1rem; height: 1rem; flex-shrink: 0; transition: transform 0.2s;" class="dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-dropdown-target="arrow">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
               </button>
               <div class="nav-dropdown-menu hidden" style="position: absolute; top: 100%; left: 0; margin-top: 0.5rem; background: rgba(15, 52, 96, 0.98); backdrop-filter: blur(10px); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 0.5rem; min-width: 200px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); z-index: 100;" data-dropdown-target="menu">
+                <%= link_to manager_reports_path, style: "display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: all 0.2s ease; #{request.path.include?('reports') ? 'background: rgba(0, 212, 255, 0.1); color: #FFFFFF;' : ''}", data: { action: "mouseenter->dropdown#mouseEnter mouseleave->dropdown#mouseLeave" } do %>
+                  <svg style="width: 1.125rem; height: 1.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                  <span>Rapports</span>
+                <% end %>
                 <%= link_to manager_team_index_path, style: "display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: all 0.2s ease; #{request.path.include?('team') ? 'background: rgba(0, 212, 255, 0.1); color: #FFFFFF;' : ''}", data: { action: "mouseenter->dropdown#mouseEnter mouseleave->dropdown#mouseLeave" } do %>
                   <svg style="width: 1.125rem; height: 1.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>

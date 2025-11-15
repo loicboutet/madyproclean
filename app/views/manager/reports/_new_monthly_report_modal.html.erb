@@ -1,0 +1,181 @@
+<div class="hidden" data-modal-target="container">
+  <!-- Backdrop -->
+  <div 
+    class="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300"
+    data-modal-target="backdrop"
+    data-action="click->modal#closeOnBackdrop"
+  ></div>
+  
+  <!-- Modal Container -->
+  <div class="fixed inset-0 z-50 overflow-y-auto">
+    <div class="flex min-h-full items-center justify-center p-4">
+      <div class="w-full max-w-3xl transform transition-all duration-300 scale-95 opacity-0" style="margin: 2rem auto; background: rgba(15, 52, 96, 0.8); backdrop-filter: blur(10px); border-radius: 1rem; padding: 2rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); color: white;">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="gradient-heading" style="font-size: 1.875rem;">Créer un Rapport Mensuel</h2>
+            <p class="text-large mt-2">Générer un nouveau rapport pour un mois spécifique</p>
+          </div>
+          <button 
+            data-action="click->modal#close"
+            class="text-gray-400 hover:text-gray-600 transition-colors"
+            title="Fermer"
+          >
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Report Generation Form -->
+        <%= form_with url: manager_generate_monthly_reports_path, method: :post, local: true do |f| %>
+          <!-- Titre -->
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label for="title">Titre <span class="text-red-500">*</span></label>
+            <%= text_field_tag :title, "Rapport Mensuel #{Date.current.strftime('%B %Y')}", required: true, class: 'form-control', placeholder: 'Ex: Rapport Mensuel Janvier 2025' %>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Période Section -->
+          <h3 class="font-semibold mb-4" style="font-size: 1.25rem;">Sélection de la Période</h3>
+          <div class="alert alert-info mb-6">
+            <strong>Information:</strong> Sélectionnez le mois et l'année pour générer le rapport mensuel
+          </div>
+          
+          <div class="form-grid">
+            <!-- Month Selection -->
+            <div class="form-group">
+              <label for="month">Mois <span class="text-red-500">*</span></label>
+              <%= select_tag :month, 
+                  options_for_select([
+                    ['Janvier', 1], ['Février', 2], ['Mars', 3], ['Avril', 4],
+                    ['Mai', 5], ['Juin', 6], ['Juillet', 7], ['Août', 8],
+                    ['Septembre', 9], ['Octobre', 10], ['Novembre', 11], ['Décembre', 12]
+                  ], params[:month] || Date.current.month),
+                  required: true,
+                  class: 'form-control'
+              %>
+            </div>
+
+            <!-- Year Selection -->
+            <div class="form-group">
+              <label for="year">Année <span class="text-red-500">*</span></label>
+              <%= select_tag :year,
+                  options_for_select((Date.current.year - 2..Date.current.year + 1).to_a.reverse, params[:year] || Date.current.year),
+                  required: true,
+                  class: 'form-control'
+              %>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Filters Section -->
+          <h3 class="font-semibold mb-4" style="font-size: 1.25rem;">Filtres (Optionnel)</h3>
+          <div class="form-grid">
+            <!-- Agent Filter -->
+            <div class="form-group">
+              <label for="user_id">Filtrer par Agent</label>
+              <%= select_tag :user_id,
+                  options_for_select([['Tous les agents', '']] + @users.map { |u| [u.full_name, u.id] }, params[:user_id]),
+                  class: 'form-control'
+              %>
+            </div>
+
+            <!-- Site Filter -->
+            <div class="form-group">
+              <label for="site_id">Filtrer par Site</label>
+              <%= select_tag :site_id,
+                  options_for_select([['Tous les sites', '']] + @sites.map { |s| ["#{s.name} (#{s.code})", s.id] }, params[:site_id]),
+                  class: 'form-control'
+              %>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Format Selection -->
+          <h3 class="font-semibold mb-4" style="font-size: 1.25rem;">Format d'Export</h3>
+          <div class="form-group">
+            <label class="mb-3">Choisir le Format <span class="text-red-500">*</span></label>
+            <div class="space-y-3">
+              <div class="flex items-center">
+                <%= radio_button_tag :format, 'csv', true, id: 'format_csv', class: 'mr-2' %>
+                <%= label_tag :format_csv, class: 'cursor-pointer' do %>
+                  <span class="font-semibold">CSV</span>
+                  <span class="text-sm opacity-70 ml-2">Format texte compatible Excel (recommandé)</span>
+                <% end %>
+              </div>
+              <div class="flex items-center">
+                <%= radio_button_tag :format, 'xlsx', false, id: 'format_xlsx', class: 'mr-2' %>
+                <%= label_tag :format_xlsx, class: 'cursor-pointer' do %>
+                  <span class="font-semibold">Excel (.xlsx)</span>
+                  <span class="text-sm opacity-70 ml-2">Format Microsoft Excel natif</span>
+                <% end %>
+              </div>
+              <div class="flex items-center">
+                <%= radio_button_tag :format, 'pdf', false, id: 'format_pdf', class: 'mr-2' %>
+                <%= label_tag :format_pdf, class: 'cursor-pointer' do %>
+                  <span class="font-semibold">PDF</span>
+                  <span class="text-sm opacity-70 ml-2">Document imprimable</span>
+                <% end %>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Additional Options -->
+          <h3 class="font-semibold mb-4" style="font-size: 1.25rem;">Options Additionnelles</h3>
+          <div class="form-group">
+            <div class="space-y-3">
+              <div class="flex items-center">
+                <%= check_box_tag :include_anomalies, '1', true, id: 'include_anomalies', class: 'mr-2' %>
+                <%= label_tag :include_anomalies, class: 'cursor-pointer' do %>
+                  <span class="font-semibold">Inclure les anomalies détectées</span>
+                  <p class="text-sm opacity-70 mt-1">Ajoute une section avec les pointages manquants, >24h, etc.</p>
+                <% end %>
+              </div>
+              <div class="flex items-center">
+                <%= check_box_tag :include_schedules, '1', false, id: 'include_schedules', class: 'mr-2' %>
+                <%= label_tag :include_schedules, class: 'cursor-pointer' do %>
+                  <span class="font-semibold">Comparer avec la planification</span>
+                  <p class="text-sm opacity-70 mt-1">Compare les pointages réels avec les horaires prévus</p>
+                <% end %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description (Optional) -->
+          <div class="form-group" style="margin-top: 1.5rem;">
+            <label for="description">Description (optionnel)</label>
+            <%= text_area_tag :description, nil, rows: 3, class: 'form-control', placeholder: 'Ajoutez une description ou des notes pour ce rapport...' %>
+          </div>
+
+          <!-- Hidden fields to set report type and period type -->
+          <%= hidden_field_tag :report_type, 'time_tracking' %>
+          <%= hidden_field_tag :period_type, 'monthly' %>
+
+          <div class="divider"></div>
+
+          <!-- Form Actions -->
+          <div class="button-group">
+            <%= button_tag type: 'submit', class: 'btn-primary' do %>
+              <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
+              Créer le Rapport
+            <% end %>
+            <button type="button" class="btn-secondary" data-action="click->modal#close">
+              <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+              Annuler
+            </button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
