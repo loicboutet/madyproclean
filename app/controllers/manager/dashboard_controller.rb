@@ -1,7 +1,7 @@
 class Manager::DashboardController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_manager!
-  layout 'manager'
+  layout 'user'
   
   def index
     # Get all agents (managers see all agents, not just their managed users)

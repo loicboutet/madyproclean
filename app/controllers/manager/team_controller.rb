@@ -1,7 +1,7 @@
 class Manager::TeamController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_manager!
-  layout 'manager'
+  layout 'user'
 
   def index
     # Demo data for sites

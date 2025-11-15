@@ -3,7 +3,7 @@ class Manager::TimeEntriesController < ApplicationController
   
   before_action :authenticate_user!
   before_action :authorize_manager!
-  layout 'manager'
+  layout 'user'
   before_action :set_time_entry, only: [:show, :edit, :update]
   
   def index

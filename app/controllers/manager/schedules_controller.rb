@@ -3,7 +3,7 @@ class Manager::SchedulesController < ApplicationController
   
   before_action :authenticate_user!
   before_action :authorize_manager!
-  layout 'manager'
+  layout 'user'
   before_action :set_schedule, only: [:show]
   
   def index

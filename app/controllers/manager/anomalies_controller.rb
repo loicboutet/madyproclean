@@ -3,7 +3,7 @@ class Manager::AnomaliesController < ApplicationController
   
   before_action :authenticate_user!
   before_action :authorize_manager!
-  layout 'manager'
+  layout 'user'
 
   private
 

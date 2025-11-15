@@ -3,7 +3,7 @@ class Manager::SitesController < ApplicationController
   
   before_action :authenticate_user!
   before_action :authorize_manager_or_admin!
-  layout 'manager'
+  layout 'user'
   
   # index, show, qr_code inherited from SitesManagement concern
   
