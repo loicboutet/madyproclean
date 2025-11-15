@@ -1,173 +1,29 @@
-<% content_for :title, "Modifier Pointage - Portail Manager" %>
+<% content_for :page_title, "Modifier Pointage ##{@time_entry.id}" %>
 
-<div style="margin-bottom: 2rem;">
-  <!-- Header -->
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
     <div>
-      <h2 style="font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, #00D4FF, #00FFE0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0 0 0.5rem 0;">
-        ✏️ Modifier le Pointage
-      </h2>
-      <%= link_to manager_time_entry_path(@time_entry), style: "color: rgba(255, 255, 255, 0.7); text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: color 0.2s ease;" do %>
-        <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <h1 class="gradient-heading">Modifier Pointage #<%= @time_entry.id %></h1>
+      <p class="text-large mt-2">Corrigez les informations du pointage</p>
+    </div>
+    <div class="button-group">
+      <%= link_to manager_time_entry_path(@time_entry.id), class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
         </svg>
-        Retour au pointage
+        Retour aux détails
       <% end %>
     </div>
-  </div>
-
-  <!-- Warning Notice -->
-  <div style="padding: 1rem; background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 0.75rem; margin-bottom: 2rem; display: flex; align-items: start; gap: 0.75rem;">
-    <svg style="width: 1.5rem; height: 1.5rem; color: #FFC107; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-    </svg>
-    <div>
-      <div style="font-weight: 600; color: #FFC107; margin-bottom: 0.25rem;">⚠️ Attention - Modification Manuelle</div>
-      <div style="color: rgba(255, 255, 255, 0.8); font-size: 0.875rem;">
-        Vous êtes sur le point de modifier manuellement un pointage. Cette action sera enregistrée dans l'historique avec votre identifiant.
-      </div>
-    </div>
-  </div>
-
-  <!-- Edit Form -->
-  <div class="glass-card" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 1rem; padding: 2rem;">
-    <%= form_with model: @time_entry, url: manager_time_entry_path(@time_entry), method: :patch, local: true do |f| %>
-      <% if @time_entry.errors.any? %>
-        <div style="padding: 1rem; background: rgba(255, 107, 107, 0.1); border: 1px solid rgba(255, 107, 107, 0.3); border-radius: 0.75rem; margin-bottom: 2rem;">
-          <h3 style="font-weight: 600; color: #FF6B6B; margin-bottom: 0.5rem;">
-            <%= pluralize(@time_entry.errors.count, "erreur") %> lors de la validation :
-          </h3>
-          <ul style="color: rgba(255, 255, 255, 0.9); margin: 0; padding-left: 1.5rem;">
-            <% @time_entry.errors.full_messages.each do |message| %>
-              <li><%= message %></li>
-            <% end %>
-          </ul>
-        </div>
-      <% end %>
-
-      <!-- Basic Information Section -->
-      <div style="margin-bottom: 2rem;">
-        <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--cyan-electric); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
-          <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-          Informations de Base
-        </h3>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
-          <!-- Agent -->
-          <div>
-            <%= f.label :user_id, "Agent", style: "display: block; font-size: 0.875rem; font-weight: 600; color: var(--cyan-electric); margin-bottom: 0.5rem;" %>
-            <%= f.select :user_id, 
-              options_for_select(@users.map { |u| ["#{u.full_name} (#{u.employee_number})", u.id] }, @time_entry.user_id),
-              {},
-              style: "width: 100%; padding: 0.75rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 0.5rem; color: #FFFFFF; font-size: 0.875rem;" %>
-          </div>
-
-          <!-- Site -->
-          <div>
-            <%= f.label :site_id, "Site", style: "display: block; font-size: 0.875rem; font-weight: 600; color: var(--cyan-electric); margin-bottom: 0.5rem;" %>
-            <%= f.select :site_id,
-              options_for_select(@sites.map { |s| [s.name, s.id] }, @time_entry.site_id),
-              {},
-              style: "width: 100%; padding: 0.75rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 0.5rem; color: #FFFFFF; font-size: 0.875rem;" %>
-          </div>
-        </div>
-      </div>
-
-      <!-- Time Information Section -->
-      <div style="margin-bottom: 2rem;">
-        <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--cyan-electric); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
-          <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-          Horaires
-        </h3>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
-          <!-- Clock In -->
-          <div>
-            <%= f.label :clocked_in_at, "Heure d'Arrivée", style: "display: block; font-size: 0.875rem; font-weight: 600; color: var(--cyan-electric); margin-bottom: 0.5rem;" %>
-            <%= f.datetime_local_field :clocked_in_at,
-              value: @time_entry.clocked_in_at&.strftime('%Y-%m-%dT%H:%M'),
-              style: "width: 100%; padding: 0.75rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 0.5rem; color: #FFFFFF; font-size: 0.875rem;" %>
-            <div style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.6); margin-top: 0.25rem;">
-              Format: JJ/MM/AAAA HH:MM
-            </div>
-          </div>
-
-          <!-- Clock Out -->
-          <div>
-            <%= f.label :clocked_out_at, "Heure de Départ", style: "display: block; font-size: 0.875rem; font-weight: 600; color: var(--cyan-electric); margin-bottom: 0.5rem;" %>
-            <%= f.datetime_local_field :clocked_out_at,
-              value: @time_entry.clocked_out_at&.strftime('%Y-%m-%dT%H:%M'),
-              style: "width: 100%; padding: 0.75rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 0.5rem; color: #FFFFFF; font-size: 0.875rem;" %>
-            <div style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.6); margin-top: 0.25rem;">
-              Laisser vide si le départ n'a pas été enregistré
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Additional Information Section -->
-      <div style="margin-bottom: 2rem;">
-        <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--cyan-electric); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
-          <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-          </svg>
-          Informations Complémentaires
-        </h3>
-
-        <!-- Notes -->
-        <div>
-          <%= f.label :notes, "Notes / Raison de la Modification", style: "display: block; font-size: 0.875rem; font-weight: 600; color: var(--cyan-electric); margin-bottom: 0.5rem;" %>
-          <%= f.text_area :notes,
-            rows: 4,
-            placeholder: "Expliquez la raison de cette modification...",
-            style: "width: 100%; padding: 0.75rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 0.5rem; color: #FFFFFF; font-size: 0.875rem; resize: vertical;" %>
-          <div style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.6); margin-top: 0.25rem;">
-            Ces notes seront visibles dans l'historique de modification
-          </div>
-        </div>
-      </div>
-
-      <!-- Current Information Display -->
-      <div style="padding: 1.5rem; background: rgba(0, 212, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 0.75rem; margin-bottom: 2rem;">
-        <h4 style="font-size: 1rem; font-weight: 600; color: var(--cyan-electric); margin-bottom: 1rem;">
-          📋 Informations Actuelles
-        </h4>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.875rem;">
-          <div>
-            <span style="color: rgba(255, 255, 255, 0.6);">Agent:</span>
-            <span style="color: rgba(255, 255, 255, 0.9); margin-left: 0.5rem;"><%= @time_entry.user.full_name %></span>
-          </div>
-          <div>
-            <span style="color: rgba(255, 255, 255, 0.6);">Site:</span>
-            <span style="color: rgba(255, 255, 255, 0.9); margin-left: 0.5rem;"><%= @time_entry.site.name %></span>
-          </div>
-          <div>
-            <span style="color: rgba(255, 255, 255, 0.6);">Statut:</span>
-            <span style="color: rgba(255, 255, 255, 0.9); margin-left: 0.5rem;"><%= @time_entry.status %></span>
-          </div>
-          <% if @time_entry.manually_corrected %>
-            <div>
-              <span style="color: rgba(255, 255, 255, 0.6);">Modifié par:</span>
-              <span style="color: rgba(255, 255, 255, 0.9); margin-left: 0.5rem;"><%= @time_entry.corrected_by&.full_name || 'N/A' %></span>
-            </div>
-          <% end %>
-        </div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div style="display: flex; gap: 1rem; flex-wrap: wrap; padding-top: 1rem; border-top: 1px solid rgba(0, 212, 255, 0.2);">
-        <%= f.submit "💾 Enregistrer les Modifications", 
-          class: "btn-primary",
-          style: "padding: 0.875rem 1.75rem; background: linear-gradient(135deg, var(--cyan-electric), var(--turquoise)); border: none; border-radius: 0.5rem; color: #FFFFFF; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 1rem;" %>
-        
-        <%= link_to "Annuler", manager_time_entry_path(@time_entry),
-          class: "btn-secondary",
-          style: "padding: 0.875rem 1.75rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 0.5rem; color: #FFFFFF; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-block; font-size: 1rem;" %>
-      </div>
-    <% end %>
   </div>
 </div>
+
+<div class="divider"></div>
+
+<%= render 'shared/time_entries/edit_form', 
+  time_entry: @time_entry, 
+  users: @users, 
+  sites: @sites, 
+  form_url: manager_time_entry_path(@time_entry.id),
+  back_url: manager_time_entry_path(@time_entry.id),
+  namespace: 'manager' %>

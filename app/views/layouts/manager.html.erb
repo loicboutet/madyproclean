@@ -275,11 +275,17 @@
                 </svg>
               </button>
               <div class="nav-dropdown-menu hidden" style="position: absolute; top: 100%; left: 0; margin-top: 0.5rem; background: rgba(15, 52, 96, 0.98); backdrop-filter: blur(10px); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 0.5rem; min-width: 200px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); z-index: 100;" data-dropdown-target="menu">
-                <%= link_to manager_reports_path, style: "display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: all 0.2s ease; #{request.path.include?('reports') ? 'background: rgba(0, 212, 255, 0.1); color: #FFFFFF;' : ''}", data: { action: "mouseenter->dropdown#mouseEnter mouseleave->dropdown#mouseLeave" } do %>
+                <%= link_to manager_reports_path, style: "display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: all 0.2s ease; #{request.path == manager_reports_path ? 'background: rgba(0, 212, 255, 0.1); color: #FFFFFF;' : ''}", data: { action: "mouseenter->dropdown#mouseEnter mouseleave->dropdown#mouseLeave" } do %>
                   <svg style="width: 1.125rem; height: 1.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                   </svg>
                   <span>Rapports</span>
+                <% end %>
+                <%= link_to manager_reports_monthly_path, style: "display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: all 0.2s ease; #{request.path == manager_reports_monthly_path ? 'background: rgba(0, 212, 255, 0.1); color: #FFFFFF;' : ''}", data: { action: "mouseenter->dropdown#mouseEnter mouseleave->dropdown#mouseLeave" } do %>
+                  <svg style="width: 1.125rem; height: 1.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                  <span>Rapports Mensuels</span>
                 <% end %>
                 <%= link_to manager_team_index_path, style: "display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; transition: all 0.2s ease; #{request.path.include?('team') ? 'background: rgba(0, 212, 255, 0.1); color: #FFFFFF;' : ''}", data: { action: "mouseenter->dropdown#mouseEnter mouseleave->dropdown#mouseLeave" } do %>
                   <svg style="width: 1.125rem; height: 1.125rem; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
