@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  absence_type: MyString
+  start_date: 2025-11-14
+  end_date: 2025-11-14
+  status: MyString
+  reason: MyText
+  created_by: one
+
+two:
+  user: two
+  absence_type: MyString
+  start_date: 2025-11-14
+  end_date: 2025-11-14
+  status: MyString
+  reason: MyText
+  created_by: two

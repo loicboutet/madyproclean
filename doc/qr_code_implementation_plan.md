@@ -44,7 +44,7 @@ class Site < ApplicationRecord
   
   # Full URL for QR code (adjust domain as needed)
   def qr_code_url
-    Rails.application.routes.url_helpers.scan_qr_url(token: qr_code_token, host: ENV['AGENT_DOMAIN'] || 'localhost:3000')
+    Rails.application.routes.url_helpers.scan_qr_url(token: qr_code_token, host: ENV['AGENT_DOMAIN'] || 'https://3cc2c8e1a169.ngrok-free.app')
   end
   
   # Generate QR code image using rqrcode gem
