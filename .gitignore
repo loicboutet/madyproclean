@@ -33,5 +33,8 @@
 # Ignore master key for decrypting credentials and more.
 /config/docker.key
 
+# Ignore SSL certificates for local development
+/config/ssl/*
+
 /app/assets/builds/*
 !/app/assets/builds/.keep

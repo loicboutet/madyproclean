@@ -16,7 +16,7 @@
     
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(180deg, #1a1a2e 0%, #0f3460 100%);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -43,16 +43,19 @@
     
     .btn {
       width: 100%;
-      padding: 18px;
-      font-size: 1.25rem;
-      font-weight: 600;
+      padding: 0.875rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 700;
       border: none;
-      border-radius: 12px;
+      border-radius: 0.5rem;
       cursor: pointer;
-      margin: 10px 0;
-      transition: all 0.2s;
+      margin: 0.625rem 0;
+      transition: all 0.3s ease;
       text-decoration: none;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
     
     .btn:active { 
@@ -60,34 +63,47 @@
     }
     
     .btn-primary { 
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white; 
-      box-shadow: 0 4px 14px rgba(102, 126, 234, 0.4);
+      background: linear-gradient(135deg, #00D4FF, #00FFE0);
+      color: #1a1a2e;
+      box-shadow: 0 4px 14px rgba(0, 212, 255, 0.4);
     }
     
     .btn-primary:hover {
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
     }
     
     .btn-success { 
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      background: linear-gradient(135deg, #10b981, #34d399);
       color: white; 
       box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
     }
     
     .btn-success:hover {
-      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
     }
     
     .btn-danger { 
-      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      background: linear-gradient(135deg, #ef4444, #dc2626);
       color: white; 
       box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
     }
     
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
+    }
+    
     .btn-secondary {
-      background: #6b7280;
-      color: white;
+      border: 2px solid #00D4FF;
+      background: transparent;
+      color: #00D4FF;
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(0, 212, 255, 0.1);
+      transform: translateY(-2px);
     }
     
     .message {
@@ -117,34 +133,38 @@
     }
     
     .icon { 
-      font-size: 4rem; 
-      margin-bottom: 20px; 
+      font-size: 3.5rem; 
+      margin-bottom: 1.5rem; 
     }
     
     .form-group {
-      margin: 20px 0;
+      margin: 1.25rem 0;
       text-align: left;
     }
     
     .form-group label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 0.5rem;
       font-weight: 600;
       color: #374151;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
     
     .form-group input {
       width: 100%;
-      padding: 14px;
+      padding: 0.875rem 1rem;
       border: 2px solid #e5e7eb;
-      border-radius: 8px;
+      border-radius: 0.5rem;
       font-size: 1rem;
-      transition: border-color 0.2s;
+      transition: all 0.3s ease;
     }
     
     .form-group input:focus {
       outline: none;
-      border-color: #667eea;
+      border-color: #00D4FF;
+      box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
     }
     
     .alert {

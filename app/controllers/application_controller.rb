@@ -3,10 +3,6 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
 
   before_action :configure_permitted_parameters, if: :devise_controller?
-
-  def current_user
-    User.find 322
-  end
   
   protected
 
