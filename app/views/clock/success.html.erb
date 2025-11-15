@@ -1,0 +1,14 @@
+<div class="container">
+  <div class="icon">✅</div>
+  <div class="message success">
+    <%= @message %>
+  </div>
+  <% if @site_name %>
+    <p style="margin-top: 20px; font-size: 1.1rem; color: #6b7280;">
+      Site: <strong><%= @site_name %></strong>
+    </p>
+  <% end %>
+  <p style="margin-top: 30px; color: #9ca3af; font-size: 0.9rem;">
+    Vous pouvez fermer cette page
+  </p>
+</div>

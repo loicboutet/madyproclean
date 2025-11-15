@@ -1,0 +1,7 @@
+<div class="container">
+  <div class="icon">❌</div>
+  <div class="message error">
+    <%= @error %>
+  </div>
+  <%= link_to "← Retour", clock_show_path(qr_code_token: params[:qr_code_token]), class: "btn btn-secondary", style: "margin-top: 20px;" %>
+</div>

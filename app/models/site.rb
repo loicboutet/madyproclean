@@ -16,16 +16,19 @@ class Site < ApplicationRecord
   before_validation :generate_qr_code_token, on: :create
 
   # Methods
-  def qr_code_url
+  def qr_code_url(host: nil)
     # Generate URL for QR code scanning
-    # In production, this would use the actual clock subdomain
-    "https://clock.example.com/c/#{qr_code_token}"
+    # Use provided host, or environment variable, or default
+    base_host = host || ENV['CLOCK_DOMAIN'] || 'https://3cc2c8e1a169.ngrok-free.app'
+    protocol = base_host.include?('localhost') ? 'http' : 'https'
+    
+    "#{protocol}://#{base_host}/c/#{qr_code_token}"
   end
 
-  def qr_code_svg
+  def qr_code_svg(host: nil)
     # Generate QR code as SVG
     require 'rqrcode'
-    qr = RQRCode::QRCode.new(qr_code_url)
+    qr = RQRCode::QRCode.new(qr_code_url(host: host))
     qr.as_svg(
       color: '000',
       shape_rendering: 'crispEdges',

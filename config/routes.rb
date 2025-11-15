@@ -24,13 +24,25 @@ Rails.application.routes.draw do
   post 'login', to: 'sessions#create'
   delete 'logout', to: 'sessions#destroy'
   
-  # Agent Clock-in (separate domain constraint)
-  constraints subdomain: 'clock' do
-    get 'c/:qr_code_token', to: 'clock#show'
-    post 'c/:qr_code_token/in', to: 'clock#clock_in'
-    post 'c/:qr_code_token/out', to: 'clock#clock_out'
-    get 'clock/auth', to: 'clock#authenticate'
-    post 'clock/auth', to: 'clock#verify'
+  # Agent Clock-in routes
+  # Works with subdomain 'clock' in production, or directly in development/ngrok
+  clock_routes = lambda do
+    get 'c/:qr_code_token', to: 'clock#show', as: 'clock_show'
+    post 'c/:qr_code_token/in', to: 'clock#clock_in', as: 'clock_in'
+    post 'c/:qr_code_token/out', to: 'clock#clock_out', as: 'clock_out'
+    get 'clock/auth', to: 'clock#authenticate', as: 'clock_auth'
+    post 'clock/auth', to: 'clock#verify', as: 'clock_verify'
+  end
+  
+  # Apply routes with subdomain constraint in production
+  if Rails.env.production?
+    constraints subdomain: 'clock' do
+      clock_routes.call
+    end
+  else
+    # In development/test, apply routes without subdomain constraint
+    # This allows ngrok URLs to work directly
+    clock_routes.call
   end
   
   # Admin namespace

@@ -1,0 +1,23 @@
+<div class="container">
+  <div class="site-name"><%= @site.name %></div>
+  
+  <% if @can_clock_in %>
+    <div class="icon">📥</div>
+    <%= form_with url: clock_in_path(qr_code_token: params[:qr_code_token]), method: :post, local: true do |f| %>
+      <%= f.submit "Pointer l'entrée", class: "btn btn-primary" %>
+    <% end %>
+  <% elsif @can_clock_out %>
+    <div class="icon">📤</div>
+    <%= form_with url: clock_out_path(qr_code_token: params[:qr_code_token]), method: :post, local: true do |f| %>
+      <%= f.submit "Pointer la sortie", class: "btn btn-success" %>
+    <% end %>
+  <% else %>
+    <div class="icon">⚠️</div>
+    <div class="message warning">
+      Vous êtes déjà pointé sur un autre site.
+    </div>
+    <p style="margin-top: 20px; color: #6b7280;">
+      Veuillez d'abord pointer la sortie avant de pointer sur ce site.
+    </p>
+  <% end %>
+</div>
