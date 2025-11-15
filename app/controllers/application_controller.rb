@@ -3,10 +3,11 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
 
   before_action :configure_permitted_parameters, if: :devise_controller?
-  def current_user
-    User.first
-  end
 
+  def current_user
+    User.find 322
+  end
+  
   protected
 
   def configure_permitted_parameters
@@ -16,9 +17,9 @@ class ApplicationController < ActionController::Base
 
   # Authentication helper
   def authenticate_user!
-    # unless current_user
-    #   redirect_to login_path, alert: 'Vous devez vous connecter pour accéder à cette page.'
-    # end
+    unless current_user
+      redirect_to login_path, alert: 'Vous devez vous connecter pour accéder à cette page.'
+    end
   end
 
   # Redirect to role-specific dashboard
@@ -29,9 +30,24 @@ class ApplicationController < ActionController::Base
       redirect_to admin_dashboard_path
     elsif current_user.manager?
       redirect_to manager_dashboard_path
+    elsif current_user.agent?
+      redirect_to agent_root_path
     else
-      # Agents don't have a dedicated dashboard, send them to home
       redirect_to home_path
+    end
+  end
+
+  # Override Devise's after sign in path
+  def after_sign_in_path_for(resource)
+    case resource.role
+    when 'admin'
+      admin_dashboard_path
+    when 'manager'
+      manager_dashboard_path
+    when 'agent'
+      agent_root_path
+    else
+      root_path
     end
   end
 

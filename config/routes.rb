@@ -77,6 +77,12 @@ Rails.application.routes.draw do
     end
   end
   
+  # Agent namespace - Minimal interface for field agents
+  namespace :agent do
+    root 'time_entries#index'
+    resources :time_entries, only: [:index, :show]
+  end
+  
   # Manager namespace
   namespace :manager do
     root 'dashboard#index'

@@ -1,0 +1,211 @@
+<% content_for :title, "Mes Pointages - Mady ProClean" %>
+
+<!-- QR Scanner Section -->
+<div data-controller="qr-scanner">
+  <!-- Clock In Button Section -->
+  <div class="glass-card" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 1rem; padding: 1.5rem; margin-bottom: 1.5rem;">
+    <button 
+      data-qr-scanner-target="scanButton"
+      data-action="click->qr-scanner#openScanner mouseenter->qr-scanner#buttonHoverIn mouseleave->qr-scanner#buttonHoverOut"
+      style="width: 100%; padding: 1.25rem; background: linear-gradient(135deg, #00D4FF, #00FFE0); border: none; border-radius: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.75rem; font-size: 1.125rem; font-weight: 700; color: #1a1a2e; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);">
+      <!-- QR Code Camera Icon SVG -->
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+        <circle cx="12" cy="13" r="4"/>
+        <rect x="3" y="3" width="7" height="7" rx="1"/>
+        <rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="3" y="14" width="7" height="7" rx="1"/>
+      </svg>
+      <span>Scanner QR Code pour Pointer</span>
+    </button>
+  </div>
+
+  <!-- QR Scanner Modal -->
+  <div 
+    data-qr-scanner-target="modal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 9999; align-items: center; justify-content: center;">
+  <div style="position: relative; width: 100%; max-width: 500px; padding: 1rem;">
+    <!-- Close Button -->
+    <button 
+      data-action="click->qr-scanner#closeScanner"
+      style="position: absolute; top: 1rem; right: 1rem; z-index: 10000; background: rgba(255, 255, 255, 0.2); border: none; border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(10px);">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    
+    <!-- Scanner Title -->
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+      <h3 style="color: #00D4FF; font-size: 1.5rem; font-weight: 700; margin: 0 0 0.5rem 0;">Scanner le QR Code</h3>
+      <p style="color: rgba(255, 255, 255, 0.7); margin: 0; font-size: 0.875rem;">Positionnez le QR code dans le cadre</p>
+    </div>
+    
+    <!-- Scanner Container -->
+    <div 
+      data-qr-scanner-target="reader"
+      style="border-radius: 1rem; overflow: hidden; box-shadow: 0 8px 24px rgba(0, 212, 255, 0.3); background: #000;">
+    </div>
+    
+    <!-- Status Message -->
+    <div 
+      data-qr-scanner-target="status"
+      style="margin-top: 1rem; padding: 1rem; background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 0.5rem; color: #00D4FF; text-align: center; font-size: 0.875rem;">
+      Caméra en cours d'initialisation...
+    </div>
+  </div>
+  <!-- End QR Scanner Modal -->
+</div>
+<!-- End QR Scanner Section -->
+
+<div class="glass-card" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 1rem; padding: 1.5rem; margin-bottom: 2rem;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h2 style="font-size: clamp(1.25rem, 4vw, 1.875rem); font-weight: 700; background: linear-gradient(135deg, #00D4FF, #00FFE0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0 0 0.5rem 0;">Mes Pointages</h2>
+      <p style="color: rgba(255, 255, 255, 0.6); margin: 0; font-size: clamp(0.875rem, 2vw, 1rem);">Historique de vos pointages d'entrée et de sortie</p>
+    </div>
+  </div>
+
+  <% if @time_entries.any? %>
+    <!-- Desktop Table View -->
+    <div class="desktop-table" style="overflow-x: auto; display: none;">
+      <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+        <thead>
+          <tr style="border-bottom: 1px solid rgba(0, 212, 255, 0.2);">
+            <th style="padding: 1rem; text-align: left; color: rgba(255, 255, 255, 0.8); font-weight: 600; font-size: 0.875rem;">Date</th>
+            <th style="padding: 1rem; text-align: left; color: rgba(255, 255, 255, 0.8); font-weight: 600; font-size: 0.875rem;">Site</th>
+            <th style="padding: 1rem; text-align: left; color: rgba(255, 255, 255, 0.8); font-weight: 600; font-size: 0.875rem;">Arrivée</th>
+            <th style="padding: 1rem; text-align: left; color: rgba(255, 255, 255, 0.8); font-weight: 600; font-size: 0.875rem;">Départ</th>
+            <th style="padding: 1rem; text-align: left; color: rgba(255, 255, 255, 0.8); font-weight: 600; font-size: 0.875rem;">Durée</th>
+            <th style="padding: 1rem; text-align: left; color: rgba(255, 255, 255, 0.8); font-weight: 600; font-size: 0.875rem;">Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @time_entries.each do |entry| %>
+            <tr style="border-bottom: 1px solid rgba(0, 212, 255, 0.1); transition: background-color 0.2s ease;" onmouseover="this.style.backgroundColor='rgba(0, 212, 255, 0.05)'" onmouseout="this.style.backgroundColor='transparent'">
+              <td style="padding: 1rem; color: rgba(255, 255, 255, 0.9);">
+                <%= entry.clocked_in_at.strftime('%d/%m/%Y') if entry.clocked_in_at %>
+              </td>
+              <td style="padding: 1rem; color: rgba(255, 255, 255, 0.9);">
+                <%= entry.site&.name || 'N/A' %>
+              </td>
+              <td style="padding: 1rem; color: rgba(255, 255, 255, 0.9);">
+                <%= entry.clocked_in_at.strftime('%H:%M') if entry.clocked_in_at %>
+              </td>
+              <td style="padding: 1rem; color: rgba(255, 255, 255, 0.9);">
+                <%= entry.clocked_out_at ? entry.clocked_out_at.strftime('%H:%M') : '--' %>
+              </td>
+              <td style="padding: 1rem; color: rgba(255, 255, 255, 0.9);">
+                <% if entry.clocked_out_at && entry.clocked_in_at %>
+                  <% duration = ((entry.clocked_out_at - entry.clocked_in_at) / 3600.0).round(1) %>
+                  <%= duration %>h
+                <% else %>
+                  --
+                <% end %>
+              </td>
+              <td style="padding: 1rem;">
+                <% if entry.clocked_out_at %>
+                  <span style="display: inline-block; padding: 0.25rem 0.75rem; background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(34, 197, 94, 0.2)); border: 1px solid rgba(74, 222, 128, 0.3); border-radius: 1rem; font-size: 0.75rem; font-weight: 600; color: #4ade80;">Complet</span>
+                <% else %>
+                  <span style="display: inline-block; padding: 0.25rem 0.75rem; background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 224, 0.2)); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 1rem; font-size: 0.75rem; font-weight: 600; color: #00D4FF;">En cours</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Mobile Card View -->
+    <div class="mobile-cards" style="display: none;">
+      <% @time_entries.each do |entry| %>
+        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 0.75rem; padding: 1rem; margin-bottom: 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
+            <div>
+              <div style="font-size: 1rem; font-weight: 600; color: #00D4FF; margin-bottom: 0.25rem;">
+                <%= entry.site&.name || 'N/A' %>
+              </div>
+              <div style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6);">
+                <%= entry.clocked_in_at.strftime('%d/%m/%Y') if entry.clocked_in_at %>
+              </div>
+            </div>
+            <% if entry.clocked_out_at %>
+              <span style="display: inline-block; padding: 0.25rem 0.75rem; background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(34, 197, 94, 0.2)); border: 1px solid rgba(74, 222, 128, 0.3); border-radius: 1rem; font-size: 0.75rem; font-weight: 600; color: #4ade80; white-space: nowrap;">Complet</span>
+            <% else %>
+              <span style="display: inline-block; padding: 0.25rem 0.75rem; background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 255, 224, 0.2)); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 1rem; font-size: 0.75rem; font-weight: 600; color: #00D4FF; white-space: nowrap;">En cours</span>
+            <% end %>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(0, 212, 255, 0.1);">
+            <div>
+              <div style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.5); margin-bottom: 0.25rem;">Arrivée</div>
+              <div style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.9); font-weight: 600;">
+                <%= entry.clocked_in_at.strftime('%H:%M') if entry.clocked_in_at %>
+              </div>
+            </div>
+            <div>
+              <div style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.5); margin-bottom: 0.25rem;">Départ</div>
+              <div style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.9); font-weight: 600;">
+                <%= entry.clocked_out_at ? entry.clocked_out_at.strftime('%H:%M') : '--' %>
+              </div>
+            </div>
+            <div>
+              <div style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.5); margin-bottom: 0.25rem;">Durée</div>
+              <div style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.9); font-weight: 600;">
+                <% if entry.clocked_out_at && entry.clocked_in_at %>
+                  <% duration = ((entry.clocked_out_at - entry.clocked_in_at) / 3600.0).round(1) %>
+                  <%= duration %>h
+                <% else %>
+                  --
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Pagination -->
+    <% if @time_entries.total_pages > 1 %>
+      <div style="margin-top: 2rem; display: flex; justify-content: center;">
+        <%= paginate @time_entries %>
+      </div>
+    <% end %>
+  <% else %>
+    <div style="text-align: center; padding: 3rem; color: rgba(255, 255, 255, 0.5);">
+      <svg style="width: 4rem; height: 4rem; margin: 0 auto 1rem; opacity: 0.5;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <p style="font-size: 1.125rem; margin: 0;">Aucun pointage enregistré</p>
+      <p style="font-size: 0.875rem; margin: 0.5rem 0 0 0;">Vos pointages apparaîtront ici une fois que vous aurez scanné un QR code.</p>
+    </div>
+  <% end %>
+</div>
+
+<!-- Mobile Responsive Styles -->
+<style>
+  @media (min-width: 768px) {
+    .desktop-table { display: block !important; }
+    .mobile-cards { display: none !important; }
+  }
+  
+  @media (max-width: 767px) {
+    .desktop-table { display: none !important; }
+    .mobile-cards { display: block !important; }
+  }
+</style>
+
+<!-- Info Card -->
+<div class="glass-card" style="background: rgba(0, 212, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(0, 212, 255, 0.2); border-radius: 1rem; padding: 1.5rem;">
+  <div style="display: flex; gap: 1rem; align-items: start;">
+    <svg style="width: 1.5rem; height: 1.5rem; flex-shrink: 0; color: #00D4FF;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    <div>
+      <h3 style="color: #00D4FF; font-weight: 600; margin: 0 0 0.5rem 0; font-size: clamp(0.875rem, 2vw, 1rem);">Comment pointer ?</h3>
+      <p style="color: rgba(255, 255, 255, 0.7); margin: 0; font-size: clamp(0.8125rem, 1.5vw, 0.875rem); line-height: 1.6;">
+        Cliquez sur le bouton "Scanner QR Code pour Pointer" ci-dessus pour ouvrir la caméra et scanner le QR code affiché sur votre site de travail. Chaque pointage sera automatiquement enregistré dans votre historique.
+      </p>
+    </div>
+  </div>
+</div>
