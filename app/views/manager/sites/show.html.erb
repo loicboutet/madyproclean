@@ -88,97 +88,17 @@
 
 <!-- Site Details and QR Code -->
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
-  <!-- Site Details -->
-  <div class="glass-card">
-    <h3>Informations du Site</h3>
-    <div style="display: grid; gap: 1rem; margin-top: 1.5rem;">
-      <div>
-        <label style="display: block; font-weight: 600; color: var(--cyan-electric); margin-bottom: 0.5rem;">Code du Site</label>
-        <p style="color: rgba(255, 255, 255, 0.9);"><%= @site.code %></p>
-      </div>
-      
-      <% if @site.address.present? %>
-        <div>
-          <label style="display: block; font-weight: 600; color: var(--cyan-electric); margin-bottom: 0.5rem;">Adresse</label>
-          <p style="color: rgba(255, 255, 255, 0.9);"><%= @site.address %></p>
-        </div>
-      <% end %>
-      
-      <% if @site.description.present? %>
-        <div>
-          <label style="display: block; font-weight: 600; color: var(--cyan-electric); margin-bottom: 0.5rem;">Description</label>
-          <p style="color: rgba(255, 255, 255, 0.9);"><%= @site.description %></p>
-        </div>
-      <% end %>
-    </div>
-  </div>
+  <!-- Site Information -->
+  <%= render 'shared/sites/site_info_card', site: @site, style: 'manager' %>
 
   <!-- QR Code Information -->
-  <div class="glass-card">
-    <h3>
-      <svg style="display: inline-block; width: 1.5rem; height: 1.5rem; margin-right: 0.5rem; vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2m5-7v2M7 4h10"/>
-      </svg>
-      Code QR
-    </h3>
-    <div style="display: grid; gap: 1rem; margin-top: 1.5rem;">
-      <div>
-        <label style="display: block; font-weight: 600; color: var(--cyan-electric); margin-bottom: 0.5rem;">Token de sécurité</label>
-        <p style="color: rgba(255, 255, 255, 0.9); font-family: monospace; font-size: 0.875rem; background: rgba(0, 212, 255, 0.1); padding: 0.75rem; border-radius: 0.5rem; word-break: break-all;"><%= @site.qr_code_token %></p>
-      </div>
-      <div>
-        <label style="display: block; font-weight: 600; color: var(--cyan-electric); margin-bottom: 0.5rem;">URL de pointage</label>
-        <p style="color: rgba(255, 255, 255, 0.9); font-family: monospace; font-size: 0.875rem; background: rgba(0, 212, 255, 0.1); padding: 0.75rem; border-radius: 0.5rem; word-break: break-all;"><%= @site.qr_code_url %></p>
-      </div>
-      <div style="margin-top: 1rem;">
-        <%= link_to qr_code_manager_site_path(@site), class: "btn-primary", style: "width: 100%;" do %>
-          <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem; display: inline-block; vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2m5-7v2M7 4h10"/>
-          </svg>
-          <span>Voir le code QR complet</span>
-        <% end %>
-      </div>
-    </div>
-  </div>
+  <%= render 'shared/sites/qr_code_info', site: @site, qr_code_path: qr_code_manager_site_path(@site), style: 'manager' %>
 </div>
 
 <!-- Current Agents on Site -->
 <div class="glass-card">
   <h3>Agents Actuellement sur le Site</h3>
-  
-  <% if @current_time_entries.any? %>
-    <div class="table-responsive" style="margin-top: 1.5rem;">
-      <table>
-        <thead>
-          <tr>
-            <th>Agent</th>
-            <th>Heure d'Arrivée</th>
-            <th>Durée sur Site</th>
-            <th>Statut</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @current_time_entries.each do |entry| %>
-            <tr>
-              <td><%= entry.user.full_name %></td>
-              <td><%= entry.clocked_in_at.strftime('%d/%m/%Y %H:%M') %></td>
-              <td>
-                <% duration = Time.current - entry.clocked_in_at %>
-                <% hours = (duration / 3600).floor %>
-                <% minutes = ((duration % 3600) / 60).floor %>
-                <%= "#{hours}h #{minutes}m" %>
-              </td>
-              <td><span class="badge">En cours</span></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  <% else %>
-    <p style="text-align: center; color: rgba(255, 255, 255, 0.6); padding: 2rem;">
-      Aucun agent actuellement sur ce site
-    </p>
-  <% end %>
+  <%= render 'shared/sites/current_agents', current_time_entries: @current_time_entries, style: 'manager' %>
 </div>
 
 <!-- Recent Time Entries -->

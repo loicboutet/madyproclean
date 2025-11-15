@@ -1,42 +1,12 @@
 class Admin::SitesController < ApplicationController
+  include SitesManagement
+  
   before_action :authenticate_user!
   before_action :authorize_admin!
   layout 'admin'
   before_action :set_site, only: [:show, :edit, :update, :destroy, :qr_code]
   
-  def index
-    # Use real Site model with filters
-    @sites = Site.all
-    
-    # Filter by active status
-    if params[:status].present?
-      if params[:status] == 'active'
-        @sites = @sites.active
-      elsif params[:status] == 'inactive'
-        @sites = @sites.where(active: false)
-      end
-    end
-    
-    # Search by name or code
-    if params[:search].present?
-      search_term = params[:search]
-      @sites = @sites.where('name LIKE ? OR code LIKE ?', "%#{search_term}%", "%#{search_term}%")
-    end
-    
-    # Order alphabetically and paginate
-    @sites = @sites.alphabetical.page(params[:page]).per(15)
-  end
-
-  def show
-    # @site is set by before_action
-    # Load current agents for this site
-    @current_time_entries = @site.current_time_entries
-    
-    # Load statistics
-    @total_time_entries = @site.time_entries.count
-    @current_agents_count = @site.current_agent_count
-    @schedules_count = @site.schedules.count
-  end
+  # index, show, qr_code inherited from SitesManagement concern
 
   def new
     @site = Site.new
@@ -70,20 +40,26 @@ class Admin::SitesController < ApplicationController
     redirect_to admin_sites_path, notice: 'Site désactivé avec succès.'
   end
 
-  def qr_code
-    # @site is set by before_action
-    # Render QR code view
-  end
-
   private
-
-  def set_site
-    @site = Site.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
-    redirect_to admin_sites_path, alert: 'Site non trouvé.'
-  end
 
   def site_params
     params.require(:site).permit(:name, :code, :address, :description, :active)
+  end
+
+  # Required by SitesManagement concern
+  def sites_index_path
+    admin_sites_path
+  end
+
+  def sites_show_path(site)
+    admin_site_path(site)
+  end
+
+  def qr_code_path(site)
+    qr_code_admin_site_path(site)
+  end
+
+  def has_crud_permissions?
+    true
   end
 end

@@ -1,64 +1,43 @@
 class Manager::SitesController < ApplicationController
+  include SitesManagement
+  
   before_action :authenticate_user!
   before_action :authorize_manager_or_admin!
   layout 'manager'
-  before_action :set_site, only: [:show, :qr_code]
   
-  def index
-    # Show all sites - managers can view all sites (read-only)
-    @sites = Site.all
-    
-    # Filter by active status
-    if params[:status].present?
-      if params[:status] == 'active'
-        @sites = @sites.active
-      elsif params[:status] == 'inactive'
-        @sites = @sites.where(active: false)
-      end
-    end
-    
-    # Search by name or code
-    if params[:search].present?
-      search_term = params[:search]
-      @sites = @sites.where('name LIKE ? OR code LIKE ?', "%#{search_term}%", "%#{search_term}%")
-    end
-    
-    # Order alphabetically and paginate
-    @sites = @sites.alphabetical.page(params[:page]).per(15)
-  end
-
+  # index, show, qr_code inherited from SitesManagement concern
+  
+  # Override show to add recent time entries for managers
   def show
-    # @site is set by before_action
-    # Load current agents for this site
-    @current_time_entries = @site.current_time_entries
+    super # Call the concern's show method to load common statistics
     
-    # Load statistics
-    @total_time_entries = @site.time_entries.count
-    @current_agents_count = @site.current_agent_count
-    @schedules_count = @site.schedules.count
-    
-    # Recent time entries for this site (last 10)
+    # Additional data for manager view
     @recent_time_entries = @site.time_entries.includes(:user)
                                 .order(created_at: :desc)
                                 .limit(10)
   end
 
-  def qr_code
-    # @site is set by before_action
-    # Render QR code view
-  end
-
   private
-
-  def set_site
-    @site = Site.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
-    redirect_to manager_sites_path, alert: 'Site non trouvé.'
-  end
-  
   def authorize_manager_or_admin!
     unless current_user.manager? || current_user.admin?
       redirect_to root_path, alert: 'Accès non autorisé.'
     end
+  end
+
+  # Required by SitesManagement concern
+  def sites_index_path
+    manager_sites_path
+  end
+
+  def sites_show_path(site)
+    manager_site_path(site)
+  end
+
+  def qr_code_path(site)
+    qr_code_manager_site_path(site)
+  end
+
+  def has_crud_permissions?
+    false
   end
 end

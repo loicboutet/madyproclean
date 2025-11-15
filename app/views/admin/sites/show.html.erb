@@ -47,67 +47,10 @@
 <!-- Main Information -->
 <div class="form-grid">
   <!-- Site Information -->
-  <div class="card">
-    <h2 class="mb-4">
-      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-      </svg>
-      Informations du Site
-    </h2>
-    <div class="space-y-3">
-      <div>
-        <p class="text-sm opacity-70">Nom du site</p>
-        <p class="font-semibold text-lg"><%= @site.name %></p>
-      </div>
-      <div>
-        <p class="text-sm opacity-70">Code du site</p>
-        <p class="font-semibold"><span class="badge" style="font-size: 1rem;"><%= @site.code %></span></p>
-      </div>
-      <% if @site.address.present? %>
-        <div>
-          <p class="text-sm opacity-70">Adresse</p>
-          <p class="font-semibold"><%= @site.address %></p>
-        </div>
-      <% end %>
-      <% if @site.description.present? %>
-        <div>
-          <p class="text-sm opacity-70">Description</p>
-          <p class="font-semibold"><%= @site.description %></p>
-        </div>
-      <% end %>
-    </div>
-  </div>
+  <%= render 'shared/sites/site_info_card', site: @site, style: 'admin' %>
 
   <!-- QR Code Information -->
-  <div class="card">
-    <h2 class="mb-4">
-      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2m5-7v2M7 4h10"/>
-      </svg>
-      Code QR
-    </h2>
-    <div class="space-y-3">
-      <div>
-        <p class="text-sm opacity-70">Token de sécurité</p>
-        <p class="font-mono text-sm p-3 rounded break-all"><%= @site.qr_code_token %></p>
-      </div>
-      <div>
-        <p class="text-sm opacity-70">URL de pointage</p>
-        <p class="font-mono text-sm p-3 rounded break-all">
-          <%= @site.qr_code_url %>
-        </p>
-      </div>
-      <div class="mt-4">
-        <%= link_to qr_code_admin_site_path(@site), class: "btn-primary" do %>
-          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2m5-7v2M7 4h10"/>
-          </svg>
-          Voir le code QR complet
-        <% end %>
-      </div>
-    </div>
-  </div>
+  <%= render 'shared/sites/qr_code_info', site: @site, qr_code_path: qr_code_admin_site_path(@site), style: 'admin' %>
 </div>
 
 <div class="divider"></div>

@@ -1,0 +1,64 @@
+<%# Shared site information card %>
+<%# Parameters:
+  - site: The site object to display
+  - style: 'admin' or 'manager' for styling variations
+%>
+<% style ||= 'admin' %>
+
+<% if style == 'admin' %>
+  <div class="card">
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      Informations du Site
+    </h2>
+    <div class="space-y-3">
+      <div>
+        <p class="text-sm opacity-70">Nom du site</p>
+        <p class="font-semibold text-lg"><%= site.name %></p>
+      </div>
+      <div>
+        <p class="text-sm opacity-70">Code du site</p>
+        <p class="font-semibold"><span class="badge" style="font-size: 1rem;"><%= site.code %></span></p>
+      </div>
+      <% if site.address.present? %>
+        <div>
+          <p class="text-sm opacity-70">Adresse</p>
+          <p class="font-semibold"><%= site.address %></p>
+        </div>
+      <% end %>
+      <% if site.description.present? %>
+        <div>
+          <p class="text-sm opacity-70">Description</p>
+          <p class="font-semibold"><%= site.description %></p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% else %>
+  <div class="glass-card">
+    <h3>Informations du Site</h3>
+    <div style="display: grid; gap: 1rem; margin-top: 1.5rem;">
+      <div>
+        <label style="display: block; font-weight: 600; color: var(--cyan-electric); margin-bottom: 0.5rem;">Code du Site</label>
+        <p style="color: rgba(255, 255, 255, 0.9);"><%= site.code %></p>
+      </div>
+      
+      <% if site.address.present? %>
+        <div>
+          <label style="display: block; font-weight: 600; color: var(--cyan-electric); margin-bottom: 0.5rem;">Adresse</label>
+          <p style="color: rgba(255, 255, 255, 0.9);"><%= site.address %></p>
+        </div>
+      <% end %>
+      
+      <% if site.description.present? %>
+        <div>
+          <label style="display: block; font-weight: 600; color: var(--cyan-electric); margin-bottom: 0.5rem;">Description</label>
+          <p style="color: rgba(255, 255, 255, 0.9);"><%= site.description %></p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
