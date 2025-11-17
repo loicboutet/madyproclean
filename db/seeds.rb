@@ -1,560 +1,535 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
+# frozen_string_literal: true
+# This file was auto-generated from the database using: rake db:export_to_seeds
+# Generated at: 2025-11-17 12:34:15 UTC
 
-puts "🌱 Starting seed process..."
+puts '🌱 Starting seed import...'
 
-# Clear existing data (in development only)
-if Rails.env.development?
-  puts "🧹 Cleaning existing data..."
-  # Disable foreign key checks temporarily for SQLite
-  ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = OFF")
+# Safety: Only clear data in development and test environments
+if Rails.env.development? || Rails.env.test?
+  puts '🧹 Cleaning existing data...'
+  ActiveRecord::Base.connection.execute('PRAGMA foreign_keys = OFF')
+  Report.delete_all
+  AnomalyLog.delete_all
+  Absence.delete_all
   Schedule.delete_all
   TimeEntry.delete_all
   Site.delete_all
   User.delete_all
-  ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = ON")
+  ActiveRecord::Base.connection.execute('PRAGMA foreign_keys = ON')
+  puts '  ✓ Cleaned'
 end
 
-# Create Admin Users
-puts "👑 Creating admin users..."
-admin1 = User.create!(
-  email: 'admin@madyproclean.fr',
-  password: 'password123',
-  password_confirmation: 'password123',
-  first_name: 'Sophie',
-  last_name: 'Martin',
-  role: 'admin',
-  phone_number: '+33 6 12 34 56 78',
-  active: true
-)
-puts "  ✓ Created admin: #{admin1.email}"
+# ==========================================
+# USERS
+# ==========================================
+puts '👤 Creating users...'
 
-admin2 = User.create!(
-  email: 'director@madyproclean.fr',
-  password: 'password123',
-  password_confirmation: 'password123',
-  first_name: 'Pierre',
-  last_name: 'Dubois',
+# Create Admin
+admin = User.create!(
+  email: 'admin@madyproclean.com',
+  password: 'pw54321',
+  password_confirmation: 'pw54321',
   role: 'admin',
-  phone_number: '+33 6 23 45 67 89',
-  active: true
+  first_name: 'Admin',
+  last_name: 'User',
+  employee_number: 'EMP001',
+  active: true,
+  phone_number: '+33123456789'
 )
-puts "  ✓ Created admin: #{admin2.email}"
+puts "  ✓ Created admin: #{admin.full_name}"
 
-# Create Manager Users
-puts "👔 Creating manager users..."
+# Create Managers
 manager1 = User.create!(
-  email: 'manager1@madyproclean.fr',
-  password: 'password123',
-  password_confirmation: 'password123',
-  first_name: 'Marie',
-  last_name: 'Leroy',
+  email: 'manager1@madyproclean.com',
+  password: 'pw54321',
+  password_confirmation: 'pw54321',
   role: 'manager',
-  phone_number: '+33 6 34 56 78 90',
-  active: true
+  first_name: 'Marie',
+  last_name: 'Dubois',
+  employee_number: 'EMP002',
+  active: true,
+  phone_number: '+33123456790'
 )
-puts "  ✓ Created manager: #{manager1.email}"
+puts "  ✓ Created manager: #{manager1.full_name}"
 
 manager2 = User.create!(
-  email: 'manager2@madyproclean.fr',
-  password: 'password123',
-  password_confirmation: 'password123',
-  first_name: 'Thomas',
-  last_name: 'Bernard',
+  email: 'manager2@madyproclean.com',
+  password: 'pw54321',
+  password_confirmation: 'pw54321',
   role: 'manager',
-  phone_number: '+33 6 45 67 89 01',
-  active: true
+  first_name: 'Pierre',
+  last_name: 'Martin',
+  employee_number: 'EMP003',
+  active: true,
+  phone_number: '+33123456791'
 )
-puts "  ✓ Created manager: #{manager2.email}"
+puts "  ✓ Created manager: #{manager2.full_name}"
 
-manager3 = User.create!(
-  email: 'manager3@madyproclean.fr',
-  password: 'password123',
-  password_confirmation: 'password123',
-  first_name: 'Claire',
-  last_name: 'Moreau',
-  role: 'manager',
-  phone_number: '+33 6 56 78 90 12',
-  active: true
-)
-puts "  ✓ Created manager: #{manager3.email}"
-
-# Create Agent Users
-puts "👷 Creating agent users..."
-
-# Agents for manager1
+# Create Agents
 agent1 = User.create!(
-  email: 'agent1@madyproclean.fr',
-  password: 'password123',
-  password_confirmation: 'password123',
-  first_name: 'Lucas',
-  last_name: 'Petit',
+  email: 'agent1@madyproclean.com',
+  password: 'pw54321',
+  password_confirmation: 'pw54321',
   role: 'agent',
-  employee_number: 'EMP001',
-  phone_number: '+33 6 67 89 01 23',
-  manager: manager1,
-  active: true
+  first_name: 'Sophie',
+  last_name: 'Laurent',
+  employee_number: 'EMP004',
+  active: true,
+  phone_number: '+33123456792',
+  manager: manager1
 )
-puts "  ✓ Created agent: #{agent1.email} (managed by #{manager1.full_name})"
+puts "  ✓ Created agent: #{agent1.full_name} (managed by #{manager1.full_name})"
 
 agent2 = User.create!(
-  email: 'agent2@madyproclean.fr',
-  password: 'password123',
-  password_confirmation: 'password123',
-  first_name: 'Emma',
-  last_name: 'Roux',
+  email: 'agent2@madyproclean.com',
+  password: 'pw54321',
+  password_confirmation: 'pw54321',
   role: 'agent',
-  employee_number: 'EMP002',
-  phone_number: '+33 6 78 90 12 34',
-  manager: manager1,
-  active: true
-)
-puts "  ✓ Created agent: #{agent2.email} (managed by #{manager1.full_name})"
-
-# Agents for manager2
-agent3 = User.create!(
-  email: 'agent3@madyproclean.fr',
-  password: 'password123',
-  password_confirmation: 'password123',
-  first_name: 'Hugo',
-  last_name: 'Blanc',
-  role: 'agent',
-  employee_number: 'EMP003',
-  phone_number: '+33 6 89 01 23 45',
-  manager: manager2,
-  active: true
-)
-puts "  ✓ Created agent: #{agent3.email} (managed by #{manager2.full_name})"
-
-agent4 = User.create!(
-  email: 'agent4@madyproclean.fr',
-  password: 'password123',
-  password_confirmation: 'password123',
-  first_name: 'Léa',
-  last_name: 'Garnier',
-  role: 'agent',
-  employee_number: 'EMP004',
-  phone_number: '+33 6 90 12 34 56',
-  manager: manager2,
-  active: true
-)
-puts "  ✓ Created agent: #{agent4.email} (managed by #{manager2.full_name})"
-
-# Agents for manager3
-agent5 = User.create!(
-  email: 'agent5@madyproclean.fr',
-  password: 'password123',
-  password_confirmation: 'password123',
-  first_name: 'Arthur',
-  last_name: 'Faure',
-  role: 'agent',
+  first_name: 'Lucas',
+  last_name: 'Bernard',
   employee_number: 'EMP005',
-  phone_number: '+33 6 01 23 45 67',
-  manager: manager3,
-  active: true
+  active: true,
+  phone_number: '+33123456793',
+  manager: manager1
 )
-puts "  ✓ Created agent: #{agent5.email} (managed by #{manager3.full_name})"
+puts "  ✓ Created agent: #{agent2.full_name} (managed by #{manager1.full_name})"
 
-# Create one inactive user for testing
-inactive_agent = User.create!(
-  email: 'inactive@madyproclean.fr',
-  password: 'password123',
-  password_confirmation: 'password123',
-  first_name: 'Inactif',
-  last_name: 'Utilisateur',
+agent3 = User.create!(
+  email: 'agent3@madyproclean.com',
+  password: 'pw54321',
+  password_confirmation: 'pw54321',
   role: 'agent',
-  employee_number: 'EMP099',
-  phone_number: '+33 6 00 00 00 00',
-  manager: manager1,
-  active: false
+  first_name: 'Emma',
+  last_name: 'Petit',
+  employee_number: 'EMP006',
+  active: true,
+  phone_number: '+33123456794',
+  manager: manager2
 )
-puts "  ✓ Created inactive agent: #{inactive_agent.email}"
+puts "  ✓ Created agent: #{agent3.full_name} (managed by #{manager2.full_name})"
 
-# Create Sites
-puts "🏢 Creating nuclear sites..."
-if Rails.env.development?
-  Site.delete_all
-end
+# ==========================================
+# SITES
+# ==========================================
+puts '🏢 Creating sites...'
 
-sites = [
-  {
-    name: 'Centrale Nucléaire de Gravelines',
-    code: 'GRA-001',
-    address: 'Avenue des Dunes, 59820 Gravelines',
-    description: 'Site nucléaire Nord de la France'
-  },
-  {
-    name: 'Site Nucléaire Paris Nord',
-    code: 'SPN-002',
-    address: '123 Rue de la République, 75001 Paris',
-    description: 'Centre de contrôle régional Paris'
-  },
-  {
-    name: 'Centrale de Cattenom',
-    code: 'CAT-003',
-    address: 'Route de Cattenom, 57570 Cattenom',
-    description: 'Centrale nucléaire de Lorraine'
-  },
-  {
-    name: 'Site de Flamanville',
-    code: 'FLA-004',
-    address: 'BP 4, 50340 Flamanville',
-    description: 'Site nucléaire de la Manche'
-  },
-  {
-    name: 'Centrale de Paluel',
-    code: 'PAL-005',
-    address: 'Route de Paluel, 76450 Veulettes-sur-Mer',
-    description: 'Site nucléaire de Seine-Maritime'
-  },
-  {
-    name: 'Centre de Maintenance Lyon',
-    code: 'CML-006',
-    address: '456 Avenue du Rhône, 69001 Lyon',
-    description: 'Centre technique régional'
-  },
-  {
-    name: 'Station de Contrôle Marseille',
-    code: 'SCM-007',
-    address: '789 Boulevard Maritime, 13001 Marseille',
-    description: 'Station de contrôle Sud'
-  },
-  {
-    name: 'Base Technique Toulouse',
-    code: 'BTT-008',
-    address: '321 Rue Capitole, 31000 Toulouse',
-    description: 'Base technique Sud-Ouest'
-  }
+# Site names and types
+site_types = [
+  { type: 'Office', prefix: 'OFF' },
+  { type: 'Warehouse', prefix: 'WH' },
+  { type: 'Retail', prefix: 'RET' },
+  { type: 'Medical', prefix: 'MED' },
+  { type: 'School', prefix: 'SCH' },
+  { type: 'Hotel', prefix: 'HTL' },
+  { type: 'Restaurant', prefix: 'RST' },
+  { type: 'Factory', prefix: 'FCT' }
 ]
 
-created_sites = sites.map do |site_data|
-  site = Site.create!(site_data)
-  puts "  ✓ Created site: #{site.name} (#{site.code})"
-  site
-end
+streets = ['Rue de la Paix', 'Avenue des Champs', 'Boulevard Haussmann', 'Rue de la Santé', 
+           'Avenue Montaigne', 'Rue du Faubourg', 'Boulevard Saint-Germain', 'Rue de Rivoli',
+           'Avenue Victor Hugo', 'Rue Lafayette']
 
-# Create additional agents for realistic time entries
-puts "👷 Creating additional agent users..."
-additional_agents = []
+arrondissements = ['75001', '75008', '75014', '75016', '93200', '92100', '94300', '91000']
 
-# Generate more agents (total should be around 20-25 for 100 time entries)
-(6..25).each do |i|
-  first_names = ['Antoine', 'Julie', 'Nicolas', 'Sophie', 'Julien', 'Camille', 'Maxime', 'Laura', 
-                 'Alexandre', 'Manon', 'Romain', 'Chloé', 'Vincent', 'Margaux', 'Benjamin', 
-                 'Sarah', 'Florian', 'Marine', 'Quentin', 'Mathilde']
-  last_names = ['Dupont', 'Martin', 'Bernard', 'Dubois', 'Thomas', 'Robert', 'Richard', 'Petit',
-                'Durand', 'Leroy', 'Moreau', 'Simon', 'Laurent', 'Lefebvre', 'Michel', 'Garcia',
-                'David', 'Bertrand', 'Roux', 'Vincent']
-  
-  manager = [manager1, manager2, manager3].sample
-  
-  agent = User.create!(
-    email: "agent#{i}@madyproclean.fr",
-    password: 'password123',
-    password_confirmation: 'password123',
-    first_name: first_names[(i-6) % first_names.length],
-    last_name: last_names[(i-6) % last_names.length],
-    role: 'agent',
-    employee_number: sprintf('EMP%03d', i),
-    phone_number: "+33 6 #{rand(10..99)} #{rand(10..99)} #{rand(10..99)} #{rand(10..99)}",
-    manager: manager,
-    active: true
+sites = []
+25.times do |i|
+  site_type = site_types[i % site_types.length]
+  site = Site.create!(
+    name: "#{site_type[:type]} Building #{(i / site_types.length) + 1}",
+    code: "#{site_type[:prefix]}-#{(i + 1).to_s.rjust(3, '0')}",
+    address: "#{rand(1..999)} #{streets[i % streets.length]}, #{arrondissements[i % arrondissements.length]} Paris, France",
+    description: "Professional cleaning site - #{site_type[:type]} facility",
+    active: i < 23 # Make 2 inactive for testing
   )
-  additional_agents << agent
-  puts "  ✓ Created agent: #{agent.email} (managed by #{manager.full_name})"
+  sites << site
+  puts "  ✓ Created site: #{site.name} (#{site.code})"
 end
 
-# Combine all agents
-all_agents = [agent1, agent2, agent3, agent4, agent5] + additional_agents
+# Store first 4 sites for backward compatibility with existing references
+site1 = sites[0]
+site2 = sites[1]
+site3 = sites[2]
+site4 = sites[3]
 
-# Create Time Entries
-puts "⏰ Creating time entries (100 records)..."
-if Rails.env.development?
-  TimeEntry.delete_all
+# ==========================================
+# SCHEDULES
+# ==========================================
+puts '📅 Creating schedules...'
+
+schedules_count = 0
+
+# Create schedules for the past 7 days
+7.times do |i|
+  date = (Date.today - (7 - i).days)
+  
+  # Agent 1 at Site 1
+  Schedule.create!(
+    user: agent1,
+    site: site1,
+    scheduled_date: date,
+    start_time: '08:00',
+    end_time: '16:00',
+    status: 'completed',
+    created_by: manager1,
+    notes: 'Regular morning shift'
+  )
+  schedules_count += 1
+  
+  # Agent 2 at Site 2
+  Schedule.create!(
+    user: agent2,
+    site: site2,
+    scheduled_date: date,
+    start_time: '09:00',
+    end_time: '17:00',
+    status: 'completed',
+    created_by: manager1,
+    notes: 'Standard day shift'
+  )
+  schedules_count += 1
+  
+  # Agent 3 at Site 3
+  Schedule.create!(
+    user: agent3,
+    site: site3,
+    scheduled_date: date,
+    start_time: '14:00',
+    end_time: '22:00',
+    status: 'completed',
+    created_by: manager2,
+    notes: 'Evening shift'
+  )
+  schedules_count += 1
 end
 
-ip_addresses = ['192.168.1.45', '192.168.1.78', '192.168.1.92', '192.168.1.120', '192.168.1.88', '10.0.0.15', '10.0.0.22']
-user_agents = [
-  'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15',
-  'Mozilla/5.0 (Android 12; Mobile) AppleWebKit/537.36',
-  'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15',
-  'Mozilla/5.0 (Android 13; Mobile) AppleWebKit/537.36'
-]
+# Create schedules for next 14 days
+14.times do |i|
+  date = Date.today + (i + 1).days
+  
+  # Rotate agents across sites
+  case i % 3
+  when 0
+    Schedule.create!(
+      user: agent1,
+      site: site1,
+      scheduled_date: date,
+      start_time: '08:00',
+      end_time: '16:00',
+      status: 'scheduled',
+      created_by: manager1
+    )
+    Schedule.create!(
+      user: agent2,
+      site: site2,
+      scheduled_date: date,
+      start_time: '09:00',
+      end_time: '17:00',
+      status: 'scheduled',
+      created_by: manager1
+    )
+    schedules_count += 2
+  when 1
+    Schedule.create!(
+      user: agent3,
+      site: site3,
+      scheduled_date: date,
+      start_time: '14:00',
+      end_time: '22:00',
+      status: 'scheduled',
+      created_by: manager2
+    )
+    Schedule.create!(
+      user: agent1,
+      site: site4,
+      scheduled_date: date,
+      start_time: '06:00',
+      end_time: '14:00',
+      status: 'scheduled',
+      created_by: manager1
+    )
+    schedules_count += 2
+  when 2
+    Schedule.create!(
+      user: agent2,
+      site: site3,
+      scheduled_date: date,
+      start_time: '10:00',
+      end_time: '18:00',
+      status: 'scheduled',
+      created_by: manager1
+    )
+    Schedule.create!(
+      user: agent3,
+      site: site4,
+      scheduled_date: date,
+      start_time: '08:00',
+      end_time: '16:00',
+      status: 'scheduled',
+      created_by: manager2
+    )
+    schedules_count += 2
+  end
+end
 
-# Generate 100 time entries over the last 30 days
+puts "  ✓ Created #{schedules_count} schedules"
+
+# ==========================================
+# TIME ENTRIES
+# ==========================================
+puts '⏰ Creating time entries...'
+
 time_entries_count = 0
-target_entries = 100
+agents = [agent1, agent2, agent3]
 
-# Generate completed entries (85% - 85 entries)
-(1..85).each do |i|
-  agent = all_agents.sample
-  site = created_sites.sample
+# Create 50 time entries spread over past 30 days
+50.times do |i|
   days_ago = rand(1..30)
+  date = Date.today - days_ago.days
+  agent = agents[i % agents.length]
+  site = sites[i % sites.length]
   
-  # Random start time between 7 AM and 9 AM
-  clock_in = days_ago.days.ago.beginning_of_day + rand(7..9).hours + rand(0..59).minutes
+  # Most entries are completed, few are active or anomaly
+  is_active = i == 0 # Only first one is active
+  is_anomaly = (i % 15 == 0) && !is_active
+  is_corrected = (i % 10 == 0) && !is_active && !is_anomaly
   
-  # Work duration between 7-9 hours
-  duration_hours = rand(7..9)
-  duration_minutes = rand(0..59)
-  clock_out = clock_in + duration_hours.hours + duration_minutes.minutes
+  # Generate valid start and end hours (ensuring end_hour doesn't exceed 23)
+  start_hour = [6, 7, 8, 9, 10, 14][rand(0..5)]
+  duration_hours = [7, 8, 9].sample # Standard shift durations
+  end_hour = [start_hour + duration_hours, 22].min # Cap at 22 to avoid going to next day
   
   entry = TimeEntry.create!(
     user: agent,
     site: site,
-    clocked_in_at: clock_in,
-    clocked_out_at: clock_out,
-    status: 'completed',
-    ip_address_in: ip_addresses.sample,
-    ip_address_out: ip_addresses.sample,
-    user_agent_in: user_agents.sample,
-    user_agent_out: user_agents.sample
+    clocked_in_at: is_active ? (Time.now - 3.hours) : DateTime.new(date.year, date.month, date.day, start_hour, rand(0..59), 0),
+    clocked_out_at: is_active ? nil : DateTime.new(date.year, date.month, date.day, end_hour, rand(0..59), 0),
+    status: is_active ? 'active' : (is_anomaly ? 'anomaly' : 'completed'),
+    ip_address_in: "192.168.#{rand(1..10)}.#{rand(100..200)}",
+    ip_address_out: is_active ? nil : "192.168.#{rand(1..10)}.#{rand(100..200)}",
+    manually_corrected: is_corrected,
+    corrected_by: is_corrected ? [manager1, manager2, admin].sample : nil,
+    corrected_at: is_corrected ? (days_ago - 1).days.ago : nil,
+    notes: is_corrected ? 'Time corrected by manager' : (is_anomaly ? 'Flagged for anomaly' : nil)
   )
-  time_entries_count += 1
   
-  # Add some manual corrections (about 10% of completed entries)
-  if rand(1..10) == 1
-    entry.update!(
-      manually_corrected: true,
-      corrected_by: admin1,
-      corrected_at: entry.clocked_out_at + 2.hours,
-      notes: 'Correction manuelle: oubli de pointage de départ'
-    )
+  unless is_active
+    entry.update!(duration_minutes: ((entry.clocked_out_at - entry.clocked_in_at) / 60).to_i)
   end
-end
-
-puts "  ✓ Created #{time_entries_count} completed time entries"
-
-# Generate active entries (10% - 10 entries)
-# Select 10 random agents who don't have active entries yet
-agents_for_active = all_agents.sample(10)
-agents_for_active.each do |agent|
-  site = created_sites.sample
   
-  # Active entries from today, varying times
-  hours_ago = rand(1..8)
-  clock_in = hours_ago.hours.ago
-  
-  TimeEntry.create!(
-    user: agent,
-    site: site,
-    clocked_in_at: clock_in,
-    clocked_out_at: nil,
-    status: 'active',
-    ip_address_in: ip_addresses.sample,
-    user_agent_in: user_agents.sample
-  )
   time_entries_count += 1
 end
 
-puts "  ✓ Created 10 active time entries"
+puts "  ✓ Created #{time_entries_count} time entries"
 
-# Generate anomaly entries (5% - 5 entries)
-(1..5).each do |i|
-  agent = all_agents.sample
-  site = created_sites.sample
-  
-  # Anomaly: entries from 2-5 days ago that were never closed
-  days_ago = rand(2..5)
-  clock_in = days_ago.days.ago.beginning_of_day + rand(7..9).hours
-  
-  TimeEntry.create!(
-    user: agent,
-    site: site,
-    clocked_in_at: clock_in,
-    clocked_out_at: nil,
-    status: 'anomaly',
-    ip_address_in: ip_addresses.sample,
-    user_agent_in: user_agents.sample,
-    notes: 'Anomalie détectée: pas de pointage de départ depuis plus de 24h'
-  )
-  time_entries_count += 1
-end
+# ==========================================
+# ABSENCES
+# ==========================================
+puts '🏥 Creating absences...'
 
-puts "  ✓ Created 5 anomaly time entries"
+absences_count = 0
 
-# Create Schedules
-puts "📅 Creating schedules..."
-if Rails.env.development?
-  Schedule.delete_all
-end
+# Approved vacation for Agent 1
+Absence.create!(
+  user: agent1,
+  absence_type: 'vacation',
+  start_date: Date.today + 20.days,
+  end_date: Date.today + 24.days,
+  status: 'approved',
+  reason: 'Family vacation',
+  created_by: manager1
+)
+absences_count += 1
 
-created_schedules = []
+# Pending sick leave for Agent 2
+Absence.create!(
+  user: agent2,
+  absence_type: 'sick',
+  start_date: Date.today + 2.days,
+  end_date: Date.today + 3.days,
+  status: 'pending',
+  reason: 'Medical appointment',
+  created_by: agent2
+)
+absences_count += 1
 
-# Create schedules for the past 30 days (mix of completed, missed, and some with replacements)
-schedules_count = 0
+# Rejected other leave for Agent 3
+Absence.create!(
+  user: agent3,
+  absence_type: 'other',
+  start_date: Date.today + 1.day,
+  end_date: Date.today + 1.day,
+  status: 'rejected',
+  reason: 'Personal matters',
+  created_by: manager2
+)
+absences_count += 1
 
-# Strategy: Create schedules that match some completed time entries (to show schedule adherence)
-# and create some schedules without time entries (to show missed schedules)
+# Approved sick leave from the past
+Absence.create!(
+  user: agent3,
+  absence_type: 'sick',
+  start_date: Date.today - 10.days,
+  end_date: Date.today - 8.days,
+  status: 'approved',
+  reason: 'Flu',
+  created_by: manager2
+)
+absences_count += 1
 
-# Get some completed time entries to match with schedules
-completed_entries = TimeEntry.completed.limit(40)
+puts "  ✓ Created #{absences_count} absences"
 
-completed_entries.each do |entry|
-  # Create a schedule that matches this time entry
-  schedule = Schedule.create!(
-    user: entry.user,
-    site: entry.site,
-    scheduled_date: entry.clocked_in_at.to_date,
-    start_time: entry.clocked_in_at.strftime('%H:%M'),
-    end_time: entry.clocked_out_at.strftime('%H:%M'),
-    status: 'completed',
-    created_by: [admin1, admin2, manager1, manager2, manager3].sample,
-    notes: 'Planification régulière'
-  )
-  created_schedules << schedule
-  schedules_count += 1
-end
+# ==========================================
+# ANOMALY LOGS
+# ==========================================
+puts '🚨 Creating anomaly logs...'
 
-puts "  ✓ Created #{schedules_count} completed schedules (matching time entries)"
+anomalies_count = 0
 
-# Create missed schedules (schedules without corresponding time entries from past)
-(1..15).each do |i|
-  agent = all_agents.sample
-  site = created_sites.sample
+anomaly_types = ['missed_clock_in', 'missed_clock_out', 'over_24h', 'multiple_active', 'schedule_mismatch']
+severities = ['low', 'medium', 'high']
+descriptions = {
+  'missed_clock_in' => 'Agent did not clock in at scheduled time',
+  'missed_clock_out' => 'Agent forgot to clock out at end of shift',
+  'over_24h' => 'Time entry active for more than 24 hours',
+  'multiple_active' => 'Multiple active entries detected from different locations',
+  'schedule_mismatch' => 'Agent clocked in but no schedule was found'
+}
+
+# Get some time entries and schedules for linking
+time_entries_for_anomalies = TimeEntry.limit(30).to_a
+schedules_for_anomalies = Schedule.limit(20).to_a
+
+# Create 50 anomaly logs
+50.times do |i|
   days_ago = rand(1..30)
-  scheduled_date = days_ago.days.ago.to_date
+  anomaly_type = anomaly_types[i % anomaly_types.length]
+  severity = severities[rand(0..2)]
+  agent = agents[i % agents.length]
+  is_resolved = i % 3 != 0 # About 2/3 are resolved
   
-  # Skip if this agent already has a time entry on this date for this site
-  next if TimeEntry.exists?(
+  # Link to time entry or schedule based on type
+  time_entry_link = ['missed_clock_out', 'over_24h', 'multiple_active'].include?(anomaly_type) ? time_entries_for_anomalies[i % time_entries_for_anomalies.length] : nil
+  schedule_link = ['missed_clock_in', 'schedule_mismatch'].include?(anomaly_type) ? schedules_for_anomalies[i % schedules_for_anomalies.length] : nil
+  
+  AnomalyLog.create!(
+    anomaly_type: anomaly_type,
+    severity: severity,
     user: agent,
-    site: site,
-    clocked_in_at: scheduled_date.beginning_of_day..scheduled_date.end_of_day
+    time_entry: time_entry_link,
+    schedule: schedule_link,
+    description: "#{descriptions[anomaly_type]} - Case ##{i + 1}",
+    resolved: is_resolved,
+    resolved_by: is_resolved ? [manager1, manager2, admin].sample : nil,
+    resolved_at: is_resolved ? (days_ago - rand(1..5)).days.ago : nil,
+    resolution_notes: is_resolved ? ['Issue resolved after investigation', 'Corrected by manager', 'Agent confirmed', 'False alarm'].sample : nil
   )
-  
-  start_hour = rand(7..9)
-  end_hour = start_hour + rand(7..9)
-  
-  schedule = Schedule.create!(
-    user: agent,
-    site: site,
-    scheduled_date: scheduled_date,
-    start_time: "#{start_hour}:00",
-    end_time: "#{end_hour}:00",
-    status: 'missed',
-    created_by: [admin1, admin2, manager1, manager2, manager3].sample,
-    notes: 'Agent absent sans notification'
-  )
-  created_schedules << schedule
-  schedules_count += 1
+  anomalies_count += 1
 end
 
-puts "  ✓ Created 15 missed schedules (no corresponding time entries)"
+puts "  ✓ Created #{anomalies_count} anomaly logs"
 
-# Create upcoming schedules (for future dates)
-(1..25).each do |i|
-  agent = all_agents.sample
-  site = created_sites.sample
-  days_ahead = rand(1..14)
-  scheduled_date = days_ahead.days.from_now.to_date
+# ==========================================
+# REPORTS
+# ==========================================
+puts '📊 Creating reports...'
+
+reports_count = 0
+
+report_types = ['attendance', 'time_entry', 'anomaly', 'schedule']
+period_types = ['daily', 'weekly', 'monthly', 'custom']
+statuses = ['pending', 'completed']
+file_formats = ['PDF', 'Excel', 'CSV']
+generators = [admin, manager1, manager2]
+
+months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+# Create 30 reports
+30.times do |i|
+  days_ago = rand(1..90)
+  report_type = report_types[i % report_types.length]
+  period_type = period_types[i % period_types.length]
+  status = statuses[i % 5 == 0 ? 0 : 1] # 20% pending, 80% completed
+  generator = generators[i % generators.length]
+  file_format = file_formats[rand(0..2)]
   
-  # Skip if already scheduled
-  next if Schedule.exists?(
-    user: agent,
-    scheduled_date: scheduled_date
+  # Calculate period dates based on period_type
+  case period_type
+  when 'daily'
+    period_start = Date.today - days_ago.days
+    period_end = period_start
+  when 'weekly'
+    period_start = Date.today - days_ago.days - 6.days
+    period_end = Date.today - days_ago.days
+  when 'monthly'
+    month_offset = i % 12
+    period_start = Date.new(2025, 12 - month_offset, 1)
+    period_end = period_start.end_of_month
+  when 'custom'
+    period_start = Date.today - (days_ago + 14).days
+    period_end = Date.today - days_ago.days
+  end
+  
+  # Generate title based on type and period
+  title = case report_type
+  when 'attendance'
+    "Attendance Report - #{period_type.capitalize} ##{i + 1}"
+  when 'time_entry'
+    "Time Entries Report - #{period_type.capitalize} Period"
+  when 'anomaly'
+    "Anomalies Analysis - Week #{i + 1}"
+  when 'schedule'
+    "Schedule Report - #{period_start.strftime('%B %Y')}"
+  end
+  
+  Report.create!(
+    title: title,
+    report_type: report_type,
+    period_type: period_type,
+    period_start: period_start,
+    period_end: period_end,
+    generated_at: status == 'completed' ? (Time.now - days_ago.days) : nil,
+    generated_by: generator,
+    status: status,
+    description: "#{report_type.titleize} report for #{period_type} period covering #{period_start.strftime('%Y-%m-%d')} to #{period_end.strftime('%Y-%m-%d')}",
+    filters_applied: { 'generated_by' => generator.full_name, 'type' => report_type }.to_json,
+    file_format: status == 'completed' ? file_format : nil,
+    file_size: status == 'completed' ? "#{rand(100..2000)} KB" : nil
   )
-  
-  start_hour = rand(7..9)
-  end_hour = start_hour + rand(7..9)
-  
-  schedule = Schedule.create!(
-    user: agent,
-    site: site,
-    scheduled_date: scheduled_date,
-    start_time: "#{start_hour}:00",
-    end_time: "#{end_hour}:00",
-    status: 'scheduled',
-    created_by: [admin1, admin2, manager1, manager2, manager3].sample,
-    notes: ['Planification hebdomadaire', 'Affectation régulière', 'Remplacement temporaire', nil].sample
-  )
-  created_schedules << schedule
-  schedules_count += 1
+  reports_count += 1
 end
 
-puts "  ✓ Created 25 upcoming schedules"
+puts "  ✓ Created #{reports_count} reports"
 
-# Create some schedules with replacements (5 schedules)
-replacement_count = 0
-attempts = 0
-while replacement_count < 5 && attempts < 20
-  attempts += 1
-  original_agent = all_agents.sample
-  replacement_agent = (all_agents - [original_agent]).sample
-  site = created_sites.sample
-  days_ahead = rand(1..7)
-  scheduled_date = days_ahead.days.from_now.to_date
-  
-  # Skip if this agent already has a schedule on this date
-  next if Schedule.exists?(user: original_agent, scheduled_date: scheduled_date)
-  
-  start_hour = rand(7..9)
-  end_hour = start_hour + rand(7..9)
-  
-  schedule = Schedule.create!(
-    user: original_agent,
-    site: site,
-    scheduled_date: scheduled_date,
-    start_time: "#{start_hour}:00",
-    end_time: "#{end_hour}:00",
-    status: 'scheduled',
-    created_by: [manager1, manager2, manager3].sample,
-    replaced_by: replacement_agent,
-    replacement_reason: ['Congé maladie', 'Formation', 'Urgence familiale', 'Congé planifié'].sample,
-    notes: "Remplacé par #{replacement_agent.full_name}"
-  )
-  created_schedules << schedule
-  schedules_count += 1
-  replacement_count += 1
-end
-
-puts "  ✓ Created 5 schedules with replacements"
-
-# Create a few cancelled schedules
-(1..5).each do |i|
-  agent = all_agents.sample
-  site = created_sites.sample
-  days_ago = rand(1..10)
-  scheduled_date = days_ago.days.ago.to_date
-  
-  start_hour = rand(7..9)
-  end_hour = start_hour + rand(7..9)
-  
-  schedule = Schedule.create!(
-    user: agent,
-    site: site,
-    scheduled_date: scheduled_date,
-    start_time: "#{start_hour}:00",
-    end_time: "#{end_hour}:00",
-    status: 'cancelled',
-    created_by: [admin1, admin2].sample,
-    notes: ['Maintenance site', 'Annulation client', 'Réorganisation planning'].sample
-  )
-  created_schedules << schedule
-  schedules_count += 1
-end
-
-puts "  ✓ Created 5 cancelled schedules"
-
-puts "\n✅ Seed completed successfully!"
-puts "\n📊 Summary:"
-puts "  - Admins: #{User.admins.count}"
-puts "  - Managers: #{User.managers.count}"
-puts "  - Agents (active): #{User.agents.active.count}"
-puts "  - Agents (inactive): #{User.agents.where(active: false).count}"
-puts "  - Total users: #{User.count}"
+# ==========================================
+# SUMMARY
+# ==========================================
+puts ''
+puts '✅ Seed import completed successfully!'
+puts ''
+puts '📊 Summary:'
+puts "  - Users: #{User.count}"
+puts "    * Admins: #{User.admins.count}"
+puts "    * Managers: #{User.managers.count}"
+puts "    * Agents: #{User.agents.count}"
 puts "  - Sites: #{Site.count}"
 puts "  - Time Entries: #{TimeEntry.count}"
-puts "    * Completed: #{TimeEntry.completed.count}"
-puts "    * Active: #{TimeEntry.active.count}"
-puts "    * Anomalies: #{TimeEntry.anomalies.count}"
 puts "  - Schedules: #{Schedule.count}"
-puts "    * Scheduled: #{Schedule.scheduled.count}"
-puts "    * Completed: #{Schedule.completed.count}"
-puts "    * Missed: #{Schedule.missed.count}"
-puts "    * Cancelled: #{Schedule.cancelled.count}"
-
-puts "\n🔐 Default credentials for testing:"
-puts "  Admin: admin@madyproclean.fr / password123"
-puts "  Manager: manager1@madyproclean.fr / password123"
-puts "  Agent: agent1@madyproclean.fr / password123"
+puts "  - Absences: #{Absence.count}"
+puts "  - Anomaly Logs: #{AnomalyLog.count}"
+puts "  - Reports: #{Report.count}"
+puts ''
+puts '🔑 Login Credentials:'
+puts '  All users have password: pw54321'
+puts ''
+puts '  Admin:'
+puts '    Email: admin@madyproclean.com'
+puts ''
+puts '  Managers:'
+puts '    Email: manager1@madyproclean.com (Marie Dubois)'
+puts '    Email: manager2@madyproclean.com (Pierre Martin)'
+puts ''
+puts '  Agents:'
+puts '    Email: agent1@madyproclean.com (Sophie Laurent - managed by Marie)'
+puts '    Email: agent2@madyproclean.com (Lucas Bernard - managed by Marie)'
+puts '    Email: agent3@madyproclean.com (Emma Petit - managed by Pierre)'
+puts ''
