@@ -1,0 +1,112 @@
+<% content_for :page_title, "Code QR - #{@site.name}" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Code QR pour le Site</h1>
+      <p class="text-large mt-2"><%= @site.name %> - <%= @site.code %></p>
+    </div>
+    <div class="button-group">
+      <%= link_to admin_site_path(@site), class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Retour aux détails
+      <% end %>
+      <button onclick="window.print()" class="btn-primary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+        </svg>
+        Imprimer
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- QR Code Display -->
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+  <div class="text-center">
+    <h2 class="mb-6" style="font-size: 2rem;">Code QR de Pointage</h2>
+    
+    <!-- Site Information -->
+    <div class="mb-6">
+      <p class="text-large font-semibold" style="font-size: 1.5rem;"><%= @site.name %></p>
+      <p class="opacity-70 mt-2">Code: <span class="badge" style="font-size: 1.1rem;"><%= @site.code %></span></p>
+      <% if @site.address.present? %>
+        <p class="opacity-70 mt-2"><%= @site.address %></p>
+      <% end %>
+    </div>
+
+    <div class="divider"></div>
+
+    <%= render 'shared/sites/qr_code_display', site: @site, style: 'admin' %>
+
+    <div class="divider"></div>
+
+    <!-- Action Buttons -->
+    <div class="button-group" style="justify-content: center;">
+      <button onclick="window.print()" class="btn-primary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+        </svg>
+        Imprimer le Code QR
+      </button>
+      <%= link_to admin_site_path(@site), class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Retour
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Print-specific styles -->
+<style media="print">
+  .glass-card:first-child,
+  .divider,
+  .btn-secondary,
+  .btn-primary,
+  .button-group,
+  nav,
+  header {
+    display: none !important;
+  }
+  
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #ddd;
+    page-break-inside: avoid;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  * {
+    color: black !important;
+  }
+  
+  h1, h2, h3, h4, h5, h6, p, span, div, li, strong {
+    color: black !important;
+  }
+  
+  .badge, .badge-success, .badge-warning {
+    color: black !important;
+    background: white !important;
+    border: 1px solid #000 !important;
+  }
+  
+  .alert {
+    background: white !important;
+    border: 1px solid #000 !important;
+  }
+  
+  @page {
+    margin: 2cm;
+  }
+</style>

@@ -1,0 +1,118 @@
+<% content_for :title, "Code QR - #{@site.name}" %>
+
+<!-- Breadcrumb -->
+<div style="margin-bottom: 1.5rem;">
+  <%= link_to manager_site_path(@site), style: "color: var(--cyan-electric); text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;" do %>
+    <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+    </svg>
+    <span>Retour aux détails</span>
+  <% end %>
+</div>
+
+<!-- Page Header -->
+<div class="card">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h1 style="font-size: 2.25rem; font-weight: 700; background: linear-gradient(135deg, #00D4FF, #00FFE0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0.5rem;">
+        Code QR pour le Site
+      </h1>
+      <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.125rem;">
+        <%= @site.name %> - <%= @site.code %>
+      </p>
+    </div>
+    <div>
+      <button onclick="window.print()" class="btn-primary">
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+        </svg>
+        <span>Imprimer</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- QR Code Display -->
+<div class="glass-card" style="max-width: 800px; margin: 0 auto; text-align: center;">
+  <h2 style="font-size: 2rem; margin-bottom: 2rem; background: linear-gradient(135deg, #00D4FF, #00FFE0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+    Code QR de Pointage
+  </h2>
+  
+  <!-- Site Information -->
+  <div style="margin-bottom: 2rem;">
+    <p style="font-size: 1.5rem; font-weight: 600; color: rgba(255, 255, 255, 0.9); margin-bottom: 0.5rem;">
+      <%= @site.name %>
+    </p>
+    <p style="color: rgba(255, 255, 255, 0.7); margin-top: 0.5rem;">
+      Code: <span class="badge"><%= @site.code %></span>
+    </p>
+    <% if @site.address.present? %>
+      <p style="color: rgba(255, 255, 255, 0.7); margin-top: 0.5rem;">
+        <%= @site.address %>
+      </p>
+    <% end %>
+  </div>
+
+  <%= render 'shared/sites/qr_code_display', site: @site, style: 'manager' %>
+
+  <!-- Action Buttons -->
+  <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
+    <button onclick="window.print()" class="btn-primary">
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+      </svg>
+      <span>Imprimer le Code QR</span>
+    </button>
+    <%= link_to manager_site_path(@site), class: "btn-secondary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+      </svg>
+      <span>Retour</span>
+    <% end %>
+  </div>
+</div>
+
+<!-- Print-specific styles -->
+<style media="print">
+  .card:first-child,
+  .btn-secondary,
+  .btn-primary,
+  nav,
+  header,
+  .breadcrumb {
+    display: none !important;
+  }
+  
+  .glass-card,
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+    page-break-inside: avoid;
+    background: white !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  * {
+    color: black !important;
+    background: white !important;
+  }
+  
+  h1, h2, h3, h4, h5, h6, p, span, div, li, strong {
+    color: black !important;
+    -webkit-text-fill-color: black !important;
+  }
+  
+  .badge, .badge-success, .badge-warning {
+    color: black !important;
+    background: white !important;
+    border: 1px solid #000 !important;
+  }
+  
+  @page {
+    margin: 2cm;
+  }
+</style>

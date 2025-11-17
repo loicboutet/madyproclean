@@ -1,4 +1,7 @@
 <% content_for :title, "Tableau de Bord Manager" %>
+<% content_for :head do %>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<% end %>
 
 <!-- Welcome Card -->
 <div class="card">
@@ -15,7 +18,7 @@
       </svg>
     </div>
     <div class="stat-card-content">
-      <div class="stat-value">12</div>
+      <div class="stat-value"><%= @team_count %></div>
       <div class="stat-label">Membres Équipe</div>
     </div>
   </div>
@@ -27,7 +30,7 @@
       </svg>
     </div>
     <div class="stat-card-content">
-      <div class="stat-value">10</div>
+      <div class="stat-value"><%= @active_today_count %></div>
       <div class="stat-label">Actifs Aujourd'hui</div>
     </div>
   </div>
@@ -39,7 +42,7 @@
       </svg>
     </div>
     <div class="stat-card-content">
-      <div class="stat-value">2</div>
+      <div class="stat-value"><%= @absences_count %></div>
       <div class="stat-label">Absences En Cours</div>
     </div>
   </div>
@@ -52,7 +55,7 @@
       </svg>
     </div>
     <div class="stat-card-content">
-      <div class="stat-value">5</div>
+      <div class="stat-value"><%= @sites_count %></div>
       <div class="stat-label">Sites Couverts</div>
     </div>
   </div>
@@ -93,7 +96,7 @@
 </div>
 
 <!-- Charts Section -->
-<div class="charts-grid" style="margin-top: 2rem;">
+<div class="charts-grid" style="margin-top: 2rem;" data-controller="manager-charts" data-manager-charts-data-value="<%= @chart_data.to_json %>">
   <!-- Team Activity Chart -->
   <div class="glass-card">
     <h3>Activité de l'Équipe (7 Derniers Jours)</h3>
@@ -138,41 +141,32 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Pierre Dubois</td>
-            <td>Site Nucléaire A</td>
-            <td>07:45</td>
-            <td>16:30</td>
-            <td><span class="badge-success">Complet</span></td>
-          </tr>
-          <tr>
-            <td>Marie Lefebvre</td>
-            <td>Site Nucléaire B</td>
-            <td>08:00</td>
-            <td>17:00</td>
-            <td><span class="badge-success">Complet</span></td>
-          </tr>
-          <tr>
-            <td>François Martin</td>
-            <td>Site Nucléaire A</td>
-            <td>08:15</td>
-            <td>--</td>
-            <td><span class="badge">En cours</span></td>
-          </tr>
-          <tr>
-            <td>Sophie Rousseau</td>
-            <td>Site Nucléaire C</td>
-            <td>07:30</td>
-            <td>--</td>
-            <td><span class="badge">En cours</span></td>
-          </tr>
-          <tr>
-            <td>Thomas Bernard</td>
-            <td>Site Nucléaire B</td>
-            <td>08:00</td>
-            <td>16:45</td>
-            <td><span class="badge-success">Complet</span></td>
-          </tr>
+          <% if @recent_time_entries.any? %>
+            <% @recent_time_entries.each do |entry| %>
+              <tr>
+                <td><%= entry.user.full_name %></td>
+                <td><%= entry.site.name %></td>
+                <td><%= entry.clocked_in_at&.strftime('%d/%m/%Y %H:%M') %></td>
+                <td><%= entry.clocked_out_at&.strftime('%d/%m/%Y %H:%M') %></td>
+                <td>
+                  <% case entry.status %>
+                  <% when 'completed' %>
+                    <span class="badge-success">Complet</span>
+                  <% when 'active' %>
+                    <span class="badge">En cours</span>
+                  <% when 'anomaly' %>
+                    <span class="badge-warning">Anomalie</span>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr>
+              <td colspan="5" style="text-align: center; color: rgba(255, 255, 255, 0.6);">
+                Aucun pointage récent pour votre équipe
+              </td>
+            </tr>
+          <% end %>
         </tbody>
       </table>
     </div>
@@ -203,38 +197,24 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Antoine Durand</td>
-            <td><span class="badge-success">Congés</span></td>
-            <td>08/11/2025</td>
-            <td>15/11/2025</td>
-            <td>8 jours</td>
-            <td>Vacances familiales</td>
-          </tr>
-          <tr>
-            <td>Émilie Laurent</td>
-            <td><span class="badge-warning">Maladie</span></td>
-            <td>07/11/2025</td>
-            <td>09/11/2025</td>
-            <td>3 jours</td>
-            <td>Arrêt maladie</td>
-          </tr>
-          <tr>
-            <td>Nicolas Simon</td>
-            <td><span class="badge">Formation</span></td>
-            <td>10/11/2025</td>
-            <td>12/11/2025</td>
-            <td>3 jours</td>
-            <td>Formation sécurité nucléaire</td>
-          </tr>
-          <tr>
-            <td>Valérie Michel</td>
-            <td><span class="badge-success">Congés</span></td>
-            <td>18/11/2025</td>
-            <td>22/11/2025</td>
-            <td>5 jours</td>
-            <td>Congés annuels</td>
-          </tr>
+          <% if @upcoming_absences.any? %>
+            <% @upcoming_absences.each do |absence| %>
+              <tr>
+                <td><%= absence.user.full_name %></td>
+                <td><span class="<%= absence.type_badge_class %>"><%= absence.type_label %></span></td>
+                <td><%= l(absence.start_date, format: :short) %></td>
+                <td><%= l(absence.end_date, format: :short) %></td>
+                <td><%= absence.duration_days %> <%= absence.duration_days == 1 ? 'jour' : 'jours' %></td>
+                <td><%= absence.reason || '-' %></td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr>
+              <td colspan="6" style="text-align: center; color: rgba(255, 255, 255, 0.6);">
+                Aucune absence à venir pour votre équipe
+              </td>
+            </tr>
+          <% end %>
         </tbody>
       </table>
     </div>
@@ -264,62 +244,34 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>07/11/2025</td>
-            <td>Pierre Dubois</td>
-            <td>Site Nucléaire A</td>
-            <td>08:00 - 17:00</td>
-            <td><span class="badge-success">Complété</span></td>
-          </tr>
-          <tr>
-            <td>07/11/2025</td>
-            <td>Marie Lefebvre</td>
-            <td>Site Nucléaire B</td>
-            <td>08:00 - 17:00</td>
-            <td><span class="badge-success">Complété</span></td>
-          </tr>
-          <tr>
-            <td>07/11/2025</td>
-            <td>François Martin</td>
-            <td>Site Nucléaire A</td>
-            <td>08:00 - 17:00</td>
-            <td><span class="badge">En cours</span></td>
-          </tr>
-          <tr>
-            <td>08/11/2025</td>
-            <td>Sophie Rousseau</td>
-            <td>Site Nucléaire C</td>
-            <td>07:30 - 16:30</td>
-            <td><span class="badge">Planifié</span></td>
-          </tr>
-          <tr>
-            <td>08/11/2025</td>
-            <td>Thomas Bernard</td>
-            <td>Site Nucléaire B</td>
-            <td>08:00 - 17:00</td>
-            <td><span class="badge">Planifié</span></td>
-          </tr>
-          <tr>
-            <td>08/11/2025</td>
-            <td>Claire Petit</td>
-            <td>Site Nucléaire A</td>
-            <td>08:30 - 17:30</td>
-            <td><span class="badge">Planifié</span></td>
-          </tr>
-          <tr>
-            <td>09/11/2025</td>
-            <td>Julien Moreau</td>
-            <td>Site Nucléaire D</td>
-            <td>07:00 - 16:00</td>
-            <td><span class="badge">Planifié</span></td>
-          </tr>
-          <tr>
-            <td>09/11/2025</td>
-            <td>Isabelle Dupont</td>
-            <td>Site Nucléaire C</td>
-            <td>08:00 - 17:00</td>
-            <td><span class="badge">Planifié</span></td>
-          </tr>
+          <% if @upcoming_schedules.any? %>
+            <% @upcoming_schedules.each do |schedule| %>
+              <tr>
+                <td><%= l(schedule.scheduled_date, format: :short) %></td>
+                <td><%= schedule.user.full_name %></td>
+                <td><%= schedule.site.name %></td>
+                <td><%= schedule.start_time.strftime('%H:%M') %> - <%= schedule.end_time.strftime('%H:%M') %></td>
+                <td>
+                  <% case schedule.status %>
+                  <% when 'completed' %>
+                    <span class="badge-success">Complété</span>
+                  <% when 'scheduled' %>
+                    <span class="badge">Planifié</span>
+                  <% when 'missed' %>
+                    <span class="badge-warning">Manqué</span>
+                  <% when 'cancelled' %>
+                    <span class="badge-danger">Annulé</span>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          <% else %>
+            <tr>
+              <td colspan="5" style="text-align: center; color: rgba(255, 255, 255, 0.6);">
+                Aucun planning à venir pour votre équipe
+              </td>
+            </tr>
+          <% end %>
         </tbody>
       </table>
     </div>
@@ -328,143 +280,53 @@
   <!-- Site Coverage -->
   <div class="glass-card">
     <h3>Couverture des Sites</h3>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
-      <div class="card" style="background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); padding: 1.5rem;">
-        <h4 style="margin-bottom: 0.75rem; color: #00D4FF;">Site Nucléaire A</h4>
-        <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem;">
-          <span style="font-size: 2rem; font-weight: 700; color: #00FFE0;">3</span>
-          <span style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.7);">agents actifs</span>
-        </div>
-        <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6); margin: 0;">Planning complet</p>
+    <% if @sites_coverage.any? %>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+        <% @sites_coverage.each do |site| %>
+          <% agent_count = site.agents_count.to_i %>
+          <% 
+            # Determine styling based on agent count
+            if agent_count == 0
+              bg_color = "rgba(255, 193, 7, 0.1)"
+              border_color = "rgba(255, 193, 7, 0.3)"
+              title_color = "#ffc107"
+              count_color = "#ffc107"
+              status_text = "Besoin remplacement"
+            elsif agent_count == 1
+              bg_color = "rgba(0, 212, 255, 0.1)"
+              border_color = "rgba(0, 212, 255, 0.3)"
+              title_color = "#00D4FF"
+              count_color = "#00FFE0"
+              status_text = "Couverture minimale"
+            elsif agent_count >= 3
+              bg_color = "rgba(0, 212, 255, 0.1)"
+              border_color = "rgba(0, 212, 255, 0.3)"
+              title_color = "#00D4FF"
+              count_color = "#00FFE0"
+              status_text = "Planning complet"
+            else
+              bg_color = "rgba(0, 212, 255, 0.1)"
+              border_color = "rgba(0, 212, 255, 0.3)"
+              title_color = "#00D4FF"
+              count_color = "#00FFE0"
+              status_text = "Couverture normale"
+            end
+          %>
+          <div class="card" style="background: <%= bg_color %>; border: 1px solid <%= border_color %>; padding: 1.5rem;">
+            <h4 style="margin-bottom: 0.75rem; color: <%= title_color %>;"><%= site.name %></h4>
+            <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem;">
+              <span style="font-size: 2rem; font-weight: 700; color: <%= count_color %>;"><%= agent_count %></span>
+              <span style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.7);"><%= agent_count == 1 ? 'agent actif' : 'agents actifs' %></span>
+            </div>
+            <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6); margin: 0;"><%= status_text %></p>
+          </div>
+        <% end %>
       </div>
-      
-      <div class="card" style="background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); padding: 1.5rem;">
-        <h4 style="margin-bottom: 0.75rem; color: #00D4FF;">Site Nucléaire B</h4>
-        <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem;">
-          <span style="font-size: 2rem; font-weight: 700; color: #00FFE0;">2</span>
-          <span style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.7);">agents actifs</span>
-        </div>
-        <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6); margin: 0;">Couverture normale</p>
-      </div>
-      
-      <div class="card" style="background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); padding: 1.5rem;">
-        <h4 style="margin-bottom: 0.75rem; color: #00D4FF;">Site Nucléaire C</h4>
-        <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem;">
-          <span style="font-size: 2rem; font-weight: 700; color: #00FFE0;">2</span>
-          <span style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.7);">agents actifs</span>
-        </div>
-        <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6); margin: 0;">Couverture normale</p>
-      </div>
-      
-      <div class="card" style="background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); padding: 1.5rem;">
-        <h4 style="margin-bottom: 0.75rem; color: #00D4FF;">Site Nucléaire D</h4>
-        <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem;">
-          <span style="font-size: 2rem; font-weight: 700; color: #00FFE0;">1</span>
-          <span style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.7);">agent actif</span>
-        </div>
-        <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6); margin: 0;">Couverture minimale</p>
-      </div>
-      
-      <div class="card" style="background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); padding: 1.5rem;">
-        <h4 style="margin-bottom: 0.75rem; color: #ffc107;">Site Nucléaire E</h4>
-        <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem;">
-          <span style="font-size: 2rem; font-weight: 700; color: #ffc107;">0</span>
-          <span style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.7);">agent actif</span>
-        </div>
-        <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.6); margin: 0;">Besoin remplacement</p>
-      </div>
-    </div>
+    <% else %>
+      <p style="text-align: center; color: rgba(255, 255, 255, 0.6); margin-top: 1rem;">
+        Aucun site actuellement couvert par votre équipe
+      </p>
+    <% end %>
   </div>
 
 </div>
-
-<!-- Chart.js Library and Initialization -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Common chart options
-    const commonOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          labels: {
-            color: '#FFFFFF',
-            font: { size: 12 }
-          }
-        }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          grid: { color: 'rgba(0, 212, 255, 0.1)' },
-          ticks: { color: '#FFFFFF' }
-        },
-        x: {
-          grid: { color: 'rgba(0, 212, 255, 0.1)' },
-          ticks: { color: '#FFFFFF' }
-        }
-      }
-    };
-
-    // Team Activity Chart (Bar Chart)
-    new Chart(document.getElementById('teamActivityChart'), {
-      type: 'bar',
-      data: {
-        labels: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'],
-        datasets: [
-          {
-            label: 'Agents Actifs',
-            data: [10, 12, 11, 10, 9, 5, 0],
-            backgroundColor: 'rgba(0, 212, 255, 0.6)',
-            borderColor: 'rgba(0, 212, 255, 1)',
-            borderWidth: 2
-          },
-          {
-            label: 'Heures Travaillées',
-            data: [85, 102, 95, 87, 78, 42, 0],
-            backgroundColor: 'rgba(0, 255, 224, 0.6)',
-            borderColor: 'rgba(0, 255, 224, 1)',
-            borderWidth: 2
-          }
-        ]
-      },
-      options: commonOptions
-    });
-
-    // Absences Trend Chart (Line Chart)
-    new Chart(document.getElementById('absencesTrendChart'), {
-      type: 'line',
-      data: {
-        labels: ['Oct', 'Sem 1 Nov', 'Sem 2 Nov', 'Sem 3 Nov', 'Sem 4 Nov', 'Sem 5 Nov'],
-        datasets: [
-          {
-            label: 'Congés',
-            data: [1, 2, 3, 2, 1, 2],
-            borderColor: 'rgba(0, 255, 224, 1)',
-            backgroundColor: 'rgba(0, 255, 224, 0.1)',
-            tension: 0.4,
-            fill: true
-          },
-          {
-            label: 'Maladie',
-            data: [0, 1, 1, 0, 2, 1],
-            borderColor: 'rgba(255, 193, 7, 1)',
-            backgroundColor: 'rgba(255, 193, 7, 0.1)',
-            tension: 0.4,
-            fill: true
-          },
-          {
-            label: 'Formation',
-            data: [2, 0, 1, 1, 0, 1],
-            borderColor: 'rgba(0, 212, 255, 1)',
-            backgroundColor: 'rgba(0, 212, 255, 0.1)',
-            tension: 0.4,
-            fill: true
-          }
-        ]
-      },
-      options: commonOptions
-    });
-  });
-</script>

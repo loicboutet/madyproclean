@@ -1,0 +1,82 @@
+<!-- Filters Section -->
+<div class="alert alert-info mb-6">
+  <strong>Filtres de Recherche:</strong> Utilisez les filtres ci-dessous pour affiner la liste des <%= local_assigns[:label_type] || 'horaires' %>
+</div>
+
+<form>
+  <div class="form-grid">
+    <div class="form-group">
+      <label for="search">Rechercher</label>
+      <input 
+        type="text" 
+        name="search" 
+        id="search" 
+        placeholder="<%= local_assigns[:search_placeholder] || 'Agent, site, notes...' %>"
+        value="<%= params[:search] %>">
+    </div>
+
+    <div class="form-group">
+      <label for="status">Statut</label>
+      <select name="status" id="status">
+        <option value="">Tous les statuts</option>
+        <option value="scheduled" <%= 'selected' if params[:status] == 'scheduled' %>>Planifiés</option>
+        <option value="completed" <%= 'selected' if params[:status] == 'completed' %>>Complétés</option>
+        <option value="missed" <%= 'selected' if params[:status] == 'missed' %>>Manqués</option>
+        <option value="cancelled" <%= 'selected' if params[:status] == 'cancelled' %>>Annulés</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="site_id">Site</label>
+      <select name="site_id" id="site_id">
+        <option value="">Tous les sites</option>
+        <% @demo_sites.each do |site| %>
+          <option value="<%= site[:id] %>" <%= 'selected' if params[:site_id] == site[:id].to_s %>><%= site[:name] %></option>
+        <% end %>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="user_id">Agent</label>
+      <select name="user_id" id="user_id">
+        <option value="">Tous les agents</option>
+        <% @demo_users.each do |user| %>
+          <option value="<%= user[:id] %>" <%= 'selected' if params[:user_id] == user[:id].to_s %>><%= user[:name] %></option>
+        <% end %>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="start_date">Date de début</label>
+      <input 
+        type="date" 
+        name="start_date" 
+        id="start_date" 
+        value="<%= params[:start_date] %>">
+    </div>
+
+    <div class="form-group">
+      <label for="end_date">Date de fin</label>
+      <input 
+        type="date" 
+        name="end_date" 
+        id="end_date" 
+        value="<%= params[:end_date] %>">
+    </div>
+  </div>
+
+  <div class="button-group">
+    <button type="submit" class="btn-primary">
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+      </svg>
+      Appliquer les filtres
+    </button>
+    <a href="<%= local_assigns[:reset_path] %>" class="btn-secondary">
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+      </svg>
+      Réinitialiser
+    </a>
+  </div>
+</form>

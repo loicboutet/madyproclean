@@ -1,0 +1,146 @@
+<div class="hidden" data-modal-target="container">
+  <!-- Backdrop -->
+  <div 
+    class="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300"
+    data-modal-target="backdrop"
+    data-action="click->modal#closeOnBackdrop"
+  ></div>
+  
+  <!-- Modal Container -->
+  <div class="fixed inset-0 z-50 overflow-y-auto">
+    <div class="flex min-h-full items-center justify-center p-4">
+      <div class="w-full max-w-3xl transform transition-all duration-300 scale-95 opacity-0" style="margin: 2rem auto; background: rgba(15, 52, 96, 0.8); backdrop-filter: blur(10px); border-radius: 1rem; padding: 2rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); color: white;">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="gradient-heading" style="font-size: 1.875rem;">Générer un Nouveau Rapport</h2>
+            <p class="text-large mt-2">Remplissez les informations pour créer votre rapport</p>
+          </div>
+          <button 
+            data-action="click->modal#close"
+            class="text-gray-400 hover:text-gray-600 transition-colors"
+            title="Fermer"
+          >
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Report Generation Form -->
+        <%= form_with url: admin_generate_monthly_reports_path, method: :post, local: true do |f| %>
+          <div class="form-grid">
+            <!-- Titre -->
+            <div class="form-group" style="grid-column: 1 / -1;">
+              <label for="title">Titre <span class="text-red-500">*</span></label>
+              <%= text_field_tag :title, "Rapport #{Date.current.strftime('%B %Y')}", required: true, class: 'form-control', placeholder: 'Ex: Rapport Mensuel Janvier 2025' %>
+            </div>
+
+            <!-- Type de Rapport -->
+            <div class="form-group">
+              <label for="report_type">Type de Rapport <span class="text-red-500">*</span></label>
+              <%= select_tag :report_type, 
+                  options_for_select([
+                    ['RH / Absences', 'hr'],
+                    ['Temps Travaillé', 'time_tracking'],
+                    ['Anomalies', 'anomalies'],
+                    ['Planification', 'scheduling'],
+                    ['Export Paie', 'payroll_export'],
+                    ['Performance Sites', 'site_performance'],
+                    ['Performance Agents', 'agent_performance']
+                  ], 'time_tracking'),
+                  required: true,
+                  class: 'form-control'
+              %>
+            </div>
+
+            <!-- Period Type -->
+            <div class="form-group">
+              <label for="period_type">Période <span class="text-red-500">*</span></label>
+              <%= select_tag :period_type, 
+                  options_for_select([
+                    ['Mensuel', 'monthly'],
+                    ['Hebdomadaire', 'weekly'],
+                    ['Trimestriel', 'quarterly'],
+                    ['Annuel', 'yearly'],
+                    ['Personnalisé', 'custom']
+                  ], 'monthly'),
+                  required: true,
+                  class: 'form-control'
+              %>
+            </div>
+
+            <!-- Format -->
+            <div class="form-group">
+              <label for="format">Format d'Export <span class="text-red-500">*</span></label>
+              <%= select_tag :format,
+                  options_for_select([
+                    ['CSV (Excel compatible)', 'csv'],
+                    ['Excel (.xlsx)', 'xlsx'],
+                    ['PDF', 'pdf']
+                  ], 'csv'),
+                  required: true,
+                  class: 'form-control'
+              %>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Période Section -->
+          <h3 class="font-semibold mb-4" style="font-size: 1.25rem;">Période du Rapport</h3>
+          <div class="form-grid">
+            <!-- Month Selection -->
+            <div class="form-group">
+              <label for="month">Mois <span class="text-red-500">*</span></label>
+              <%= select_tag :month, 
+                  options_for_select([
+                    ['Janvier', 1], ['Février', 2], ['Mars', 3], ['Avril', 4],
+                    ['Mai', 5], ['Juin', 6], ['Juillet', 7], ['Août', 8],
+                    ['Septembre', 9], ['Octobre', 10], ['Novembre', 11], ['Décembre', 12]
+                  ], Date.current.month),
+                  required: true,
+                  class: 'form-control'
+              %>
+            </div>
+
+            <!-- Year Selection -->
+            <div class="form-group">
+              <label for="year">Année <span class="text-red-500">*</span></label>
+              <%= select_tag :year,
+                  options_for_select((Date.current.year - 2..Date.current.year + 1).to_a.reverse, Date.current.year),
+                  required: true,
+                  class: 'form-control'
+              %>
+            </div>
+
+            <!-- Agent Filter -->
+            <div class="form-group">
+              <label for="user_id">Filtrer par Agent (optionnel)</label>
+              <%= select_tag :user_id,
+                  options_for_select([['Tous les agents', '']] + User.agents.active.order(:last_name, :first_name).map { |u| [u.full_name, u.id] }),
+                  class: 'form-control'
+              %>
+            </div>
+          </div>
+
+          <!-- Description (Optional) -->
+          <div class="form-group">
+            <label for="description">Description (optionnel)</label>
+            <%= text_area_tag :description, nil, rows: 3, class: 'form-control', placeholder: 'Ajoutez une description ou des notes pour ce rapport...' %>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Form Actions -->
+          <div class="button-group">
+            <%= submit_tag 'Générer le Rapport', class: 'btn-primary' %>
+            <button type="button" class="btn-secondary" data-action="click->modal#close">
+              Annuler
+            </button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

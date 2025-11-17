@@ -1,0 +1,29 @@
+<% content_for :page_title, "Modifier Pointage ##{@time_entry.id}" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Modifier Pointage #<%= @time_entry.id %></h1>
+      <p class="text-large mt-2">Corrigez les informations du pointage</p>
+    </div>
+    <div class="button-group">
+      <%= link_to manager_time_entry_path(@time_entry.id), class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Retour aux détails
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<%= render 'shared/time_entries/edit_form', 
+  time_entry: @time_entry, 
+  users: @users, 
+  sites: @sites, 
+  form_url: manager_time_entry_path(@time_entry.id),
+  back_url: manager_time_entry_path(@time_entry.id),
+  namespace: 'manager' %>

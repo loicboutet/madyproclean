@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Mes Pointages - Mady ProClean" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="agent-layout" style="background: linear-gradient(180deg, #1a1a2e 0%, #0f3460 100%); min-height: 100vh; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;">
+    <!-- Main Wrapper -->
+    <div style="display: flex; flex-direction: column; min-height: 100vh;">
+      <!-- Minimal Header -->
+      <header style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 212, 255, 0.2); position: sticky; top: 0; z-index: 50;">
+        <div style="max-width: 1200px; width: 100%; margin: 0 auto; padding: 1rem clamp(1rem, 4vw, 2rem);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <!-- Logo Section -->
+            <div style="display: flex; align-items: center; gap: clamp(0.5rem, 2vw, 1rem);">
+              <%= link_to agent_root_path do %>
+                <%= image_tag "logo_square.png", alt: "Mady ProClean", style: "width: clamp(32px, 8vw, 40px); height: clamp(32px, 8vw, 40px); border-radius: 0.5rem; box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);" %>
+              <% end %>
+              <div>
+                <h1 style="font-size: clamp(1rem, 3vw, 1.25rem); font-weight: 600; color: #FFFFFF; margin: 0;">Mes Pointages</h1>
+                <p style="font-size: clamp(0.6875rem, 1.5vw, 0.75rem); color: rgba(255, 255, 255, 0.5); margin: 0;"><%= current_user.full_name %></p>
+              </div>
+            </div>
+            
+            <!-- Profile Dropdown -->
+            <%= render 'shared/profile_dropdown' %>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main style="flex: 1; padding: clamp(1rem, 3vw, 2rem); overflow-y: auto; max-width: 1200px; width: 100%; margin: 0 auto;">
+        <% if notice %>
+          <div style="background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 0.5rem; padding: 1rem; margin-bottom: 1.5rem; color: #00D4FF;">
+            <%= notice %>
+          </div>
+        <% end %>
+        
+        <% if alert %>
+          <div style="background: rgba(255, 107, 107, 0.1); border: 1px solid rgba(255, 107, 107, 0.3); border-radius: 0.5rem; padding: 1rem; margin-bottom: 1.5rem; color: #ff6b6b;">
+            <%= alert %>
+          </div>
+        <% end %>
+        
+        <%= yield %>
+      </main>
+
+      <!-- Footer -->
+      <footer style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-top: 1px solid rgba(0, 212, 255, 0.2); padding: 1rem clamp(1rem, 4vw, 2rem); text-align: center;">
+        <p style="font-size: clamp(0.75rem, 1.5vw, 0.875rem); color: rgba(255, 255, 255, 0.5); margin: 0;">
+          © <%= Time.current.year %> Mady ProClean
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>

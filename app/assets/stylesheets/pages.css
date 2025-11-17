@@ -963,6 +963,25 @@ tr:hover {
     flex-shrink: 0;
 }
 
+/* Navigation Dropdown Menu */
+.nav-dropdown-menu {
+    position: absolute;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.nav-dropdown-menu.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+}
+
+.nav-dropdown-menu.hidden {
+    display: none;
+}
+
 /* Responsive Admin Layout */
 @media (max-width: 1024px) {
     .admin-sidebar {
@@ -1712,6 +1731,20 @@ input[type="radio"] {
     width: 1.125rem;
     height: 1.125rem;
     flex-shrink: 0;
+}
+
+/* Modal Styles */
+[data-modal-target="container"] {
+    pointer-events: none;
+}
+
+[data-modal-target="container"].active {
+    pointer-events: auto;
+}
+
+[data-modal-target="container"].active > div > div > div {
+    opacity: 1 !important;
+    transform: scale(1) !important;
 }
 
 /* Responsive Pagination */

@@ -1,0 +1,80 @@
+<%# Shared statistics cards for sites index page %>
+<%# Parameters:
+  - style: 'admin' or 'manager' for styling variations
+%>
+<% style ||= 'admin' %>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="<%= style == 'admin' ? 'stat-icon stat-icon-primary' : 'stat-card-icon' %>">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+    </div>
+    <div class="<%= style == 'admin' ? 'stat-content' : 'stat-card-content' %>">
+      <% if style == 'admin' %>
+        <p class="stat-label">Total Sites</p>
+        <p class="stat-value"><%= Site.count %></p>
+      <% else %>
+        <div class="stat-value"><%= Site.count %></div>
+        <div class="stat-label">Total Sites</div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="<%= style == 'admin' ? 'stat-icon stat-icon-success' : 'stat-card-icon' %>">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+    </div>
+    <div class="<%= style == 'admin' ? 'stat-content' : 'stat-card-content' %>">
+      <% if style == 'admin' %>
+        <p class="stat-label">Sites Actifs</p>
+        <p class="stat-value"><%= Site.active.count %></p>
+      <% else %>
+        <div class="stat-value"><%= Site.active.count %></div>
+        <div class="stat-label">Sites Actifs</div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="<%= style == 'admin' ? 'stat-icon stat-icon-warning' : 'stat-card-icon' %>">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+      </svg>
+    </div>
+    <div class="<%= style == 'admin' ? 'stat-content' : 'stat-card-content' %>">
+      <% if style == 'admin' %>
+        <p class="stat-label">Sites Inactifs</p>
+        <p class="stat-value"><%= Site.where(active: false).count %></p>
+      <% else %>
+        <div class="stat-value"><%= Site.where(active: false).count %></div>
+        <div class="stat-label">Sites Inactifs</div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="<%= style == 'admin' ? 'stat-icon stat-icon-info' : 'stat-card-icon' %>">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <% if style == 'admin' %>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2m5-7v2M7 4h10"/>
+        <% else %>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        <% end %>
+      </svg>
+    </div>
+    <div class="<%= style == 'admin' ? 'stat-content' : 'stat-card-content' %>">
+      <% if style == 'admin' %>
+        <p class="stat-label">Résultats</p>
+        <p class="stat-value"><%= @sites.total_count %></p>
+      <% else %>
+        <div class="stat-value"><%= @sites.total_count %></div>
+        <div class="stat-label">Résultats</div>
+      <% end %>
+    </div>
+  </div>
+</div>

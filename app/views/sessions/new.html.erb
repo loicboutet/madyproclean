@@ -23,8 +23,11 @@
     <div class="glass-card" style="max-width: 480px; margin: 0 auto;">
         <!-- Alert for errors (if any) -->
         <% if flash[:alert] %>
-            <div class="alert alert-info">
-                <%= flash[:alert] %>
+            <div class="alert-error">
+                <svg class="alert-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span><%= flash[:alert] %></span>
             </div>
         <% end %>
 
@@ -87,6 +90,39 @@
 </div>
 
 <style>
+/* Alert Error Styling */
+.alert-error {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    border-radius: 0.5rem;
+    color: #FCA5A5;
+    font-size: 0.875rem;
+    animation: slideDown 0.3s ease-out;
+}
+
+.alert-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+    stroke-width: 2;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Additional styles specific to login form */
 .login-form {
     margin-top: 1rem;

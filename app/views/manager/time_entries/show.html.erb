@@ -1,10 +1,10 @@
-<% content_for :page_title, "Détails du Pointage ##{@time_entry[:id]}" %>
+<% content_for :page_title, "Détails du Pointage ##{@time_entry.id}" %>
 
 <!-- Page Header -->
 <div class="glass-card">
   <div class="flex items-center justify-between mb-6">
     <div>
-      <h1 class="gradient-heading">Détails du Pointage #<%= @time_entry[:id] %></h1>
+      <h1 class="gradient-heading">Détails du Pointage #<%= @time_entry.id %></h1>
       <p class="text-large mt-2">Informations complètes de ce pointage</p>
     </div>
     <div class="button-group">
@@ -24,11 +24,11 @@
 <div class="card">
   <div class="flex items-center justify-between mb-6">
     <h2 style="font-size: 1.875rem;">Statut du Pointage</h2>
-    <% if @time_entry[:status] == 'active' %>
+    <% if @time_entry.status == 'active' %>
       <span class="badge-info" style="font-size: 1.125rem; padding: 0.75rem 1.5rem;">⚡ En cours</span>
-    <% elsif @time_entry[:status] == 'completed' %>
+    <% elsif @time_entry.status == 'completed' %>
       <span class="badge-success" style="font-size: 1.125rem; padding: 0.75rem 1.5rem;">✓ Complété</span>
-    <% elsif @time_entry[:status] == 'anomaly' %>
+    <% elsif @time_entry.status == 'anomaly' %>
       <span class="badge-warning" style="font-size: 1.125rem; padding: 0.75rem 1.5rem;">⚠ Anomalie</span>
     <% end %>
   </div>
@@ -42,8 +42,8 @@
       </div>
       <div class="stat-content">
         <p class="stat-label">Date du Pointage</p>
-        <p class="stat-value" style="font-size: 1.5rem;"><%= @time_entry[:clocked_in_at].strftime('%d/%m/%Y') %></p>
-        <p class="text-sm opacity-70 mt-1"><%= l(@time_entry[:clocked_in_at].to_date, format: '%A') %></p>
+        <p class="stat-value" style="font-size: 1.5rem;"><%= @time_entry.clocked_in_at.strftime('%d/%m/%Y') %></p>
+        <p class="text-sm opacity-70 mt-1"><%= l(@time_entry.clocked_in_at.to_date, format: '%A') %></p>
       </div>
     </div>
 
@@ -55,9 +55,9 @@
       </div>
       <div class="stat-content">
         <p class="stat-label">Durée de Travail</p>
-        <% if @time_entry[:duration_minutes] %>
-          <p class="stat-value" style="font-size: 1.5rem;"><%= (@time_entry[:duration_minutes] / 60.0).round(1) %> heures</p>
-          <p class="text-sm opacity-70 mt-1"><%= @time_entry[:duration_minutes] %> minutes</p>
+        <% if @time_entry.duration_minutes %>
+          <p class="stat-value" style="font-size: 1.5rem;"><%= (@time_entry.duration_minutes / 60.0).round(1) %> heures</p>
+          <p class="text-sm opacity-70 mt-1"><%= @time_entry.duration_minutes %> minutes</p>
         <% else %>
           <p class="stat-value" style="font-size: 1.5rem;">—</p>
           <p class="text-sm opacity-70 mt-1">En cours</p>
@@ -73,8 +73,8 @@
       </div>
       <div class="stat-content">
         <p class="stat-label">Agent</p>
-        <p class="stat-value" style="font-size: 1.25rem;"><%= @time_entry[:user_name] %></p>
-        <p class="text-sm opacity-70 mt-1"><%= @time_entry[:employee_number] %></p>
+        <p class="stat-value" style="font-size: 1.25rem;"><%= @time_entry.user.full_name %></p>
+        <p class="text-sm opacity-70 mt-1"><%= @time_entry.user.employee_number %></p>
       </div>
     </div>
 
@@ -87,8 +87,8 @@
       </div>
       <div class="stat-content">
         <p class="stat-label">Site de Travail</p>
-        <p class="stat-value" style="font-size: 1.25rem;"><%= @time_entry[:site_name] %></p>
-        <p class="text-sm opacity-70 mt-1"><span class="badge"><%= @time_entry[:site_code] %></span></p>
+        <p class="stat-value" style="font-size: 1.25rem;"><%= @time_entry.site.name %></p>
+        <p class="text-sm opacity-70 mt-1"><span class="badge"><%= @time_entry.site.code %></span></p>
       </div>
     </div>
   </div>
@@ -109,18 +109,18 @@
     <div class="form-group">
       <label>ID du Pointage</label>
       <div class="">
-        <p class="font-semibold text-lg">#<%= @time_entry[:id] %></p>
+        <p class="font-semibold text-lg">#<%= @time_entry.id %></p>
       </div>
     </div>
 
     <div class="form-group">
       <label>Statut</label>
       <div class="">
-        <% if @time_entry[:status] == 'active' %>
+        <% if @time_entry.status == 'active' %>
           <span class="badge-info">⚡ En cours</span>
-        <% elsif @time_entry[:status] == 'completed' %>
+        <% elsif @time_entry.status == 'completed' %>
           <span class="badge-success">✓ Complété</span>
-        <% elsif @time_entry[:status] == 'anomaly' %>
+        <% elsif @time_entry.status == 'anomaly' %>
           <span class="badge-warning">⚠ Anomalie</span>
         <% end %>
       </div>
@@ -129,23 +129,23 @@
     <div class="form-group">
       <label>Agent</label>
       <div class="">
-        <p class="font-semibold"><%= @time_entry[:user_name] %></p>
-        <p class="text-sm opacity-70"><%= @time_entry[:employee_number] %></p>
+        <p class="font-semibold"><%= @time_entry.user.full_name %></p>
+        <p class="text-sm opacity-70"><%= @time_entry.user.employee_number %></p>
       </div>
     </div>
 
     <div class="form-group">
       <label>Site</label>
       <div class="">
-        <p class="font-semibold"><%= @time_entry[:site_name] %></p>
-        <p class="text-sm opacity-70"><span class="badge"><%= @time_entry[:site_code] %></span></p>
+        <p class="font-semibold"><%= @time_entry.site.name %></p>
+        <p class="text-sm opacity-70"><span class="badge"><%= @time_entry.site.code %></span></p>
       </div>
     </div>
 
     <div class="form-group">
       <label>Heure d'Entrée (Pointage In)</label>
       <div class="">
-        <p class="font-semibold"><%= @time_entry[:clocked_in_at].strftime('%d/%m/%Y à %H:%M:%S') %></p>
+        <p class="font-semibold"><%= @time_entry.clocked_in_at.strftime('%d/%m/%Y à %H:%M:%S') %></p>
         <p class="text-sm opacity-70">Début de la journée de travail</p>
       </div>
     </div>
@@ -153,8 +153,8 @@
     <div class="form-group">
       <label>Heure de Sortie (Pointage Out)</label>
       <div class="">
-        <% if @time_entry[:clocked_out_at] %>
-          <p class="font-semibold"><%= @time_entry[:clocked_out_at].strftime('%d/%m/%Y à %H:%M:%S') %></p>
+        <% if @time_entry.clocked_out_at %>
+          <p class="font-semibold"><%= @time_entry.clocked_out_at.strftime('%d/%m/%Y à %H:%M:%S') %></p>
           <p class="text-sm opacity-70">Fin de la journée de travail</p>
         <% else %>
           <span class="badge-info">En cours - Pas encore pointé</span>
@@ -165,9 +165,9 @@
     <div class="form-group">
       <label>Durée Totale</label>
       <div class="">
-        <% if @time_entry[:duration_minutes] %>
-          <p class="font-semibold"><%= (@time_entry[:duration_minutes] / 60.0).round(1) %> heures</p>
-          <p class="text-sm opacity-70"><%= @time_entry[:duration_minutes] %> minutes de travail</p>
+        <% if @time_entry.duration_minutes %>
+          <p class="font-semibold"><%= (@time_entry.duration_minutes / 60.0).round(1) %> heures</p>
+          <p class="text-sm opacity-70"><%= @time_entry.duration_minutes %> minutes de travail</p>
         <% else %>
           <p class="text-sm opacity-70">Calcul en attente de pointage sortie</p>
         <% end %>
@@ -177,7 +177,7 @@
     <div class="form-group">
       <label>Date de Création</label>
       <div class="">
-        <p class="font-semibold"><%= @time_entry[:created_at].strftime('%d/%m/%Y à %H:%M') %></p>
+        <p class="font-semibold"><%= @time_entry.created_at.strftime('%d/%m/%Y à %H:%M') %></p>
       </div>
     </div>
   </div>
@@ -198,7 +198,7 @@
     <div class="form-group">
       <label>Adresse IP (Entrée)</label>
       <div class="">
-        <p class="font-semibold"><%= @time_entry[:ip_address_in] || 'Non disponible' %></p>
+        <p class="font-semibold"><%= @time_entry.ip_address_in || 'Non disponible' %></p>
         <p class="text-sm opacity-70">Adresse IP lors du pointage d'entrée</p>
       </div>
     </div>
@@ -206,8 +206,8 @@
     <div class="form-group">
       <label>Adresse IP (Sortie)</label>
       <div class="">
-        <% if @time_entry[:ip_address_out] %>
-          <p class="font-semibold"><%= @time_entry[:ip_address_out] %></p>
+        <% if @time_entry.ip_address_out %>
+          <p class="font-semibold"><%= @time_entry.ip_address_out %></p>
           <p class="text-sm opacity-70">Adresse IP lors du pointage de sortie</p>
         <% else %>
           <span class="text-sm opacity-50">En attente de pointage sortie</span>
@@ -218,7 +218,7 @@
     <div class="form-group">
       <label>Agent Utilisateur (Entrée)</label>
       <div class="">
-        <p class="text-sm font-mono"><%= @time_entry[:user_agent_in] || 'Non disponible' %></p>
+        <p class="text-sm font-mono"><%= @time_entry.user_agent_in || 'Non disponible' %></p>
         <p class="text-sm opacity-70">Appareil utilisé pour pointer l'entrée</p>
       </div>
     </div>
@@ -226,8 +226,8 @@
     <div class="form-group">
       <label>Agent Utilisateur (Sortie)</label>
       <div class="">
-        <% if @time_entry[:user_agent_out] %>
-          <p class="text-sm font-mono"><%= @time_entry[:user_agent_out] %></p>
+        <% if @time_entry.user_agent_out %>
+          <p class="text-sm font-mono"><%= @time_entry.user_agent_out %></p>
           <p class="text-sm opacity-70">Appareil utilisé pour pointer la sortie</p>
         <% else %>
           <span class="text-sm opacity-50">En attente de pointage sortie</span>
@@ -237,7 +237,7 @@
   </div>
 </div>
 
-<% if @time_entry[:manually_corrected] %>
+<% if @time_entry.manually_corrected %>
   <div class="divider"></div>
 
   <!-- Correction Information -->
@@ -257,7 +257,7 @@
       <div class="form-group">
         <label>Corrigé par</label>
         <div class="">
-          <p class="font-semibold"><%= @time_entry[:corrected_by_name] || 'Administrateur' %></p>
+          <p class="font-semibold"><%= @time_entry.corrected_by&.full_name || 'Administrateur' %></p>
           <p class="text-sm opacity-70">Administrateur ayant effectué la correction</p>
         </div>
       </div>
@@ -265,8 +265,8 @@
       <div class="form-group">
         <label>Date de Correction</label>
         <div class="">
-          <% if @time_entry[:corrected_at] %>
-            <p class="font-semibold"><%= @time_entry[:corrected_at].strftime('%d/%m/%Y à %H:%M') %></p>
+          <% if @time_entry.corrected_at %>
+            <p class="font-semibold"><%= @time_entry.corrected_at.strftime('%d/%m/%Y à %H:%M') %></p>
           <% else %>
             <span class="text-sm opacity-50">—</span>
           <% end %>
@@ -274,17 +274,17 @@
       </div>
     </div>
 
-    <% if @time_entry[:notes].present? %>
+    <% if @time_entry.notes.present? %>
       <div class="divider"></div>
       <div class="form-group">
         <label>Notes de Correction</label>
-        <div class="p-4 bg-orange-50 rounded-lg border border-orange-200">
-          <p class="text-base"><%= @time_entry[:notes] %></p>
+        <div class="p-4 rounded-lg border border-orange-200">
+          <p class="text-base"><%= @time_entry.notes %></p>
         </div>
       </div>
     <% end %>
   </div>
-<% elsif @time_entry[:notes].present? %>
+<% elsif @time_entry.notes.present? %>
   <div class="divider"></div>
 
   <!-- Notes -->
@@ -297,7 +297,7 @@
     </h2>
     
     <div class="p-4 rounded-lg border border-blue-200">
-      <p class="text-base"><%= @time_entry[:notes] %></p>
+      <p class="text-base"><%= @time_entry.notes %></p>
     </div>
   </div>
 <% end %>
@@ -309,10 +309,17 @@
   <h2 class="mb-4" style="font-size: 1.875rem;">Actions</h2>
   
   <div class="alert alert-info mb-6">
-    <strong>Information:</strong> En tant que manager, vous pouvez consulter les détails des pointages mais ne pouvez pas les modifier. Pour toute correction nécessaire, veuillez contacter un administrateur.
+    <strong>Information:</strong> En tant que manager, vous pouvez modifier manuellement les pointages si nécessaire. Toute modification sera enregistrée dans l'historique.
   </div>
   
   <div class="button-group">
+    <%= link_to edit_manager_time_entry_path(@time_entry), class: "btn-primary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+      </svg>
+      Modifier le Pointage
+    <% end %>
+    
     <%= link_to manager_time_entries_path, class: "btn-secondary" do %>
       <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>

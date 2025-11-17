@@ -1,6 +1,8 @@
 class Manager::ReplacementsController < ApplicationController
-  layout 'manager'
-  
+  before_action :authenticate_user!
+  before_action :authorize_manager!
+  layout 'user'
+
   def index
     # Demo data for available agents for replacement
     @demo_agents = [

@@ -1,0 +1,55 @@
+<% content_for :page_title, "Modifier l'Anomalie ##{@anomaly.id}" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Modifier l'Anomalie #<%= @anomaly.id %></h1>
+      <p class="text-large mt-2">Correction des informations de l'anomalie détectée</p>
+    </div>
+    <div class="button-group">
+      <%= link_to admin_anomaly_path(@anomaly), class: "btn-secondary" do %>
+        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        Retour aux détails
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Edit Form -->
+<%= render 'shared/anomalies/edit_form',
+  anomaly: @anomaly,
+  users: @users,
+  time_entries: @time_entries,
+  schedules: @schedules,
+  form_url: admin_anomaly_path(@anomaly),
+  back_url: admin_anomaly_path(@anomaly)
+%>
+
+<div class="divider"></div>
+
+<!-- Quick Links -->
+<div class="glass-card">
+  <h2 class="mb-4" style="font-size: 1.875rem;">Actions Rapides</h2>
+  
+  <div class="button-group">
+    <%= link_to admin_anomaly_path(@anomaly), class: "btn-secondary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+      </svg>
+      Voir l'Anomalie
+    <% end %>
+    
+    <%= link_to admin_anomalies_path, class: "btn-secondary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+      </svg>
+      Retour à la liste
+    <% end %>
+  </div>
+</div>

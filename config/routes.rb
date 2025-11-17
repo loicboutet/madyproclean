@@ -24,13 +24,25 @@ Rails.application.routes.draw do
   post 'login', to: 'sessions#create'
   delete 'logout', to: 'sessions#destroy'
   
-  # Agent Clock-in (separate domain constraint)
-  constraints subdomain: 'clock' do
-    get 'c/:qr_code_token', to: 'clock#show'
-    post 'c/:qr_code_token/in', to: 'clock#clock_in'
-    post 'c/:qr_code_token/out', to: 'clock#clock_out'
-    get 'clock/auth', to: 'clock#authenticate'
-    post 'clock/auth', to: 'clock#verify'
+  # Agent Clock-in routes
+  # Works with subdomain 'clock' in production, or directly in development/ngrok
+  clock_routes = lambda do
+    get 'c/:qr_code_token', to: 'clock#show', as: 'clock_show'
+    post 'c/:qr_code_token/in', to: 'clock#clock_in', as: 'clock_in'
+    post 'c/:qr_code_token/out', to: 'clock#clock_out', as: 'clock_out'
+    get 'clock/auth', to: 'clock#authenticate', as: 'clock_auth'
+    post 'clock/auth', to: 'clock#verify', as: 'clock_verify'
+  end
+  
+  # Apply routes with subdomain constraint in production
+  if Rails.env.production?
+    constraints subdomain: 'clock' do
+      clock_routes.call
+    end
+  else
+    # In development/test, apply routes without subdomain constraint
+    # This allows ngrok URLs to work directly
+    clock_routes.call
   end
   
   # Admin namespace
@@ -59,15 +71,28 @@ Rails.application.routes.draw do
     
     resources :absences
     
-    resources :anomalies, only: [:index, :show] do
+    resources :anomalies, only: [:index, :show, :edit, :update] do
       member do
         post 'resolve'
       end
     end
     
-    resources :reports, only: [:index, :show]
     get 'reports/monthly', to: 'reports#monthly', as: 'reports_monthly'
+    post 'reports/monthly/generate', to: 'reports#generate_monthly', as: 'generate_monthly_reports'
     get 'reports/hr', to: 'reports#hr', as: 'reports_hr'
+    get 'reports/time_tracking', to: 'reports#time_tracking', as: 'reports_time_tracking'
+    get 'reports/anomalies', to: 'reports#anomalies', as: 'reports_anomalies'
+    resources :reports, only: [:index, :show] do
+      member do
+        get 'download'
+      end
+    end
+  end
+  
+  # Agent namespace - Minimal interface for field agents
+  namespace :agent do
+    root 'time_entries#index'
+    resources :time_entries, only: [:index, :show]
   end
   
   # Manager namespace
@@ -75,20 +100,40 @@ Rails.application.routes.draw do
     root 'dashboard#index'
     get 'dashboard', to: 'dashboard#index'
     
-    resources :time_entries, only: [:index, :show]
+    resources :time_entries, only: [:index, :show, :edit, :update] do
+      get 'export', on: :collection
+    end
+    resources :sites, only: [:index, :show] do
+      member do
+        get 'qr_code'
+      end
+    end
     resources :schedules, only: [:index, :show]
     resources :absences
     resources :team, only: [:index, :show]
     
+    resources :anomalies, only: [:index, :show, :edit, :update] do
+      member do
+        post 'resolve'
+      end
+    end
+    
     get 'replacements', to: 'replacements#index'
     post 'replacements/assign', to: 'replacements#assign'
+    
+    # Reports
+    get 'reports/monthly', to: 'reports#monthly', as: 'reports_monthly'
+    post 'reports/monthly/generate', to: 'reports#generate_monthly', as: 'generate_monthly_reports'
+    resources :reports, only: [:index, :show] do
+      member do
+        get 'download'
+      end
+    end
   end
   
-  # Common dashboard
-  namespace :dashboard do
-    resource :profile, only: [:show, :edit, :update]
-    resource :password, only: [:edit, :update]
-  end
+  # Profile and Password (non-namespaced, role-based layouts)
+  resource :profile, only: [:show, :edit, :update]
+  resource :password, only: [:edit, :update]
   
   # Mockups routes (kept for reference)
   get 'mockups/index'

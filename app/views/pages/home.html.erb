@@ -3,15 +3,32 @@
 <div class="container home-container">
     <!-- Header -->
     <header class="header">
-        <div class="header-login">
-            <a href="/login" class="btn-primary">
-                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
-                </svg>
-                Connexion
-            </a>
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+            <div class="header-login" style="position: static;">
+                <% if user_signed_in? %>
+                    <%= link_to logout_path, method: :delete, data: { turbo_method: :delete }, class: "btn-primary" do %>
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                        Déconnexion
+                    <% end %>
+                <% else %>
+                    <a href="/login" class="btn-primary">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                        </svg>
+                        Connexion
+                    </a>
+                    <a href="<%= new_user_registration_path %>" class="btn-secondary" style="margin-left: 1rem;">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                        </svg>
+                        S'inscrire
+                    </a>
+                <% end %>
+            </div>
         </div>
-        <h1>Mady ProClean</h1>
+        <h1 style="font-size: 3rem; font-weight: 700; background: linear-gradient(135deg, #00D4FF, #00FFE0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0 0 1rem 0; text-align: center;">Mady ProClean</h1>
         <p class="subtitle">Système de Gestion du Temps et des Ressources Humaines</p>
         <p class="text-large">Solution digitale pour le secteur nucléaire industriel</p>
     </header>
@@ -106,12 +123,21 @@
                     Interface minimaliste - Aucune information visible
                 </p>
                 <div class="button-group">
-                    <a href="#" class="btn-secondary">
-                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
-                        </svg>
-                        Scanner QR Code
-                    </a>
+                    <% if user_signed_in? && current_user.agent? %>
+                        <a href="<%= agent_root_path %>" class="btn-primary">
+                            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Mes Pointages
+                        </a>
+                    <% else %>
+                        <a href="#" class="btn-secondary">
+                            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+                            </svg>
+                            Scanner QR Code
+                        </a>
+                    <% end %>
                 </div>
             </div>
 

@@ -1,0 +1,65 @@
+<%# Shared QR code information card %>
+<%# Parameters:
+  - site: The site object to display
+  - qr_code_path: The path to view full QR code
+  - style: 'admin' or 'manager' for styling variations
+%>
+<% style ||= 'admin' %>
+
+<% if style == 'admin' %>
+  <div class="card">
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2m5-7v2M7 4h10"/>
+      </svg>
+      Code QR
+    </h2>
+    <div class="space-y-3">
+      <div>
+        <p class="text-sm opacity-70">Token de sécurité</p>
+        <p class="font-mono text-sm p-3 rounded break-all"><%= site.qr_code_token %></p>
+      </div>
+      <div>
+        <p class="text-sm opacity-70">URL de pointage</p>
+        <p class="font-mono text-sm p-3 rounded break-all">
+          <%= site.qr_code_url %>
+        </p>
+      </div>
+      <div class="mt-4">
+        <%= link_to qr_code_path, class: "btn-primary" do %>
+          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2m5-7v2M7 4h10"/>
+          </svg>
+          Voir le code QR complet
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% else %>
+  <div class="glass-card">
+    <h3>
+      <svg style="display: inline-block; width: 1.5rem; height: 1.5rem; margin-right: 0.5rem; vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2m5-7v2M7 4h10"/>
+      </svg>
+      Code QR
+    </h3>
+    <div style="display: grid; gap: 1rem; margin-top: 1.5rem;">
+      <div>
+        <label style="display: block; font-weight: 600; color: var(--cyan-electric); margin-bottom: 0.5rem;">Token de sécurité</label>
+        <p style="color: rgba(255, 255, 255, 0.9); font-family: monospace; font-size: 0.875rem; background: rgba(0, 212, 255, 0.1); padding: 0.75rem; border-radius: 0.5rem; word-break: break-all;"><%= site.qr_code_token %></p>
+      </div>
+      <div>
+        <label style="display: block; font-weight: 600; color: var(--cyan-electric); margin-bottom: 0.5rem;">URL de pointage</label>
+        <p style="color: rgba(255, 255, 255, 0.9); font-family: monospace; font-size: 0.875rem; background: rgba(0, 212, 255, 0.1); padding: 0.75rem; border-radius: 0.5rem; word-break: break-all;"><%= site.qr_code_url %></p>
+      </div>
+      <div style="margin-top: 1rem;">
+        <%= link_to qr_code_path, class: "btn-primary", style: "width: 100%;" do %>
+          <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem; display: inline-block; vertical-align: middle;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2m5-7v2M7 4h10"/>
+          </svg>
+          <span>Voir le code QR complet</span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

@@ -34,8 +34,8 @@
         <label for="time_entry_user_id">Agent <span class="text-danger">*</span></label>
         <select name="time_entry[user_id]" id="time_entry_user_id" required>
           <option value="">-- Sélectionner un agent --</option>
-          <% @sample_users.each do |user| %>
-            <option value="<%= user[:id] %>"><%= "#{user[:first_name]} #{user[:last_name]} (#{user[:employee_number]})" %></option>
+          <% @users.each do |user| %>
+            <option value="<%= user.id %>"><%= user.full_name %> (<%= user.employee_number %>)</option>
           <% end %>
         </select>
         <small class="text-sm opacity-70">Choisissez l'agent concerné par ce pointage</small>
@@ -45,8 +45,8 @@
         <label for="time_entry_site_id">Site <span class="text-danger">*</span></label>
         <select name="time_entry[site_id]" id="time_entry_site_id" required>
           <option value="">-- Sélectionner un site --</option>
-          <% @sample_sites.each do |site| %>
-            <option value="<%= site[:id] %>"><%= "#{site[:name]} (#{site[:code]})" %></option>
+          <% @sites.each do |site| %>
+            <option value="<%= site.id %>"><%= site.name %> (<%= site.code %>)</option>
           <% end %>
         </select>
         <small class="text-sm opacity-70">Sélectionnez le site de travail</small>

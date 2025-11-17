@@ -1,0 +1,25 @@
+<% content_for :page_title, "Gestion des Anomalies" %>
+
+<!-- Page Header -->
+<div class="glass-card">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="gradient-heading">Gestion des Anomalies</h1>
+      <p class="text-large mt-2">Surveillez et résolvez les anomalies système détectées</p>
+    </div>
+  </div>
+
+<%= render 'shared/anomalies/statistics_cards', all_anomalies: @all_anomalies %>
+
+<div class="divider"></div>
+
+<%= render 'shared/anomalies/filters', users: @users, index_path: manager_anomalies_path %>
+</div>
+
+<div class="divider"></div>
+
+<%= render 'shared/anomalies/anomalies_table', anomalies: @anomalies, namespace: :manager %>
+
+<div class="divider"></div>
+
+<%= render 'shared/anomalies/anomaly_type_info' %>

@@ -1,0 +1,34 @@
+<!-- Information Panel -->
+<div class="glass-card">
+  <h2 class="mb-4" style="font-size: 1.875rem;">Types d'Anomalies</h2>
+  <div class="alert alert-info mb-6">
+    <strong>Information:</strong> Les anomalies sont détectées automatiquement par le système pour assurer l'intégrité des données de pointage.
+  </div>
+  
+  <div class="form-grid">
+    <div class="form-group">
+      <label>📥 Pointage d'Entrée Manquant</label>
+      <p class="text-sm opacity-70">Agent n'a pas enregistré son arrivée selon l'horaire planifié</p>
+    </div>
+
+    <div class="form-group">
+      <label>📤 Pointage de Sortie Manquant</label>
+      <p class="text-sm opacity-70">Agent n'a pas enregistré sa sortie après un pointage d'entrée</p>
+    </div>
+
+    <div class="form-group">
+      <label>⏱️ Actif Plus de 24h</label>
+      <p class="text-sm opacity-70">Pointage actif depuis plus de 24 heures sans sortie enregistrée</p>
+    </div>
+
+    <div class="form-group">
+      <label>🔄 Pointages Multiples</label>
+      <p class="text-sm opacity-70">Plusieurs pointages actifs simultanés détectés (suspicion de fraude)</p>
+    </div>
+
+    <div class="form-group">
+      <label>📅 Désaccord Horaire</label>
+      <p class="text-sm opacity-70">Absence de pointage alors qu'un horaire était planifié</p>
+    </div>
+  </div>
+</div>

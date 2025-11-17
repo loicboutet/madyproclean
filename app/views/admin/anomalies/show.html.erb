@@ -1,10 +1,10 @@
-<% content_for :page_title, "Détails de l'Anomalie ##{@anomaly[:id]}" %>
+<% content_for :page_title, "Détails de l'Anomalie ##{@anomaly.id}" %>
 
 <!-- Page Header -->
 <div class="glass-card">
   <div class="flex items-center justify-between mb-6">
     <div>
-      <h1 class="gradient-heading">Détails de l'Anomalie #<%= @anomaly[:id] %></h1>
+      <h1 class="gradient-heading">Détails de l'Anomalie #<%= @anomaly.id %></h1>
       <p class="text-large mt-2">Informations complètes de cette anomalie détectée</p>
     </div>
     <div class="button-group">
@@ -24,7 +24,7 @@
 <div class="card">
   <div class="flex items-center justify-between mb-6">
     <h2 style="font-size: 1.875rem;">Statut de l'Anomalie</h2>
-    <% if @anomaly[:resolved] %>
+    <% if @anomaly.resolved %>
       <span class="badge-success" style="font-size: 1.125rem; padding: 0.75rem 1.5rem;">✓ Résolue</span>
     <% else %>
       <span class="badge-warning" style="font-size: 1.125rem; padding: 0.75rem 1.5rem;">⚠ Non Résolue</span>
@@ -40,36 +40,19 @@
       </div>
       <div class="stat-content">
         <p class="stat-label">Type d'Anomalie</p>
-        <% case @anomaly[:anomaly_type] %>
-        <% when 'missed_clock_in' %>
-          <p class="stat-value" style="font-size: 1.25rem;">📥 Entrée Manquante</p>
-        <% when 'missed_clock_out' %>
-          <p class="stat-value" style="font-size: 1.25rem;">📤 Sortie Manquante</p>
-        <% when 'over_24h' %>
-          <p class="stat-value" style="font-size: 1.25rem;">⏱️ Plus de 24h</p>
-        <% when 'multiple_active' %>
-          <p class="stat-value" style="font-size: 1.25rem;">🔄 Pointages Multiples</p>
-        <% when 'schedule_mismatch' %>
-          <p class="stat-value" style="font-size: 1.25rem;">📅 Désaccord Horaire</p>
-        <% end %>
+        <p class="stat-value" style="font-size: 1.25rem;"><%= @anomaly.type_label %></p>
       </div>
     </div>
 
     <div class="stat-card">
-      <div class="stat-icon <%= @anomaly[:severity] == 'high' ? 'stat-icon-danger' : (@anomaly[:severity] == 'medium' ? 'stat-icon-warning' : 'stat-icon-info') %>">
+      <div class="stat-icon <%= @anomaly.severity_high? ? 'stat-icon-danger' : (@anomaly.severity_medium? ? 'stat-icon-warning' : 'stat-icon-info') %>">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
       </div>
       <div class="stat-content">
         <p class="stat-label">Niveau de Sévérité</p>
-        <% if @anomaly[:severity] == 'low' %>
-          <p class="stat-value" style="font-size: 1.25rem;">🔵 Faible</p>
-        <% elsif @anomaly[:severity] == 'medium' %>
-          <p class="stat-value" style="font-size: 1.25rem;">🟡 Moyenne</p>
-        <% elsif @anomaly[:severity] == 'high' %>
-          <p class="stat-value" style="font-size: 1.25rem;">🔴 Haute</p>
-        <% end %>
+        <p class="stat-value" style="font-size: 1.25rem;"><%= @anomaly.severity_label %></p>
       </div>
     </div>
 
@@ -81,8 +64,8 @@
       </div>
       <div class="stat-content">
         <p class="stat-label">Agent Concerné</p>
-        <p class="stat-value" style="font-size: 1.25rem;"><%= @anomaly[:user_name] %></p>
-        <p class="text-sm opacity-70 mt-1"><%= @anomaly[:employee_number] %></p>
+        <p class="stat-value" style="font-size: 1.25rem;"><%= @anomaly.user&.full_name || 'N/A' %></p>
+        <p class="text-sm opacity-70 mt-1"><%= @anomaly.user&.employee_number %></p>
       </div>
     </div>
 
@@ -94,8 +77,8 @@
       </div>
       <div class="stat-content">
         <p class="stat-label">Date de Détection</p>
-        <p class="stat-value" style="font-size: 1.25rem;"><%= @anomaly[:created_at].strftime('%d/%m/%Y') %></p>
-        <p class="text-sm opacity-70 mt-1"><%= @anomaly[:created_at].strftime('%H:%M') %></p>
+        <p class="stat-value" style="font-size: 1.25rem;"><%= @anomaly.created_at.strftime('%d/%m/%Y') %></p>
+        <p class="text-sm opacity-70 mt-1"><%= @anomaly.created_at.strftime('%H:%M') %></p>
       </div>
     </div>
   </div>
@@ -116,45 +99,32 @@
     <div class="form-group">
       <label>ID de l'Anomalie</label>
       <div class="">
-        <p class="font-semibold text-lg">#<%= @anomaly[:id] %></p>
+        <p class="font-semibold text-lg">#<%= @anomaly.id %></p>
       </div>
     </div>
 
     <div class="form-group">
       <label>Type d'Anomalie</label>
       <div class="">
-        <% case @anomaly[:anomaly_type] %>
-        <% when 'missed_clock_in' %>
-          <span class="badge-warning">📥 Pointage d'entrée manquant</span>
-        <% when 'missed_clock_out' %>
-          <span class="badge-warning">📤 Pointage de sortie manquant</span>
-        <% when 'over_24h' %>
-          <span class="badge-danger">⏱️ Actif plus de 24 heures</span>
-        <% when 'multiple_active' %>
-          <span class="badge-danger">🔄 Pointages multiples simultanés</span>
-        <% when 'schedule_mismatch' %>
-          <span class="badge-info">📅 Désaccord avec l'horaire planifié</span>
-        <% end %>
+        <span class="<%= @anomaly.anomaly_type_over_24h? || @anomaly.anomaly_type_multiple_active? ? 'badge-danger' : @anomaly.anomaly_type_schedule_mismatch? ? 'badge-info' : 'badge-warning' %>">
+          <%= @anomaly.type_label %>
+        </span>
       </div>
     </div>
 
     <div class="form-group">
       <label>Niveau de Sévérité</label>
       <div class="">
-        <% if @anomaly[:severity] == 'low' %>
-          <span class="badge-info">🔵 Faible</span>
-        <% elsif @anomaly[:severity] == 'medium' %>
-          <span class="badge-warning">🟡 Moyenne</span>
-        <% elsif @anomaly[:severity] == 'high' %>
-          <span class="badge-danger">🔴 Haute</span>
-        <% end %>
+        <span class="<%= @anomaly.severity_low? ? 'badge-info' : @anomaly.severity_medium? ? 'badge-warning' : 'badge-danger' %>">
+          <%= @anomaly.severity_label %>
+        </span>
       </div>
     </div>
 
     <div class="form-group">
       <label>Statut de Résolution</label>
       <div class="">
-        <% if @anomaly[:resolved] %>
+        <% if @anomaly.resolved %>
           <span class="badge-success">✓ Résolue</span>
         <% else %>
           <span class="badge-warning">⚠ Non résolue</span>
@@ -162,53 +132,45 @@
       </div>
     </div>
 
-    <div class="form-group">
-      <label>Agent Concerné</label>
-      <div class="">
-        <p class="font-semibold"><%= @anomaly[:user_name] %></p>
-        <p class="text-sm opacity-70"><%= @anomaly[:employee_number] %></p>
+    <% if @anomaly.user.present? %>
+      <div class="form-group">
+        <label>Agent Concerné</label>
+        <div class="">
+          <p class="font-semibold"><%= @anomaly.user.full_name %></p>
+          <p class="text-sm opacity-70"><%= @anomaly.user.employee_number %></p>
+        </div>
       </div>
-    </div>
-
-    <% if @anomaly[:site_name] %>
-    <div class="form-group">
-      <label>Site</label>
-      <div class="">
-        <p class="font-semibold"><%= @anomaly[:site_name] %></p>
-        <p class="text-sm opacity-70"><span class="badge"><%= @anomaly[:site_code] %></span></p>
-      </div>
-    </div>
     <% end %>
 
-    <% if @anomaly[:time_entry_id] %>
-    <div class="form-group">
-      <label>Pointage Lié</label>
-      <div class="">
-        <p class="font-semibold">ID #<%= @anomaly[:time_entry_id] %></p>
+    <% if @anomaly.time_entry.present? %>
+      <div class="form-group">
+        <label>Pointage Lié</label>
+        <div class="">
+          <p class="font-semibold">ID #<%= @anomaly.time_entry.id %></p>
+        </div>
       </div>
-    </div>
     <% end %>
 
-    <% if @anomaly[:schedule_id] %>
-    <div class="form-group">
-      <label>Horaire Planifié Lié</label>
-      <div class="">
-        <p class="font-semibold">ID #<%= @anomaly[:schedule_id] %></p>
+    <% if @anomaly.schedule.present? %>
+      <div class="form-group">
+        <label>Horaire Planifié Lié</label>
+        <div class="">
+          <p class="font-semibold">ID #<%= @anomaly.schedule.id %></p>
+        </div>
       </div>
-    </div>
     <% end %>
 
     <div class="form-group">
       <label>Date de Détection</label>
       <div class="">
-        <p class="font-semibold"><%= @anomaly[:created_at].strftime('%d/%m/%Y à %H:%M') %></p>
+        <p class="font-semibold"><%= @anomaly.created_at.strftime('%d/%m/%Y à %H:%M') %></p>
       </div>
     </div>
 
     <div class="form-group">
       <label>Dernière Modification</label>
       <div class="">
-        <p class="font-semibold"><%= @anomaly[:updated_at].strftime('%d/%m/%Y à %H:%M') %></p>
+        <p class="font-semibold"><%= @anomaly.updated_at.strftime('%d/%m/%Y à %H:%M') %></p>
       </div>
     </div>
   </div>
@@ -217,13 +179,13 @@
   
   <div class="form-group">
     <label>Description de l'Anomalie</label>
-    <div class="p-4 rounded-lg border border-orange-200 bg-orange-50">
-      <p class="text-base"><%= @anomaly[:description] %></p>
+    <div class="p-4 rounded-lg border border-orange-200">
+      <p class="text-base"><%= @anomaly.description %></p>
     </div>
   </div>
 </div>
 
-<% if @anomaly[:resolved] %>
+<% if @anomaly.resolved %>
   <div class="divider"></div>
 
   <!-- Resolution Information -->
@@ -243,52 +205,27 @@
       <div class="form-group">
         <label>Résolue Par</label>
         <div class="">
-          <p class="font-semibold text-green-700"><%= @anomaly[:resolved_by_name] %></p>
+          <p class="font-semibold text-green-700"><%= @anomaly.resolved_by&.full_name || 'N/A' %></p>
         </div>
       </div>
 
       <div class="form-group">
         <label>Date de Résolution</label>
         <div class="p-3 bg-green-50 rounded-lg border border-green-200">
-          <p class="font-semibold text-green-800"><%= @anomaly[:resolved_at].strftime('%d/%m/%Y à %H:%M') %></p>
+          <p class="font-semibold text-green-800"><%= @anomaly.resolved_at&.strftime('%d/%m/%Y à %H:%M') || 'N/A' %></p>
         </div>
       </div>
     </div>
 
-    <% if @anomaly[:resolution_notes].present? %>
+    <% if @anomaly.resolution_notes.present? %>
       <div class="divider"></div>
       <div class="form-group">
         <label>Notes de Résolution</label>
-        <div class="p-4 bg-green-50 rounded-lg border border-green-200">
-          <p class="text-base"><%= @anomaly[:resolution_notes] %></p>
+        <div class="p-4 rounded-lg border border-green-200">
+          <p class="text-base"><%= @anomaly.resolution_notes %></p>
         </div>
       </div>
     <% end %>
-  </div>
-<% else %>
-  <div class="divider"></div>
-
-  <!-- Action Required -->
-  <div class="card" style="border-left: 4px solid #f59e0b;">
-    <h2 class="mb-6" style="font-size: 1.875rem;">
-      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-      </svg>
-      Action Requise
-    </h2>
-
-    <div class="alert alert-warning mb-6">
-      <strong>⚠ Attention:</strong> Cette anomalie nécessite votre intervention. Veuillez vérifier les détails et prendre les mesures appropriées.
-    </div>
-
-    <div class="button-group">
-      <%= link_to resolve_admin_anomaly_path(@anomaly[:id]), method: :post, class: "btn-primary", data: { confirm: 'Êtes-vous sûr de vouloir marquer cette anomalie comme résolue ?' } do %>
-        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-        Marquer comme Résolue
-      <% end %>
-    </div>
   </div>
 <% end %>
 
@@ -306,8 +243,15 @@
       Retour à la liste
     <% end %>
 
-    <% if @anomaly[:time_entry_id] %>
-      <%= link_to admin_time_entry_path(@anomaly[:time_entry_id]), class: "btn-secondary" do %>
+    <%= link_to edit_admin_anomaly_path(@anomaly), class: "btn-secondary" do %>
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+      </svg>
+      Modifier l'Anomalie
+    <% end %>
+
+    <% if @anomaly.time_entry.present? %>
+      <%= link_to admin_time_entry_path(@anomaly.time_entry), class: "btn-secondary" do %>
         <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
@@ -315,21 +259,12 @@
       <% end %>
     <% end %>
 
-    <% if @anomaly[:schedule_id] %>
-      <%= link_to admin_schedule_path(@anomaly[:schedule_id]), class: "btn-secondary" do %>
+    <% if @anomaly.schedule.present? %>
+      <%= link_to admin_schedule_path(@anomaly.schedule), class: "btn-secondary" do %>
         <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
         </svg>
         Voir l'Horaire
-      <% end %>
-    <% end %>
-
-    <% unless @anomaly[:resolved] %>
-      <%= link_to resolve_admin_anomaly_path(@anomaly[:id]), method: :post, class: "btn-primary", data: { confirm: 'Êtes-vous sûr de vouloir marquer cette anomalie comme résolue ?' } do %>
-        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-        Marquer comme Résolue
       <% end %>
     <% end %>
   </div>

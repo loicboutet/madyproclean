@@ -1,4 +1,7 @@
 class PagesController < ApplicationController
+  # Allow everyone to view roles page
+  # before_action :redirect_if_authenticated, only: [:roles]
+
   def home
   end
 
@@ -45,5 +48,11 @@ class PagesController < ApplicationController
         ]
       }
     }
+  end
+
+  private
+
+  def redirect_if_authenticated
+    redirect_to_dashboard if current_user
   end
 end

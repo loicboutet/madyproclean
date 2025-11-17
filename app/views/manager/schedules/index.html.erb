@@ -9,140 +9,13 @@
     </div>
   </div>
 
-<!-- Statistics Cards -->
-<div class="stats-grid">
-  <div class="stat-card">
-    <div class="stat-icon stat-icon-primary">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-      </svg>
-    </div>
-    <div class="stat-content">
-      <p class="stat-label">Total Plannings</p>
-      <p class="stat-value"><%= @all_schedules.length %></p>
-    </div>
-  </div>
-
-  <div class="stat-card">
-    <div class="stat-icon stat-icon-info">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-      </svg>
-    </div>
-    <div class="stat-content">
-      <p class="stat-label">Planifiés</p>
-      <p class="stat-value"><%= @all_schedules.count { |s| s[:status] == 'scheduled' } %></p>
-    </div>
-  </div>
-
-  <div class="stat-card">
-    <div class="stat-icon stat-icon-success">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-      </svg>
-    </div>
-    <div class="stat-content">
-      <p class="stat-label">Complétés</p>
-      <p class="stat-value"><%= @all_schedules.count { |s| s[:status] == 'completed' } %></p>
-    </div>
-  </div>
-
-  <div class="stat-card">
-    <div class="stat-icon stat-icon-warning">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-      </svg>
-    </div>
-    <div class="stat-content">
-      <p class="stat-label">Manqués</p>
-      <p class="stat-value"><%= @all_schedules.count { |s| s[:status] == 'missed' } %></p>
-    </div>
-  </div>
-</div>
+<%= render 'shared/schedules/statistics_cards', total_label: 'Total Plannings' %>
 
 <div class="divider"></div>
-  <!-- Filters Section -->
-  <div class="alert alert-info mb-6">
-    <strong>Filtres de Recherche:</strong> Utilisez les filtres ci-dessous pour affiner la liste des plannings
-  </div>
-
-  <form>
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="search">Rechercher</label>
-        <input 
-          type="text" 
-          name="search" 
-          id="search" 
-          placeholder="Agent, site..."
-          value="<%= params[:search] %>">
-      </div>
-
-      <div class="form-group">
-        <label for="status">Statut</label>
-        <select name="status" id="status">
-          <option value="">Tous les statuts</option>
-          <option value="scheduled" <%= 'selected' if params[:status] == 'scheduled' %>>Planifiés</option>
-          <option value="completed" <%= 'selected' if params[:status] == 'completed' %>>Complétés</option>
-          <option value="missed" <%= 'selected' if params[:status] == 'missed' %>>Manqués</option>
-          <option value="cancelled" <%= 'selected' if params[:status] == 'cancelled' %>>Annulés</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="site_id">Site</label>
-        <select name="site_id" id="site_id">
-          <option value="">Tous les sites</option>
-          <% @demo_sites.each do |site| %>
-            <option value="<%= site[:id] %>" <%= 'selected' if params[:site_id] == site[:id].to_s %>><%= site[:name] %></option>
-          <% end %>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="user_id">Agent</label>
-        <select name="user_id" id="user_id">
-          <option value="">Tous les agents</option>
-          <% @demo_users.each do |user| %>
-            <option value="<%= user[:id] %>" <%= 'selected' if params[:user_id] == user[:id].to_s %>><%= user[:name] %></option>
-          <% end %>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="start_date">Date de début</label>
-        <input 
-          type="date" 
-          name="start_date" 
-          id="start_date" 
-          value="<%= params[:start_date] %>">
-      </div>
-
-      <div class="form-group">
-        <label for="end_date">Date de fin</label>
-        <input 
-          type="date" 
-          name="end_date" 
-          id="end_date" 
-          value="<%= params[:end_date] %>">
-      </div>
-    </div>
-
-    <div class="button-group">
-      <button type="submit" class="btn-primary">
-        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
-        </svg>
-        Appliquer les filtres
-      </button>
-      <a href="<%= manager_schedules_path %>" class="btn-secondary">
-        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-        </svg>
-        Réinitialiser
-      </a>
-    </div>
-  </form>
+  <%= render 'shared/schedules/filters', 
+             label_type: 'plannings',
+             search_placeholder: 'Agent, site...',
+             reset_path: manager_schedules_path %>
 </div>
 
 
@@ -205,27 +78,23 @@
               </td>
               <td>
                 <div>
-                  <p class="font-semibold"><%= schedule[:start_time].strftime('%H:%M') %> - <%= schedule[:end_time].strftime('%H:%M') %></p>
+                  <p class="font-semibold"><%= schedule[:start_time] %> - <%= schedule[:end_time] %></p>
                   <p class="text-sm opacity-70">Horaire de travail</p>
                 </div>
               </td>
               <td>
-                <% duration_hours = ((schedule[:end_time] - schedule[:start_time]) / 3600.0).round(1) %>
+                <% 
+                  start_parts = schedule[:start_time].split(':')
+                  end_parts = schedule[:end_time].split(':')
+                  duration = (end_parts[0].to_i - start_parts[0].to_i) + ((end_parts[1].to_i - start_parts[1].to_i) / 60.0)
+                %>
                 <div>
-                  <p class="font-semibold"><%= duration_hours %>h</p>
-                  <p class="text-sm opacity-70"><%= (duration_hours * 60).to_i %> min</p>
+                  <p class="font-semibold"><%= '%.1f' % duration %>h</p>
+                  <p class="text-sm opacity-70"><%= (duration * 60).to_i %> min</p>
                 </div>
               </td>
               <td>
-                <% if schedule[:status] == 'scheduled' %>
-                  <span class="badge-info">📅 Planifié</span>
-                <% elsif schedule[:status] == 'completed' %>
-                  <span class="badge-success">✓ Complété</span>
-                <% elsif schedule[:status] == 'missed' %>
-                  <span class="badge-warning">⚠ Manqué</span>
-                <% elsif schedule[:status] == 'cancelled' %>
-                  <span class="badge" style="background-color: #6b7280; color: white;">✕ Annulé</span>
-                <% end %>
+                <%= render 'shared/schedules/status_badge', status: schedule[:status], namespace: 'manager' %>
               </td>
               <td>
                 <% if schedule[:replaced_by_id] %>

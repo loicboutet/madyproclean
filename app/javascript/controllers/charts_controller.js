@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import Chart from "chart.js"
 
 export default class extends Controller {
   static values = {
@@ -7,7 +6,14 @@ export default class extends Controller {
   }
 
   connect() {
+    this.charts = []
     this.initializeCharts()
+  }
+
+  disconnect() {
+    // Destroy all charts when controller disconnects (Turbo navigation)
+    this.charts.forEach(chart => chart.destroy())
+    this.charts = []
   }
 
   initializeCharts() {
@@ -19,35 +25,26 @@ export default class extends Controller {
     const chartData = this.dataValue
 
     // Time Entries Chart (Line)
-    this.createLineChart('timeEntriesChart', chartData.time_entries, {
-      title: 'Pointages de la Semaine',
-      yAxisLabel: 'Nombre de Pointages'
-    })
+    this.createLineChart('timeEntriesChart', chartData.time_entries)
 
     // Site Occupancy Chart (Bar)
-    this.createBarChart('siteOccupancyChart', chartData.site_occupancy, {
-      title: 'Occupation par Site',
-      yAxisLabel: 'Nombre d\'Agents'
-    })
+    this.createBarChart('siteOccupancyChart', chartData.site_occupancy)
 
     // Absence Rate Chart (Line with Fill)
-    this.createLineChart('absenceRateChart', chartData.absence_rate, {
-      title: 'Taux d\'Absence',
-      yAxisLabel: 'Taux (%)',
-      fill: true
-    })
+    this.createLineChart('absenceRateChart', chartData.absence_rate, { fill: true })
 
     // Anomalies Chart (Doughnut)
-    this.createDoughnutChart('anomaliesChart', chartData.anomalies, {
-      title: 'Distribution des Anomalies'
-    })
+    this.createDoughnutChart('anomaliesChart', chartData.anomalies)
   }
 
   createLineChart(canvasId, data, options = {}) {
     const ctx = document.getElementById(canvasId)
-    if (!ctx) return
+    if (!ctx) {
+      console.warn(`Canvas element ${canvasId} not found`)
+      return
+    }
 
-    new Chart(ctx, {
+    const chart = new Chart(ctx, {
       type: 'line',
       data: data,
       options: {
@@ -60,9 +57,6 @@ export default class extends Controller {
               color: '#FFFFFF',
               font: { size: 12 }
             }
-          },
-          title: {
-            display: false
           }
         },
         scales: {
@@ -83,16 +77,22 @@ export default class extends Controller {
               color: '#FFFFFF'
             }
           }
-        }
+        },
+        ...options
       }
     })
+
+    this.charts.push(chart)
   }
 
   createBarChart(canvasId, data, options = {}) {
     const ctx = document.getElementById(canvasId)
-    if (!ctx) return
+    if (!ctx) {
+      console.warn(`Canvas element ${canvasId} not found`)
+      return
+    }
 
-    new Chart(ctx, {
+    const chart = new Chart(ctx, {
       type: 'bar',
       data: data,
       options: {
@@ -105,9 +105,6 @@ export default class extends Controller {
               color: '#FFFFFF',
               font: { size: 12 }
             }
-          },
-          title: {
-            display: false
           }
         },
         scales: {
@@ -128,16 +125,22 @@ export default class extends Controller {
               color: '#FFFFFF'
             }
           }
-        }
+        },
+        ...options
       }
     })
+
+    this.charts.push(chart)
   }
 
   createDoughnutChart(canvasId, data, options = {}) {
     const ctx = document.getElementById(canvasId)
-    if (!ctx) return
+    if (!ctx) {
+      console.warn(`Canvas element ${canvasId} not found`)
+      return
+    }
 
-    new Chart(ctx, {
+    const chart = new Chart(ctx, {
       type: 'doughnut',
       data: data,
       options: {
@@ -152,12 +155,12 @@ export default class extends Controller {
               font: { size: 12 },
               padding: 15
             }
-          },
-          title: {
-            display: false
           }
-        }
+        },
+        ...options
       }
     })
+
+    this.charts.push(chart)
   }
 }

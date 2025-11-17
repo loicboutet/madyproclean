@@ -1,62 +1,131 @@
 class Admin::ReportsController < ApplicationController
+  include ReportsGeneration
+  
+  before_action :authenticate_user!
+  before_action :authorize_admin!
   layout 'admin'
-  before_action :set_report, only: [:show]
   before_action :load_demo_data
   
   def index
-    # Apply filters to demo data
-    @reports = @all_reports.dup
+    # Use Report model from database
+    @reports = Report.includes(:generated_by)
+                 .order(created_at: :desc)
+                 .recent
     
     # Filter by report type
     if params[:report_type].present?
-      @reports = @reports.select { |r| r[:report_type] == params[:report_type] }
+      @reports = @reports.by_type(params[:report_type])
     end
     
     # Filter by status
     if params[:status].present?
-      @reports = @reports.select { |r| r[:status] == params[:status] }
+      @reports = @reports.by_status(params[:status])
     end
     
     # Filter by date range
     if params[:start_date].present?
       start_date = Date.parse(params[:start_date])
-      @reports = @reports.select { |r| r[:period_start] >= start_date }
+      @reports = @reports.where('period_start >= ?', start_date)
     end
     
     if params[:end_date].present?
       end_date = Date.parse(params[:end_date])
-      @reports = @reports.select { |r| r[:period_end] <= end_date }
+      @reports = @reports.where('period_end <= ?', end_date)
     end
     
     # Search
     if params[:search].present?
-      search_term = params[:search].downcase
-      @reports = @reports.select do |r|
-        r[:title].downcase.include?(search_term) ||
-        (r[:description] && r[:description].downcase.include?(search_term))
-      end
+      search_term = "%#{params[:search]}%"
+      @reports = @reports.where('title LIKE ? OR description LIKE ?', search_term, search_term)
     end
+    
+    # Paginate results (10 per page)
+    @reports = @reports.page(params[:page]).per(10)
+    
+    # Keep all reports count for stats (before pagination)
+    @all_reports_count = Report.count
+    @completed_count = Report.completed.count
+    @generating_count = Report.generating.count
+    @pending_count = Report.pending.count
   end
 
   def show
-    # @report is set by before_action
+    # @report is set by before_action from ReportsGeneration concern
   end
 
   def monthly
+    # Fetch monthly reports from database
+    @reports = Report.includes(:generated_by)
+                     .where(period_type: 'monthly')
+                     .order(created_at: :desc)
+    
+    # Filter by month and year
+    if params[:month].present? && params[:year].present?
+      month = params[:month].to_i
+      year = params[:year].to_i
+      start_date = Date.new(year, month, 1)
+      end_date = start_date.end_of_month
+      
+      @reports = @reports.where('period_start >= ? AND period_start <= ?', start_date, end_date)
+    end
+    
+    # Filter by user
+    if params[:user_id].present?
+      @reports = @reports.where("filters_applied LIKE ?", "%user_id\":#{params[:user_id]}%")
+    end
+    
+    # Filter by site
+    if params[:site_id].present?
+      @reports = @reports.where("filters_applied LIKE ?", "%site_id\":#{params[:site_id]}%")
+    end
+    
+    # Filter by status
+    if params[:status].present?
+      @reports = @reports.by_status(params[:status])
+    end
+    
+    # Paginate results (10 per page)
+    @reports = @reports.page(params[:page]).per(10)
+    
+    # Calculate statistics
+    all_monthly_reports = Report.where(period_type: 'monthly')
+    @total_monthly_reports = all_monthly_reports.count
+    @reports_this_month = all_monthly_reports.where('period_start >= ?', Date.current.beginning_of_month).count
+    @reports_this_year = all_monthly_reports.where('period_start >= ?', Date.current.beginning_of_year).count
+    @pending_reports = all_monthly_reports.where(status: 'pending').count
+    
+    # Load users and sites for dropdowns
+    @users = User.agents.active.order(:last_name, :first_name)
+    @sites = Site.active.order(:name)
+  end
+
+  def time_tracking
+    # Render time tracking report form (placeholder)
+  end
+
+  def anomalies
+    # Render anomalies report form (placeholder)
   end
 
   def hr
+    # Render HR report form (placeholder)
   end
 
-  private
+  # generate_monthly and download are provided by ReportsGeneration concern
 
-  def set_report
-    load_demo_data
-    @report = @all_reports.find { |r| r[:id] == params[:id].to_i }
-    
-    unless @report
-      redirect_to admin_reports_path, alert: 'Rapport non trouvé.'
-    end
+  private
+  
+  # Required by ReportsGeneration concern
+  def reports_index_path
+    admin_reports_path
+  end
+  
+  def reports_monthly_path
+    admin_reports_monthly_path
+  end
+  
+  def monthly_pdf_template_path
+    'admin/reports/monthly_pdf'
   end
 
   def load_demo_data

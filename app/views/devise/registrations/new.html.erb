@@ -25,15 +25,54 @@
         <%= render "devise/shared/error_messages", resource: resource %>
 
         <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "login-form" }) do |f| %>
+            <!-- First Name Field -->
+            <div class="form-group">
+                <%= f.label :first_name, "Prénom" %>
+                <%= f.text_field :first_name, 
+                    autofocus: true,
+                    autocomplete: "given-name",
+                    placeholder: "Jean",
+                    class: "form-input" %>
+            </div>
+
+            <!-- Last Name Field -->
+            <div class="form-group">
+                <%= f.label :last_name, "Nom" %>
+                <%= f.text_field :last_name, 
+                    autocomplete: "family-name",
+                    placeholder: "Dupont",
+                    class: "form-input" %>
+            </div>
+
             <!-- Email Field -->
             <div class="form-group">
                 <%= f.label :email, "Adresse Email" %>
                 <%= f.email_field :email, 
-                    autofocus: true,
                     autocomplete: "email",
                     placeholder: "exemple@email.com",
                     class: "form-input" %>
             </div>
+
+            <!-- Employee Number Field (optional) -->
+            <div class="form-group">
+                <%= f.label :employee_number, "Numéro d'employé (optionnel)" %>
+                <%= f.text_field :employee_number, 
+                    autocomplete: "off",
+                    placeholder: "EMP001",
+                    class: "form-input" %>
+            </div>
+
+            <!-- Phone Number Field (optional) -->
+            <div class="form-group">
+                <%= f.label :phone_number, "Numéro de téléphone (optionnel)" %>
+                <%= f.telephone_field :phone_number, 
+                    autocomplete: "tel",
+                    placeholder: "+33 6 12 34 56 78",
+                    class: "form-input" %>
+            </div>
+
+            <!-- Role Field (hidden for now, defaults to agent) -->
+            <%= f.hidden_field :role, value: 'agent' %>
 
             <!-- Password Field -->
             <div class="form-group">

@@ -1,0 +1,40 @@
+<%# Shared current agents table %>
+<%# Parameters:
+  - current_time_entries: Collection of active time entries
+  - style: 'admin' or 'manager' for styling variations
+%>
+<% style ||= 'admin' %>
+
+<% if current_time_entries.any? %>
+  <div class="table-responsive" <% if style == 'manager' %>style="margin-top: 1.5rem;"<% end %>>
+    <table>
+      <thead>
+        <tr>
+          <th>Agent</th>
+          <th>Heure d'Arrivée</th>
+          <th>Durée sur Site</th>
+          <th style="text-align: right;">Statut</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% current_time_entries.each do |entry| %>
+          <tr>
+            <td><%= entry.user.full_name %></td>
+            <td><%= entry.clocked_in_at.strftime('%d/%m/%Y %H:%M') %></td>
+            <td>
+              <% duration = Time.current - entry.clocked_in_at %>
+              <% hours = (duration / 3600).floor %>
+              <% minutes = ((duration % 3600) / 60).floor %>
+              <%= "#{hours}h #{minutes}m" %>
+            </td>
+            <td style="text-align: right;"><span class="badge">En cours</span></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <p <% if style == 'admin' %>style="text-align: center; padding: 2rem;"<% else %>style="text-align: center; color: rgba(255, 255, 255, 0.6); padding: 2rem;"<% end %>>
+    Aucun agent actuellement sur ce site
+  </p>
+<% end %>

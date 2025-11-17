@@ -1,0 +1,83 @@
+<!-- Filters Section -->
+<div class="alert alert-info mb-6">
+  <strong>Filtres de Recherche:</strong> Utilisez les filtres ci-dessous pour affiner la liste des anomalies
+</div>
+
+<form>
+  <div class="form-grid">
+    <div class="form-group">
+      <label for="search">Rechercher</label>
+      <input 
+        type="text" 
+        name="search" 
+        id="search" 
+        placeholder="Agent, description..."
+        value="<%= params[:search] %>">
+    </div>
+
+    <div class="form-group">
+      <label for="anomaly_type">Type d'Anomalie</label>
+      <select name="anomaly_type" id="anomaly_type">
+        <option value="">Tous les types</option>
+        <option value="missed_clock_in" <%= 'selected' if params[:anomaly_type] == 'missed_clock_in' %>>Pointage d'entrée manquant</option>
+        <option value="missed_clock_out" <%= 'selected' if params[:anomaly_type] == 'missed_clock_out' %>>Pointage de sortie manquant</option>
+        <option value="over_24h" <%= 'selected' if params[:anomaly_type] == 'over_24h' %>>Actif plus de 24h</option>
+        <option value="multiple_active" <%= 'selected' if params[:anomaly_type] == 'multiple_active' %>>Pointages multiples</option>
+        <option value="schedule_mismatch" <%= 'selected' if params[:anomaly_type] == 'schedule_mismatch' %>>Désaccord horaire</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="severity">Sévérité</label>
+      <select name="severity" id="severity">
+        <option value="">Toutes les sévérités</option>
+        <option value="low" <%= 'selected' if params[:severity] == 'low' %>>Faible</option>
+        <option value="medium" <%= 'selected' if params[:severity] == 'medium' %>>Moyenne</option>
+        <option value="high" <%= 'selected' if params[:severity] == 'high' %>>Haute</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="resolved">Statut de Résolution</label>
+      <select name="resolved" id="resolved">
+        <option value="">Toutes</option>
+        <option value="false" <%= 'selected' if params[:resolved] == 'false' %>>Non Résolues</option>
+        <option value="true" <%= 'selected' if params[:resolved] == 'true' %>>Résolues</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="user_id">Agent</label>
+      <select name="user_id" id="user_id">
+        <option value="">Tous les agents</option>
+        <% users.each do |user| %>
+          <option value="<%= user.id %>" <%= 'selected' if params[:user_id] == user.id.to_s %>><%= user.full_name %></option>
+        <% end %>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="date">Date</label>
+      <input 
+        type="date" 
+        name="date" 
+        id="date" 
+        value="<%= params[:date] %>">
+    </div>
+  </div>
+
+  <div class="button-group">
+    <button type="submit" class="btn-primary">
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+      </svg>
+      Appliquer les filtres
+    </button>
+    <a href="<%= index_path %>" class="btn-secondary">
+      <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+      </svg>
+      Réinitialiser
+    </a>
+  </div>
+</form>
