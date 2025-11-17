@@ -144,6 +144,160 @@
       </div>
     </div>
 
+    <!-- Resolution Status -->
+    <div class="divider"></div>
+    <h2 class="mb-4">
+      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      Statut de Résolution
+    </h2>
+
+    <div class="form-group mb-4">
+      <label class="flex items-center cursor-pointer">
+        <%= form.check_box :resolved, class: 'mr-3 h-5 w-5' %>
+        <span class="font-semibold">Marquer cette anomalie comme résolue</span>
+      </label>
+      <small class="text-sm opacity-70 block mt-2">Cochez cette case pour marquer l'anomalie comme résolue. Elle ne nécessitera plus d'action.</small>
+    </div>
+
+    <div class="form-group">
+      <label for="anomaly_log_resolution_notes">Notes de Résolution</label>
+      <%= form.text_area :resolution_notes, 
+        rows: 4,
+        placeholder: "Expliquez comment l'anomalie a été résolue ou les actions prises...",
+        class: 'form-control'
+      %>
+      <small class="text-sm opacity-70">Ajoutez des notes pour documenter la résolution de cette anomalie (optionnel)</small>
+    </div>
+
+    <!-- Time Entry Correction (for over_24h anomalies) -->
+    <% if anomaly.anomaly_type == 'over_24h' && anomaly.time_entry.present? %>
+      <div class="divider"></div>
+      <h2 class="mb-4">
+        <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        Correction du Pointage
+      </h2>
+
+      <div class="alert alert-warning mb-6">
+        <strong>⏱️ Anomalie détectée:</strong> Ce pointage est actif depuis plus de 24 heures. Utilisez les champs ci-dessous pour corriger les heures d'entrée/sortie.
+      </div>
+
+      <!-- Current Time Entry Info -->
+      <div class="glass-card mb-6">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-bold">Informations actuelles du pointage</h3>
+          <%= link_to admin_time_entry_path(anomaly.time_entry), class: "btn-secondary text-sm", target: "_blank" do %>
+            <svg class="btn-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+            Voir le pointage
+          <% end %>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p class="text-sm opacity-70">ID du Pointage:</p>
+            <p class="font-semibold">#<%= anomaly.time_entry.id %></p>
+          </div>
+          <div>
+            <p class="text-sm opacity-70">Agent:</p>
+            <p class="font-semibold"><%= anomaly.time_entry.user&.full_name || 'N/A' %></p>
+          </div>
+          <div>
+            <p class="text-sm opacity-70">Site:</p>
+            <p class="font-semibold"><%= anomaly.time_entry.site&.name || 'N/A' %></p>
+          </div>
+          <div>
+            <p class="text-sm opacity-70">Entrée enregistrée:</p>
+            <p class="font-semibold"><%= anomaly.time_entry.clocked_in_at&.strftime('%d/%m/%Y à %H:%M') || 'N/A' %></p>
+          </div>
+          <div>
+            <p class="text-sm opacity-70">Sortie enregistrée:</p>
+            <p class="font-semibold"><%= anomaly.time_entry.clocked_out_at&.strftime('%d/%m/%Y à %H:%M') || '❌ Non enregistrée' %></p>
+          </div>
+          <div>
+            <p class="text-sm opacity-70">Statut:</p>
+            <p class="font-semibold"><%= anomaly.time_entry.status&.titleize || 'N/A' %></p>
+          </div>
+          <% if anomaly.time_entry.duration_minutes %>
+            <div>
+              <p class="text-sm opacity-70">Durée:</p>
+              <p class="font-semibold"><%= (anomaly.time_entry.duration_minutes / 60.0).round(2) %> heures</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Correction Fields -->
+      <%= form.fields_for :time_entry_correction do |te_form| %>
+        <div class="form-group mb-4">
+          <label>
+            <%= te_form.check_box :apply_correction, class: 'mr-2' %>
+            <strong>Appliquer les corrections au pointage</strong>
+          </label>
+          <small class="text-sm opacity-70 block ml-6">Cochez cette case pour enregistrer les corrections ci-dessous dans le pointage</small>
+        </div>
+
+        <h3 class="font-semibold mb-3">Heure d'Entrée Corrigée</h3>
+        <div class="form-grid mb-4">
+          <div class="form-group">
+            <label for="time_entry_correction_clocked_in_date">Date d'entrée</label>
+            <input 
+              type="date" 
+              name="anomaly_log[time_entry_correction][clocked_in_date]" 
+              id="time_entry_correction_clocked_in_date" 
+              value="<%= anomaly.time_entry.clocked_in_at&.strftime('%Y-%m-%d') %>">
+            <small class="text-sm opacity-70">Modifier si la date d'entrée est incorrecte</small>
+          </div>
+
+          <div class="form-group">
+            <label for="time_entry_correction_clocked_in_time">Heure d'entrée</label>
+            <input 
+              type="time" 
+              name="anomaly_log[time_entry_correction][clocked_in_time]" 
+              id="time_entry_correction_clocked_in_time" 
+              value="<%= anomaly.time_entry.clocked_in_at&.strftime('%H:%M') %>">
+            <small class="text-sm opacity-70">Modifier si l'heure d'entrée est incorrecte</small>
+          </div>
+        </div>
+
+        <h3 class="font-semibold mb-3">Heure de Sortie Corrigée</h3>
+        <div class="form-grid mb-4">
+          <div class="form-group">
+            <label for="time_entry_correction_clocked_out_date">Date de sortie</label>
+            <input 
+              type="date" 
+              name="anomaly_log[time_entry_correction][clocked_out_date]" 
+              id="time_entry_correction_clocked_out_date" 
+              value="<%= anomaly.time_entry.clocked_out_at&.strftime('%Y-%m-%d') %>">
+            <small class="text-sm opacity-70">Saisissez la date de sortie correcte</small>
+          </div>
+
+          <div class="form-group">
+            <label for="time_entry_correction_clocked_out_time">Heure de sortie</label>
+            <input 
+              type="time" 
+              name="anomaly_log[time_entry_correction][clocked_out_time]" 
+              id="time_entry_correction_clocked_out_time" 
+              value="<%= anomaly.time_entry.clocked_out_at&.strftime('%H:%M') %>">
+            <small class="text-sm opacity-70">Saisissez l'heure de sortie correcte</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="time_entry_correction_notes">Notes de Correction</label>
+          <%= te_form.text_area :notes,
+            rows: 3,
+            placeholder: "Expliquez pourquoi cette correction est nécessaire...",
+            class: 'form-control'
+          %>
+          <small class="text-sm opacity-70">Documentation de la correction pour l'audit</small>
+        </div>
+      <% end %>
+    <% end %>
+
     <!-- Current Status Info -->
     <% if anomaly.resolved %>
       <div class="divider"></div>

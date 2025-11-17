@@ -179,7 +179,7 @@
   
   <div class="form-group">
     <label>Description de l'Anomalie</label>
-    <div class="p-4 rounded-lg border border-orange-200 bg-orange-50">
+    <div class="p-4 rounded-lg border border-orange-200">
       <p class="text-base"><%= @anomaly.description %></p>
     </div>
   </div>
@@ -221,36 +221,11 @@
       <div class="divider"></div>
       <div class="form-group">
         <label>Notes de Résolution</label>
-        <div class="p-4 bg-green-50 rounded-lg border border-green-200">
+        <div class="p-4 rounded-lg border border-green-200">
           <p class="text-base"><%= @anomaly.resolution_notes %></p>
         </div>
       </div>
     <% end %>
-  </div>
-<% else %>
-  <div class="divider"></div>
-
-  <!-- Action Required -->
-  <div class="card" style="border-left: 4px solid #f59e0b;">
-    <h2 class="mb-6" style="font-size: 1.875rem;">
-      <svg class="inline-block w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-      </svg>
-      Action Requise
-    </h2>
-
-    <div class="alert alert-warning mb-6">
-      <strong>⚠ Attention:</strong> Cette anomalie nécessite votre intervention. Veuillez vérifier les détails et prendre les mesures appropriées.
-    </div>
-
-    <div class="button-group">
-      <%= link_to resolve_admin_anomaly_path(@anomaly), method: :post, class: "btn-primary", data: { confirm: 'Êtes-vous sûr de vouloir marquer cette anomalie comme résolue ?' } do %>
-        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-        Marquer comme Résolue
-      <% end %>
-    </div>
   </div>
 <% end %>
 
@@ -290,15 +265,6 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
         </svg>
         Voir l'Horaire
-      <% end %>
-    <% end %>
-
-    <% unless @anomaly.resolved %>
-      <%= link_to resolve_admin_anomaly_path(@anomaly), method: :post, class: "btn-primary", data: { confirm: 'Êtes-vous sûr de vouloir marquer cette anomalie comme résolue ?' } do %>
-        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-        Marquer comme Résolue
       <% end %>
     <% end %>
   </div>

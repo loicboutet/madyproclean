@@ -13,7 +13,7 @@
           <th>Agent</th>
           <th>Heure d'Arrivée</th>
           <th>Durée sur Site</th>
-          <th>Statut</th>
+          <th style="text-align: right;">Statut</th>
         </tr>
       </thead>
       <tbody>
@@ -27,7 +27,7 @@
               <% minutes = ((duration % 3600) / 60).floor %>
               <%= "#{hours}h #{minutes}m" %>
             </td>
-            <td><span class="badge">En cours</span></td>
+            <td style="text-align: right;"><span class="badge">En cours</span></td>
           </tr>
         <% end %>
       </tbody>
