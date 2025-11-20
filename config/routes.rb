@@ -25,7 +25,7 @@ Rails.application.routes.draw do
   delete 'logout', to: 'sessions#destroy'
   
   # Agent Clock-in routes
-  # Works with subdomain 'clock' in production, or directly in development/ngrok
+  # Define the clock routes as a lambda for reuse
   clock_routes = lambda do
     get 'c/:qr_code_token', to: 'clock#show', as: 'clock_show'
     post 'c/:qr_code_token/in', to: 'clock#clock_in', as: 'clock_in'
@@ -34,11 +34,19 @@ Rails.application.routes.draw do
     post 'clock/auth', to: 'clock#verify', as: 'clock_verify'
   end
   
-  # Apply routes with subdomain constraint in production
+  # In production, support both subdomain and main domain access
   if Rails.env.production?
+    # Support clock.madyproclean.5000.dev/c/...
     constraints subdomain: 'clock' do
-      clock_routes.call
+      get 'c/:qr_code_token', to: 'clock#show'
+      post 'c/:qr_code_token/in', to: 'clock#clock_in'
+      post 'c/:qr_code_token/out', to: 'clock#clock_out'
+      get 'clock/auth', to: 'clock#authenticate'
+      post 'clock/auth', to: 'clock#verify'
     end
+    
+    # Also support madyproclean.5000.dev/c/... (main domain)
+    clock_routes.call
   else
     # In development/test, apply routes without subdomain constraint
     # This allows ngrok URLs to work directly
