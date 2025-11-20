@@ -103,7 +103,8 @@ module ReportsGeneration
     FileUtils.mkdir_p(storage_path) unless Dir.exist?(storage_path)
     
     file_path = storage_path.join(filename)
-    File.write(file_path, file_content)
+    # Use binary mode to handle PDF and other binary formats
+    File.binwrite(file_path, file_content)
     
     # Calculate file size
     file_size_bytes = File.size(file_path)
