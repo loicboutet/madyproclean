@@ -9,7 +9,7 @@ class ClockController < ApplicationController
     @site = Site.find_by!(qr_code_token: params[:qr_code_token])
     
     if user_signed_in?
-      @active_entry = current_user.time_entries.active.first
+      @active_entry = current_user.time_entries.active.includes(:site).first
       @can_clock_in = @active_entry.nil?
       @can_clock_out = @active_entry.present? && @active_entry.site_id == @site.id
     else
@@ -21,7 +21,7 @@ class ClockController < ApplicationController
   # POST /c/:qr_code_token/in
   def clock_in
     # Check if already clocked in
-    active_entry = current_user.time_entries.active.first
+    active_entry = current_user.time_entries.active.includes(:site).first
     if active_entry.present?
       @error = "Vous êtes déjà pointé sur un autre site : #{active_entry.site.name}"
       render :error and return
