@@ -21,8 +21,9 @@ class ClockController < ApplicationController
   # POST /c/:qr_code_token/in
   def clock_in
     # Check if already clocked in
-    if current_user.time_entries.active.exists?
-      @error = "Vous êtes déjà pointé sur un autre site"
+    active_entry = current_user.time_entries.active.first
+    if active_entry.present?
+      @error = "Vous êtes déjà pointé sur un autre site : #{active_entry.site.name}"
       render :error and return
     end
     
